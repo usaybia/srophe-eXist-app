@@ -4,9 +4,9 @@ xquery version "3.0";
 module namespace api="http://syriaca.org/api";
 (: Syriaca.org modules :)
 import module namespace global="http://syriaca.org/global" at "lib/global.xqm";
-import module namespace tei2html="http://syriaca.org/tei2html" at "lib/tei2html.xqm";
+import module namespace tei2html="http://syriaca.org/tei2html" at "content-negotiation/tei2html.xqm";
 import module namespace sprql-queries="http://syriaca.org/sprql-queries" at "../sparql/sparql.xqm";
-import module namespace cntneg="http://syriaca.org/cntneg" at "lib/content-negotiation.xqm";
+import module namespace cntneg="http://syriaca.org/cntneg" at "content-negotiation/content-negotiation.xqm";
 
 (:eXist modules:)
 import module namespace req="http://exquery.org/ns/request";
