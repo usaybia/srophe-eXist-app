@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="schemas/odd4odds.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="schemas/odd4odds.isosch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="schemas/tei_customization.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="schemas/tei_customization.isosch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-  xml:lang="en">
+  xmlns:syriaca="http://syriaca.org/#schema" xml:lang="en">
   <teiHeader>
     <fileDesc>
       <titleStmt>
@@ -35,13 +35,14 @@
         the encoding of many different documents by many different researchers having differnet
         levels of training. As such, a schema is particularly important Furthermore, the data-driven
         nature of SPEAR requires some modifications and additions to TEI P5, particularly the
-        creation of a universal URI attribute and the ability to nest a list relation element under
-        a div.</p>
+        creation of a universal URI attribute and the ability to nest a &lt;listRelation&gt; element
+        under a div.</p>
 
       <schemaSpec ident="SPEAR" source="tei:current" start="TEI">
 
+        <desc/>
         <moduleRef key="core"
-          include="author bibl biblScope choice citedRange corr date desc editor name note num orig p ptr publisher pubPlace ref reg resp respStmt sic title"/>
+          include="author bibl biblScope choice citedRange corr date desc editor head listBibl name note num orig p ptr publisher pubPlace ref reg resp respStmt sic title"/>
         <moduleRef key="tei"/>
         <moduleRef key="header"/>
         <moduleRef key="textstructure" include="back body div TEI text"/>
@@ -56,7 +57,7 @@
                 compliant URIs to discrete sections of a TEI document. xml:ids are not sufficient
                 for this purpose. This attribute is designed to accomplish this task.</desc>
               <datatype>
-                <dataRef key="data.pointer"/>
+                <dataRef key="teidata.pointer"/>
               </datatype>
             </attDef>
           </attList>
@@ -73,7 +74,7 @@
                 Winona Salesky created this date attribute in order to visualize our event data on a
                 timeline. </desc>
               <datatype>
-                <dataRef key="data.temporal.w3c"/>
+                <dataRef key="teidata.temporal.w3c"/>
               </datatype>
             </attDef>
             <attDef ident="syriaca-computed-end" mode="add">
@@ -85,14 +86,15 @@
                 Winona Salesky created this date attribute in order to visualize our event data on a
                 timeline. </desc>
               <datatype>
-                <dataRef key="data.temporal.w3c"/>
+                <dataRef key="teidata.temporal.w3c"/>
               </datatype>
             </attDef>
           </attList>
         </classSpec>
-        
+
         <classSpec type="atts" ident="att.global.analytic" mode="add">
-          <desc>I have needed to include this because it somehow disappeared from this customization. I do not know why this was necessary.</desc>
+          <desc>I have needed to include this because it somehow disappeared from this
+            customization. I do not know why this was necessary.</desc>
           <attList>
             <attDef ident="ana" mode="add">
               <datatype>
@@ -101,16 +103,17 @@
             </attDef>
           </attList>
         </classSpec>
-        
+
         <elementSpec ident="body" module="textstructure" mode="change">
           <content>
             <elementRef key="div" minOccurs="1" maxOccurs="unbounded"/>
           </content>
           <remarks>
-            <p>The customization allows div as the only acceptable child element of the body element.</p>
+            <p>The customization allows &lt;div&gt; elements as the only acceptable child element of
+              the &lt;body&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="listRelation" mode="change" module="namesdates">
           <content>
             <elementRef key="relation" minOccurs="1" maxOccurs="1"/>
@@ -119,43 +122,64 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/119-233" resp="#dschwartz">
                 <listRelation>
-                  <relation ana="family" name="snap:ChildOf" active="http://syriaca.org/person/16" passive="http://syriaca.org/person/2234"/>
+                  <relation ana="family" name="snap:ChildOf" active="http://syriaca.org/person/16"
+                    passive="http://syriaca.org/person/2234"/>
                 </listRelation>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>SPEAR has three basic types of data located in listPerson, listEvent, and listRelation elements. The first two are allowed to nest inside a div element while the last one is not. For uniformity and ease of encoding, this customization makes the listRelation element a part of the model class model.listLike so that it can function like other list elements and nest directly under the div element. This customization also removes all attributes from the listRelation element and restricts the child elements to relation and desc.</p>
+            <p>SPEAR has three basic types of data located in &lt;listPerson&gt;, &lt;listEvent&gt;,
+              and &lt;listRelation&gt; elements. The first two are allowed to nest inside a
+              &lt;div&gt; element while the last one is not. For uniformity and ease of encoding,
+              this customization makes the &lt;listRelation&gt; element a part of the model class
+              model.listLike so that it can function like other list elements and nest directly
+              under the &lt;div&gt; element. This customization also removes all attributes from the
+              &lt;listRelation&gt; element and restricts the child elements to &lt;relation&gt; and
+              &lt;desc&gt;.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="bibl" module="core" mode="change">
-          <classes mode="replace">
-            <memberOf key="model.biblLike" mode="add"/>
-            <memberOf key="model.biblPart" mode="add"/>
-          </classes>
           <content>
-            <alternate>
-              <sequence>
+            <sequence minOccurs="0" maxOccurs="1" preserveOrder="true">
+              <elementRef key="title" minOccurs="0" maxOccurs="2"/>
+              <elementRef key="author" minOccurs="0" maxOccurs="1"/>
+              <elementRef key="editor" minOccurs="0" maxOccurs="1"/>
+              <elementRef key="pubPlace" minOccurs="0" maxOccurs="1"/>
+              <elementRef key="publisher" minOccurs="0" maxOccurs="1"/>
+              <elementRef key="date" minOccurs="0" maxOccurs="1"/>
+              <elementRef key="biblScope" minOccurs="0" maxOccurs="2"/>
               <elementRef key="ptr" minOccurs="1" maxOccurs="1"/>
-              <elementRef key="citedRange" minOccurs="1" maxOccurs="unbounded"/>
+              <elementRef key="citedRange" minOccurs="0" maxOccurs="3"/>
             </sequence>
-            <elementRef key="ptr" minOccurs="1" maxOccurs="1"/>
-            </alternate>
           </content>
+          <constraintSpec ident="id-in-back-bibl" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:back//tei:bibl">
+                <sch:assert test="@xml:id">A &lt;bibl&gt; element in the back matter must contain an
+                  @xml:id attribute.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:back//tei:bibl/@xml:id">
+                <sch:let name="docURIno"
+                  value="//tei:publicationStmt/tei:idno[@type]/substring-after(substring-before(., '/tei'), 'spear/')"/>
+                <sch:assert test="contains(., concat('bibl', $docURIno, '-'))">The @xml:id on the
+                  &lt;bibl&gt; element in the back matter must take the following form: 'bibl' +
+                    '<sch:value-of select="$docURIno"/>' + '-' + a unique number.</sch:assert>
+                <sch:assert
+                  test="count(distinct-values(//tei:back//tei:bibl/@xml:id)) eq count(//tei:back//tei:bibl/@xml:id)"
+                  >Each @xml:id attribute on a &lt;bibl&gt; element must have a unique
+                  value.</sch:assert>
+                <sch:report test="matches(substring-after(., '-'), '\D')">A properly formatted
+                  Syriaca.org person URI ends with a number.</sch:report>
+                <sch:assert test="matches(substring-after(., '-'), '\d')">A properly formatted
+                  Syriaca.org person URI ends with a number.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
           <attList>
-            <attDef ident="xml:id" mode="add">
-              <datatype>
-                <dataRef key="ID"/>
-              </datatype>
-            </attDef>
             <attDef ident="type" mode="add" usage="req">
-              <datatype>
-                <dataRef key="data.enumerated"/>
-              </datatype>
               <valList type="closed">
                 <valItem ident="primary"/>
                 <valItem ident="secondary"/>
@@ -183,10 +207,16 @@
             </egXML>
           </exemplum>
           <remarks>
-            <p>SPEAR only uses xml:id and type attributes on the bibl element. This customization keeps bibl in its model classes but removes it from its attribite classes. It then allows the bibl element to have only xml:id and type attributes and provides a closed list of attribute values for the type attribute when applied to the bibl element. It also allows a bibl element that contains only a ptr element which is used for encoding references to CTS URNs.</p>
+            <p>SPEAR only uses @xml:id and @type attributes on the &lt;bibl&gt; element. This
+              customization keeps &lt;bibl&gt; in its model classes but removes it from its
+              attribite classes. It then allows the &lt;bibl&gt; element to have only @xml:id and
+              @type attributes and provides a closed list of attribute values for the @type
+              attribute when applied to the &lt;bibl&gt; element. It also allows a &lt;bibl&gt;
+              element that contains only a &lt;ptr&gt; element which is used for encoding references
+              to CTS URNs.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="biblScope" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.imprintPart"/>
@@ -204,7 +234,8 @@
                   <desc>the element contains a line number or line range.</desc>
                 </valItem>
                 <valItem ident="part">
-                  <desc>the element contains a part of a book or collection, i.e. chapter and verse of a biblical text.</desc>
+                  <desc>the element contains a part of a book or collection, i.e. chapter and verse
+                    of a biblical text.</desc>
                 </valItem>
                 <valItem ident="column">
                   <desc>the element identifies a column.</desc>
@@ -214,10 +245,13 @@
             </attDef>
           </attList>
           <remarks>
-            <p>This customization removes the biblScope element from all attribute classes and requires the unit attribute with a closed list of values. It also requires that the biblscope element contain a ptr element.</p><!-- I need to look into this again because we use the unit value "pp" instead of the recommended "page" which I don't understand. -->
+            <p>This customization removes the &lt;biblScope&gt; element from all attribute classes
+              and requires the @unit attribute with a closed list of values. It also requires that
+              the &lt;biblscope&gt; element contain a &lt;ptr&gt; element.</p>
+            <!-- I need to look into this again because we use the unit value "pp" instead of the recommended "page" which I don't understand. -->
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="citedRange" module="core" mode="replace">
           <content>
             <textNode/>
@@ -235,7 +269,8 @@
                   <desc>the element contains a line number or line range.</desc>
                 </valItem>
                 <valItem ident="part">
-                  <desc>the element contains a part of a book or collection, i.e. chapter and verse of a biblical text.</desc>
+                  <desc>the element contains a part of a book or collection, i.e. chapter and verse
+                    of a biblical text.</desc>
                 </valItem>
                 <valItem ident="column">
                   <desc>the element identifies a column.</desc>
@@ -244,10 +279,13 @@
             </attDef>
           </attList>
           <remarks>
-            <p>This customization removes the citedRange element from all member classes, only allow text content, and requires the use of a unit attribute with a closed list. SPEAR prefers that encoders use the part value and cite ancient texts according to section numbers.</p>
+            <p>This customization removes the &lt;citedRange&gt; element from all member classes,
+              only allow text content, and requires the use of a @unit attribute with a closed list.
+              SPEAR prefers that encoders use the part value and cite ancient texts according to
+              section numbers.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="choice" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.linePart"/>
@@ -257,38 +295,33 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/119-52" resp="#dschwartz">
                 <listEvent>
-                  <event ref="http://syriaca.org/keyword/accession http://syriaca.org/keyword/emperor">
-                    <desc>
-                      In 
-                      <choice>
+                  <event
+                    ref="http://syriaca.org/keyword/accession http://syriaca.org/keyword/emperor">
+                    <desc> In <choice>
                         <corr>
                           <date when="-0044" calendar="Gregorian">44 B.C.</date>
                         </corr>
                         <sic>
-                          <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5 B.C.</date>
+                          <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5
+                            B.C.</date>
                         </sic>
                         <orig>
                           <date when-custom="0266" datingMethod="Seleucid">A. Gr. 266</date>
                         </orig>
                       </choice>
-                      <persName ref="http://syriaca.org/person/2238">
-                        Augustus
-                      </persName> 
-                      became King.
-                    </desc>
+                      <persName ref="http://syriaca.org/person/2238"> Augustus </persName> became
+                      King. </desc>
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization does not allow attributes on the choice element.</p>
+            <p>This customization does not allow attributes on the &lt;choice&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="date" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.dateLike"/>
@@ -299,14 +332,16 @@
           <attList>
             <attDef ident="datingMethod" mode="change" usage="opt">
               <datatype>
-                <dataRef key="att.datable.custom"/>
+                <dataRef key="teidata.pointer"/>
               </datatype>
               <valList type="semi">
                 <valItem ident="Seleucid">
-                  <desc>the element contains a date (year) according to the Seleucid calendar.</desc>
+                  <desc>the element contains a date (year) according to the Seleucid
+                    calendar.</desc>
                 </valItem>
                 <valItem ident="Seleucid-SyriacMonths">
-                  <desc>the element contains a date (month and year) according to the Seleucid calendar.</desc>
+                  <desc>the element contains a date (month and year) according to the Seleucid
+                    calendar.</desc>
                 </valItem>
                 <valItem ident="regnalYear">
                   <desc>the element contains a date according to the year of a king's reign.</desc>
@@ -315,8 +350,17 @@
             </attDef>
             <attDef ident="calendar" mode="add" usage="opt">
               <datatype>
-                <dataRef key="att.datable"/>
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="Gregorian-in-reg-date" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:date[parent::tei:reg]/@calendar">
+                    <sch:assert test=". = 'Gregorian'">A &lt;date&gt; element inside a &lt;reg&gt;
+                      element must have a @calendar attribute with a value of
+                      "Gregorian".</sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
               <valList type="semi">
                 <valItem ident="Gregorian">
                   <desc>The element contains a date according to the Gregorian calendar.</desc>
@@ -334,16 +378,14 @@
                   <person>
                     <persName ref="http://syriaca.org/person/1718"/>
                     <death>
-                      <date when="0387-04-23" calendar="Gregorian">
-                        23 April A. D. 387
-                      </date>
-                      <note type="desc"> <persName ref="http://syriaca.org/person/1718">Eulogios</persName> died on 23 April A. D. 387 </note>
+                      <date when="0387-04-23" calendar="Gregorian"> 23 April A. D. 387 </date>
+                      <note type="desc">
+                        <persName ref="http://syriaca.org/person/1718">Eulogios</persName> died on
+                        23 April A. D. 387 </note>
                     </death>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -352,21 +394,14 @@
               <div uri="http://syriaca.org/spear/3029-6" resp="#ktorabi #dschwartz">
                 <listPerson>
                   <personGrp>
-                    <persName ref="http://syriaca.org/person/3035">
-                      The sacred virgins under the authority of
-                      <persName ref="http://syriaca.org/person/2780">
-                        Valeriana
-                      </persName>
-                      sometime 
-                      <date notBefore="0513" notAfter="0518">
-                        between A.D. 513-518
-                      </date>
+                    <persName ref="http://syriaca.org/person/3035"> The sacred virgins under the
+                      authority of <persName ref="http://syriaca.org/person/2780"> Valeriana
+                      </persName> sometime <date notBefore="0513" notAfter="0518"> between A.D.
+                        513-518 </date>
                     </persName>
                   </personGrp>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -375,29 +410,26 @@
               <div uri="http://syriaca.org/spear/119-12" resp="#dschwartz">
                 <listEvent>
                   <event>
-                    <desc> In 
-                      <choice>
-                      <reg>
-                        <date when="0201-11" calendar="Gregorian">November A. D.
-                          201</date>
-                      </reg>
-                      <orig>
-                        <date when-custom="0513-02" datingMethod="Seleucid-SyriacMonths">Teshri II A. Gr. 513</date>
-                      </orig>
-                    </choice>
-                      during the reign of <persName ref="http://syriaca.org/person/2201"> Abgar the Great </persName>,
-                      <placeName ref="http://syriaca.org/place/191"> the Daisan river
-                      </placeName> flooded <placeName ref="http://syriaca.org/place/78">
-                        Edessa </placeName> destroying the western wall of the city,
-                      <placeName ref="http://syriaca.org/place/2579"> the Great Palace
-                      </placeName>, and <placeName ref="http://syriaca.org/place/2580"> the
-                        Church of the Christians </placeName>. </desc>
+                    <desc> In <choice>
+                        <reg>
+                          <date when="0201-11" calendar="Gregorian">November A. D. 201</date>
+                        </reg>
+                        <orig>
+                          <date when-custom="0513-02" datingMethod="Seleucid-SyriacMonths">Teshri II
+                            A. Gr. 513</date>
+                        </orig>
+                      </choice> during the reign of <persName ref="http://syriaca.org/person/2201">
+                        Abgar the Great </persName>, <placeName ref="http://syriaca.org/place/191">
+                        the Daisan river </placeName> flooded <placeName
+                        ref="http://syriaca.org/place/78"> Edessa </placeName> destroying the
+                      western wall of the city, <placeName ref="http://syriaca.org/place/2579"> the
+                        Great Palace </placeName>, and <placeName
+                        ref="http://syriaca.org/place/2580"> the Church of the Christians
+                      </placeName>. </desc>
                     <ptr target="http://syriaca.org/keyword/naturalDisaster"/>
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -406,39 +438,37 @@
               <div uri="http://syriaca.org/spear/119-434" resp="#dschwartz">
                 <listPerson>
                   <personGrp>
-                    <persName ref="http://syriaca.org/person/2219"> Those struck by fire in 
-                      <choice>
-                      <reg>
-                        <date notBefore="0511-04-11" notAfter="0512-04-10" calendar="Gregorian">A. D. 511/2</date>
-                        <note ana="#calculated">This date was calculated from a regnal
-                          year.</note>
-                      </reg>
-                      <orig>
-                        <date datingMethod="regnalYear">the 21st year of the reign of
-                          Anastasios</date>
-                      </orig>
-                    </choice> 
-                      because they wanted to remove the book placed in the coffin of
-                      <persName ref="http://syriaca.org/person/479"> Euphemia the martyr
-                      </persName> by the <ref target="http://syriaca.org/keyword/councilChalcedon"> Council of
-                        <placeName ref="http://syriaca.org/place/622"> Chalcedon
+                    <persName ref="http://syriaca.org/person/2219"> Those struck by fire in <choice>
+                        <reg>
+                          <date notBefore="0511-04-11" notAfter="0512-04-10" calendar="Gregorian">A.
+                            D. 511/2</date>
+                          <note ana="calculated">This date was calculated from a regnal year.</note>
+                        </reg>
+                        <orig>
+                          <date datingMethod="regnalYear">the 21st year of the reign of
+                            Anastasios</date>
+                        </orig>
+                      </choice> because they wanted to remove the book placed in the coffin of
+                        <persName ref="http://syriaca.org/person/479"> Euphemia the martyr
+                      </persName> by the <ref target="http://syriaca.org/keyword/councilChalcedon">
+                        Council of <placeName ref="http://syriaca.org/place/622"> Chalcedon
                         </placeName>
                       </ref>. </persName>
                     <ptr target="http://syriaca.org/keyword/councilChalcedon"/>
                   </personGrp>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>The customization limits the attributes used on the date element by only making it a part of the att.datable.custom and att.datable.w3c attribute classes and by suggesting attribute values for the calendar and dating method attributes.</p>
+            <p>The customization limits the attributes used on the &lt;date&gt; element by only
+              making it a part of the att.datable.custom and att.datable.w3c attribute classes and
+              by suggesting attribute values for the @calendar and @datingMethod attributes.</p>
             <!-- I need to deal with an inconsistency in my encoding. Calendar and datingMethod currently offer two different ways to refer to something like the Seleucid Calendar. -->
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="desc" module="core" mode="replace">
           <content>
             <sequence minOccurs="0" maxOccurs="unbounded" preserveOrder="false">
@@ -451,10 +481,12 @@
             </sequence>
           </content>
           <remarks>
-            <p>This customization does not allow attributes on the desc element. It also restricts child elements to choice, date, persName, and placeName.</p>
+            <p>This customization does not allow attributes on the &lt;desc&gt; element. It also
+              restricts child elements to &lt;choice&gt;, &lt;date&gt;, &lt;persName&gt;, and
+              &lt;placeName&gt;.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="editor" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.respLike"/>
@@ -477,10 +509,11 @@
             </attDef>
           </attList>
           <remarks>
-            <p>This customization limits the attributes available to the desc element to the role and ref attributes and suggests values for role.</p>
+            <p>This customization limits the attributes available to the &lt;desc&gt; element to
+              @role and @ref and suggests values for @role.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="name" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.nameLike.agent"/>
@@ -493,10 +526,11 @@
             </attDef>
           </attList>
           <remarks>
-            <p>This customization limits the attributes available to the name element to the ref attribute.</p>
+            <p>This customization limits the attributes available to the &lt;name&gt; element to the
+              @ref attribute.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="corr" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.choicePart"/>
@@ -506,52 +540,52 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/119-52" resp="#dschwartz">
                 <listEvent>
-                  <event ref="http://syriaca.org/keyword/accession http://syriaca.org/keyword/emperor">
-                    <desc>
-                      In 
-                      <choice>
+                  <event
+                    ref="http://syriaca.org/keyword/accession http://syriaca.org/keyword/emperor">
+                    <desc> In <choice>
                         <corr>
                           <date when="-0044" calendar="Gregorian">44 B.C.</date>
                         </corr>
                         <sic>
-                          <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5 B.C.</date>
+                          <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5
+                            B.C.</date>
                         </sic>
                         <orig>
                           <date when-custom="0266" datingMethod="Seleucid">A. Gr. 266</date>
                         </orig>
                       </choice>
-                      <persName ref="http://syriaca.org/person/2238">
-                        Augustus
-                      </persName> 
-                      became King.
-                    </desc>
+                      <persName ref="http://syriaca.org/person/2238"> Augustus </persName> became
+                      King. </desc>
                   </event>
                 </listEvent>
                 <bibl type="primary">
                   <biblScope unit="pp">
                     <ptr target="#bibl633-1"/>3</biblScope>
                 </bibl>
-                <note type="errata">
-                  The author has apparently mistaken the date of Augustus' accession.
-                </note>
+                <note type="errata"> The author has apparently mistaken the date of Augustus'
+                  accession. </note>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes all attributes from the corr element.</p>
+            <p>This customization removes all attributes from the &lt;corr&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="listEvent" module="namesdates" mode="replace">
           <content>
             <elementRef key="event" minOccurs="1" maxOccurs="1"/>
             <elementRef key="listRelation" minOccurs="0" maxOccurs="1"/>
           </content>
           <remarks>
-            <p>This customization removes listEvent from all attribute and model classes. It requires listEvent to have a child event element. It also makes the listRelation element available as a child element of listEvent which SPEAR uses when the event factoid has a relationship to another event factoid in SPEAR.</p>
+            <p>This customization removes the &lt;listEvent&gt; element from all attribute and model
+              classes. It requires &lt;listEvent&gt; to have a child &lt;event&gt; element. It also
+              makes the &lt;listRelation&gt; element available as a child element of
+              &lt;listEvent&gt; which SPEAR uses when the event factoid has a relationship to
+              another event factoid in SPEAR.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="listPerson" module="namesdates" mode="replace">
           <content>
             <alternate>
@@ -560,20 +594,22 @@
             </alternate>
           </content>
           <remarks>
-            <p>This customization removes listPerson from all attribute and model classes and makes the person and personGrp element the only acceptable children of listEvent.</p>
+            <p>This customization removes the &lt;listPerson&gt; element from all attribute and
+              model classes and makes the &lt;person&gt; and &lt;personGrp&gt; elements the only
+              acceptable children of &lt;listEvent&gt;.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="orig" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.choicePart"/>
             <memberOf key="model.pPart.transcriptional"/>
           </classes>
           <remarks>
-            <p>This customization removes all attributes from the orig element.</p>
+            <p>This customization removes all attributes from the &lt;orig&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="personGrp" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.personLike"/>
@@ -629,65 +665,95 @@
             <attDef ident="size" mode="delete"/>
           </attList>
           <remarks>
-            <p>This customization removes all attributes from the personGrp element. And limits the child elements to the prescribed options.</p>
+            <p>This customization removes all attributes from the &lt;personGrp&gt; element. And
+              limits the child elements to the prescribed options.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="reg" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.choicePart"/>
             <memberOf key="model.pPart.transcriptional"/>
           </classes>
           <remarks>
-            <p>This customization removes all attributes from the reg element.</p>
+            <p>This customization removes all attributes from the &lt;reg&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="sic" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.choicePart"/>
             <memberOf key="model.pPart.transcriptional"/>
           </classes>
           <remarks>
-            <p>This customization removes all attributes from the sic element.</p>
+            <p>This customization removes all attributes from the &lt;sic&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="div" module="textstructure" mode="change">
           <classes mode="replace">
             <memberOf key="model.divLike"/>
           </classes>
-          
           <content>
-          <alternate>
+            <alternate>
               <sequence preserveOrder="true">
                 <elementRef key="listPerson" minOccurs="1" maxOccurs="1"/>
-                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded" />
+                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded"/>
                 <elementRef key="note" minOccurs="0" maxOccurs="1"/>
               </sequence>
-            
+
               <sequence preserveOrder="true">
                 <elementRef key="listEvent" minOccurs="1" maxOccurs="1"/>
-                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded" />
+                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded"/>
                 <elementRef key="note" minOccurs="0" maxOccurs="1"/>
               </sequence>
-            
+
               <sequence preserveOrder="true">
                 <elementRef key="listRelation" minOccurs="1" maxOccurs="1"/>
-                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded" />
+                <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded"/>
                 <elementRef key="note" minOccurs="0" maxOccurs="1"/>
               </sequence>
             </alternate>
           </content>
+          <constraintSpec ident="atts-on-factoidDiv" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:div[ancestor::tei:body]">
+                <sch:assert test="@uri">Elements of type &lt;div&gt; within the &lt;body&gt; element
+                  require a @uri attribute.</sch:assert>
+                <sch:assert test="@resp">Elements of type &lt;div&gt; within the body element
+                  require a @resp attribute.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
           <attList>
-            <attDef ident="uri" mode="add"><!-- I want to require this attribute on div but ONLY in divs that are children of body - Schematron. -->
+            <attDef ident="uri" usage="opt" mode="add">
               <datatype>
-                <dataRef key="data.pointer"/>
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="divFactoid-uris" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/spear/')">@uri attributes
+                    must contain a properly formatted SPEAR factoid &lt;div&gt; URI that starts with
+                    'http://syriaca.org/spear/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., '-'), '\D')">A properly formatted
+                    SPEAR factoid URI ends with a hyphen followed by a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., '-'), '\d')">A properly formatted
+                    SPEAR factoid URI ends with a number.</sch:assert>
+                  <sch:assert
+                    test="contains(., concat('/', //tei:publicationStmt/tei:idno[@type]/substring-after(substring-before(., '/tei'), 'spear/'), '-'))"
+                    >SPEAR factoid &lt;div&gt; elements contain @uri attributes that must include
+                    the number of the TEI document URI, in this document: "<sch:value-of
+                      select="//tei:publicationStmt/tei:idno[@type]/substring-after(substring-before(., '/tei'), 'spear/')"
+                    />", followed by "-".</sch:assert>
+                  <sch:assert test="count(distinct-values(//tei:div/@uri)) eq count(//tei:div/@uri)"
+                    >Each &lt;div&gt; element @uri attribute must end with a unique number following
+                    the "-".</sch:assert>
+                </constraint>
+              </constraintSpec>
             </attDef>
-            <attDef ident="resp" usage="opt" mode="add"><!-- I want to require this attribute on div but ONLY in divs that are children of body - Schematron. -->
+            <attDef ident="resp" usage="opt" mode="add">
               <datatype minOccurs="1" maxOccurs="unbounded">
-                <dataRef key="data.pointer"/>
+                <dataRef key="teidata.pointer"/>
               </datatype>
             </attDef>
           </attList>
@@ -700,17 +766,23 @@
                     <sex value="M">Male</sex>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization requires the basic pattern of SPEAR to be encoded correctly. Each factoid is encoded in a div element. Since each factoid contains data Person, Event,  or Relation, the schema requires that a div must then contain a listPerson, listEvent, or listRelation element. Since every factoid requires a bibliographic reference, every div must contain one or more bibl elements. The encoder then has the option of adding a note to the factoid as well. This customization also requires that every div element receives a URI attribute that identifies the content of the div as a SPEAR factoid.</p>
+            <p>This customization requires the basic pattern of SPEAR to be encoded correctly. Each
+              factoid is encoded in a &lt;div&gt; element. Since each factoid contains data of type
+              Person, Event, or Relation, the schema requires that a &lt;div&gt; must then contain a
+              &lt;listPerson&gt;, &lt;listEvent&gt;, or &lt;listRelation&gt; element. Since every
+              factoid requires a bibliographic reference, every &lt;div&gt; must contain one or more
+              &lt;bibl&gt; elements. The encoder then has the option of adding a &lt;note&gt;
+              element to the factoid as well. This customization also requires that every
+              &lt;div&gt; element receives a @uri attribute that identifies the content of the
+              &lt;div&gt; as a SPEAR factoid.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="event" module="namesdates" mode="replace">
           <content>
             <elementRef key="desc" minOccurs="1" maxOccurs="1"/>
@@ -725,41 +797,20 @@
                 <listEvent>
                   <event>
                     <desc>
-                      <date notBefore="0513" notAfter="0518" calendar="Gregorian">
-                        Sometime between A.D. 513 and 518
-                      </date>,
-                      <persName ref="http://syriaca.org/person/3075">
-                        prominent men in
-                        <placeName ref="http://syriaca.org/place/10">
-                          Antioch
+                      <date notBefore="0513" notAfter="0518" calendar="Gregorian"> Sometime between
+                        A.D. 513 and 518 </date>, <persName ref="http://syriaca.org/person/3075">
+                        prominent men in <placeName ref="http://syriaca.org/place/10"> Antioch
                         </placeName>
-                      </persName>
-                      petitioned 
-                      <persName ref="http://syriaca.org/person/51">
-                        Severus
-                      </persName>
-                      to allow
-                      <persName ref="http://syriaca.org/person/2575">
-                        Romulus
-                      </persName>
-                      to conduct prayers in 
-                      <placeName ref="http://syriaca.org/place/10">
-                        Antioch
-                      </placeName>
-                      even though he was under the authority of 
-                      <persName ref="http://syriaca.org/person/2574">
-                        Philoxenus
-                      </persName>, 
-                      bishop of 
-                      <placeName ref="http://syriaca.org/place/2661">
-                        Doliche
-                      </placeName>.
+                      </persName> petitioned <persName ref="http://syriaca.org/person/51"> Severus
+                      </persName> to allow <persName ref="http://syriaca.org/person/2575"> Romulus
+                      </persName> to conduct prayers in <placeName ref="http://syriaca.org/place/10"
+                        > Antioch </placeName> even though he was under the authority of <persName
+                        ref="http://syriaca.org/person/2574"> Philoxenus </persName>, bishop of
+                        <placeName ref="http://syriaca.org/place/2661"> Doliche </placeName>.
                     </desc>
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -768,29 +819,28 @@
               <div uri="http://syriaca.org/spear/119-460" resp="#dschwartz">
                 <listEvent>
                   <event>
-                    <desc> 
-                      In <date when="0519" calendar="Gregorian">A. D. 519</date>
-                      <persName ref="http://syriaca.org/person/2268"> Justin </persName>
-                      deposed <persName ref="http://syriaca.org/person/51"> Severus
-                      </persName> and <persName ref="http://syriaca.org/person/44"> Philoxenos
-                      </persName> for refusing to accept the Council of
-                      <placeName ref="http://syriaca.org/place/622"> Chalcedon
-                      </placeName>.
-                    </desc>
-                    <ptr target="http://syriaca.org/keyword/councilChalcedon http://syriaca.org/keyword/deposition"/>
+                    <desc> In <date when="0519" calendar="Gregorian">A. D. 519</date>
+                      <persName ref="http://syriaca.org/person/2268"> Justin </persName> deposed
+                        <persName ref="http://syriaca.org/person/51"> Severus </persName> and
+                        <persName ref="http://syriaca.org/person/44"> Philoxenos </persName> for
+                      refusing to accept the Council of <placeName
+                        ref="http://syriaca.org/place/622"> Chalcedon </placeName>. </desc>
+                    <ptr
+                      target="http://syriaca.org/keyword/councilChalcedon http://syriaca.org/keyword/deposition"
+                    />
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes the event element from all model and attribute classes. It removes the where attribute  and makes the desc element the only acceptable child element.</p>
+            <p>This customization removes the &lt;event&gt; element from all model and attribute
+              classes. It removes the @where attribute and makes the &lt;desc&gt; element the only
+              acceptable child element.</p>
           </remarks>
         </elementSpec>
-         
+
         <elementSpec ident="note" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.correspActionPart"/>
@@ -798,6 +848,88 @@
             <memberOf key="model.correspDescPart"/>
             <memberOf key="model.noteLike"/>
           </classes>
+          <constraintSpec ident="note-children-in-context" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:note[parent::tei:birth and preceding-sibling::tei:placeName]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a birth place factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+                <sch:assert test="tei:placeName">The &lt;note&gt; element in a birth place factoid
+                  must contain a &lt;placeName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:birth and preceding-sibling::tei:date]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a birth date factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule
+                context="tei:note[parent::tei:nationality and preceding-sibling::tei:placeName]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a citizenship factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+                <sch:assert test="tei:placeName">The &lt;note&gt; element in a citizenship factoid
+                  must contain a &lt;placeName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:death and preceding-sibling::tei:placeName]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a death place factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+                <sch:assert test="tei:placeName">The &lt;note&gt; element in a birth place factoid
+                  must contain a &lt;placeName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:education]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in an education factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:death and preceding-sibling::tei:date]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a death date factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:occupation]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in an occupation factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule
+                context="tei:note[parent::tei:residence and preceding-sibling::tei:placeName]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a residence factoid must
+                  contain a &lt;persName&gt; element.</sch:assert>
+                <sch:assert test="tei:placeName">The &lt;note&gt; element in a residence factoid
+                  must contain a &lt;placeName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:sex]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a biological sex factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:socecStatus]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a socioeconomic status
+                  factoid must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule
+                context="tei:note[parent::tei:langKnowledge and preceding-sibling::tei:langKnown]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element in a language-known factoid
+                  must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:trait]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element inside the &lt;trait&gt;
+                  element must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:state]">
+                <sch:assert test="tei:persName">The &lt;note&gt; element inside the &lt;state&gt;
+                  element must contain a &lt;persName&gt; element.</sch:assert>
+              </sch:rule>
+              <sch:rule context="tei:note[parent::tei:reg and preceding-sibling::tei:date]">
+                <sch:assert test="@ana">This &lt;note&gt; element requires an @ana
+                  attribute.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <constraintSpec ident="date-note-content" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:note[parent::tei:reg and preceding-sibling::tei:date]">
+                <sch:assert
+                  test="normalize-space(.) = 'This regularized date was calculated by the SPEAR editor from a non-calendrical dating system such as regnal years, etc.'"
+                  > The only note allowed in this context must contain the following text: "This
+                  regularized date was calculated by the SPEAR editor from a non-calendrical dating
+                  system such as regnal years, etc." </sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
           <attList>
             <attDef ident="anchored" mode="delete"/>
             <attDef ident="targetEnd" mode="delete"/>
@@ -805,19 +937,101 @@
               <datatype>
                 <dataRef key="teidata.enumerated"/>
               </datatype>
-              <valList type="closed"><!-- Use schematron to allow incerta/dubia/errata only when note is child of div and requires desc when note is a descendent of person. -->
+              <constraintSpec ident="type-note-child-div" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:note/@type">
+                    <sch:report test=". = 'desc'">Only notes of @type "incerta", "dubia",
+                      or "errata" may appear as children of a &lt;div&gt; element.</sch:report>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <constraintSpec ident="notes-type-desc" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:note[parent::tei:birth]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;birth&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:nationality]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the
+                      &lt;nationality&gt; element. Other types of notes ("incerta", "dubia", and
+                      "errata") may appear as children of the &lt;div&gt; element as
+                      needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:death]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;death&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:education]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;education&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:occupation]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the
+                      &lt;occupation&gt; element. Other types of notes ("incerta", "dubia", and
+                      "errata") may appear as children of the &lt;div&gt; element as
+                      needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:residence]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;residence&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:sex]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;sex&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:socecStatus]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the
+                      &lt;socecStatus&gt; element. Other types of notes ("incerta", "dubia", and
+                      "errata") may appear as children of the &lt;div&gt; element as
+                      needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:langKnowledge]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain a the
+                      attribute @type="desc" are the only notes allowed inside the
+                      &lt;langKnowledge&gt; element. Other types of notes ("incerta", "dubia", and
+                      "errata") may appear as children of the &lt;div&gt; element as
+                      needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:trait]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;trait&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:note[parent::tei:state]/@type">
+                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
+                      attribute @type="desc" are the only notes allowed inside the &lt;state&gt;
+                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
+                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <valList type="closed">
                 <valItem ident="desc"/>
                 <valItem ident="incerta"/>
                 <valItem ident="dubia"/>
                 <valItem ident="errata"/>
               </valList>
             </attDef>
-            <attDef ident="ana" usage="opt" mode="replace"> <!-- Use schematron to allow this only in date element. -->
+            <attDef ident="ana" usage="opt" mode="replace">
               <datatype>
                 <dataRef key="teidata.enumerated"/>
               </datatype>
               <valList type="closed">
-                <valItem ident="#calculated"/>
+                <valItem ident="calculated"/>
               </valList>
             </attDef>
           </attList>
@@ -826,29 +1040,26 @@
               <div uri="http://syriaca.org/spear/119-52" resp="#dschwartz">
                 <listEvent>
                   <event>
-                    <desc> 
-                      In <choice>
-                      <corr>
-                        <date when="-0044" calendar="Gregorian">44 B.C.</date>
-                      </corr>
-                      <sic>
-                        <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5 B.C.</date>
-                      </sic>
-                      <orig>
-                        <date when-custom="0266" datingMethod="Seleucid">A. Gr.
-                          266</date>
-                      </orig>
-                    </choice>
-                      <persName ref="http://syriaca.org/person/2238"> Augustus </persName>
-                      became King of
-                      <placeName ref="http://syriaca.org/place/166"> Rome </placeName>.
-                    </desc>
-                    <ptr target="http://syriaca.org/keyword/emperor http://syriaca.org/keyword/accession"/>
+                    <desc> In <choice>
+                        <corr>
+                          <date when="-0044" calendar="Gregorian">44 B.C.</date>
+                        </corr>
+                        <sic>
+                          <date notBefore="-0046-10" notAfter="-0045-09" calendar="Gregorian">46/5
+                            B.C.</date>
+                        </sic>
+                        <orig>
+                          <date when-custom="0266" datingMethod="Seleucid">A. Gr. 266</date>
+                        </orig>
+                      </choice>
+                      <persName ref="http://syriaca.org/person/2238"> Augustus </persName> became
+                      King of <placeName ref="http://syriaca.org/place/166"> Rome </placeName>. </desc>
+                    <ptr
+                      target="http://syriaca.org/keyword/emperor http://syriaca.org/keyword/accession"
+                    />
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
                 <note type="errata"> The author has apparently mistaken the date of Augustus'
                   accession. </note>
               </div>
@@ -860,31 +1071,32 @@
                 <listEvent>
                   <event>
                     <desc>
-                      <persName ref="http://syriaca.org/person/326"> Aitalaha </persName>
-                      built <placeName ref="http://syriaca.org/place/2589"> the cemetery
-                      </placeName> and the eastern side of the <placeName ref="http://syriaca.org/place/2588"> Church of <placeName ref="http://syriaca.org/place/78"> Edessa </placeName>
+                      <persName ref="http://syriaca.org/person/326"> Aitalaha </persName> built
+                        <placeName ref="http://syriaca.org/place/2589"> the cemetery </placeName>
+                      and the eastern side of the <placeName ref="http://syriaca.org/place/2588">
+                        Church of <placeName ref="http://syriaca.org/place/78"> Edessa </placeName>
                       </placeName> in <choice>
                         <reg>
-                          <date notBefore="0324-10" notAfter="0325-09" calendar="Gregorian">A. D. 324/5</date>
+                          <date notBefore="0324-10" notAfter="0325-09" calendar="Gregorian">A. D.
+                            324/5</date>
                         </reg>
                         <orig>
-                          <date when-custom="0636" datingMethod="Seleucid">A. Gr.
-                            636</date>
+                          <date when-custom="0636" datingMethod="Seleucid">A. Gr. 636</date>
                         </orig>
                       </choice>. </desc>
-                    <ptr target="http://syriaca.org/keyword/sacredSite http://syriaca.org/keyword/architecture"/>
+                    <ptr
+                      target="http://syriaca.org/keyword/sacredSite http://syriaca.org/keyword/architecture"
+                    />
                   </event>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
                 <note type="incerta"> The text seems to be confused regarding the relative dates of
-                  several events in this section and the English translation has ammended the text without 
-                  comment (following Assemmani). In the manuscript section 13 refers to the year 636 A. Gr. 
-                  while section 14 refers to 635 A. Gr. But, they refer to the same events. Moreover, section 15 
-                  of the Chronicle says that in the next year, 325 C. E., the council of Nicaea took place. 
-                  While there is no comment in the English footnotes, Hallier discusses the issues. -->
-                  <bibl type="secondary">
+                  several events in this section and the English translation has ammended the text
+                  without comment (following Assemmani). In the manuscript section 13 refers to the
+                  year 636 A. Gr. while section 14 refers to 635 A. Gr. But, they refer to the same
+                  events. Moreover, section 15 of the Chronicle says that in the next year, 325 C.
+                  E., the council of Nicaea took place. While there is no comment in the English
+                  footnotes, Hallier discusses the issues. --> <bibl type="secondary">
                     <ptr target="http://syriaca.org/bibl/660"/>
                     <citedRange unit="pp">94-95</citedRange>
                   </bibl>
@@ -898,36 +1110,37 @@
                 <listPerson>
                   <personGrp>
                     <persName ref="http://syriaca.org/person/2219"> Those struck by fire in <choice>
-                      <reg>
-                        <date notBefore="0511-04-11" notAfter="0512-04-10" calendar="Gregorian">A. D. 511/2</date>
-                        <note ana="#calculated">This date was calculated from a regnal
-                          year.</note>
-                      </reg>
-                      <orig>
-                        <date datingMethod="regnalYear">the 21st year of the reign of
-                          Anastasios</date>
-                      </orig>
-                    </choice> because they wanted to remove the book placed in the coffin of
-                      <persName ref="http://syriaca.org/person/479"> Euphemia the martyr
-                      </persName> by the <ref target="http://syriaca.org/keyword/councilChalcedon"> Council of
-                        <placeName ref="http://syriaca.org/place/622"> Chalcedon
+                        <reg>
+                          <date notBefore="0511-04-11" notAfter="0512-04-10" calendar="Gregorian">A.
+                            D. 511/2</date>
+                          <note ana="#calculated">This date was calculated from a regnal
+                            year.</note>
+                        </reg>
+                        <orig>
+                          <date datingMethod="regnalYear">the 21st year of the reign of
+                            Anastasios</date>
+                        </orig>
+                      </choice> because they wanted to remove the book placed in the coffin of
+                        <persName ref="http://syriaca.org/person/479"> Euphemia the martyr
+                      </persName> by the <ref target="http://syriaca.org/keyword/councilChalcedon">
+                        Council of <placeName ref="http://syriaca.org/place/622"> Chalcedon
                         </placeName>
                       </ref>. </persName>
                     <ptr target="http://syriaca.org/keyword/councilChalcedon"/>
                   </personGrp>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization limits the attributes available to the note element to type and ana, and provides closed lists for them both.</p>
+            <p>This customization limits the attributes available to the &lt;note&gt; element to
+              @type and @ana, and provides closed lists for them both.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="persName" module="namesdates" mode="change">
+
           <classes mode="replace">
             <memberOf key="model.nameLike.agent"/>
             <memberOf key="model.persStateLike"/>
@@ -935,8 +1148,21 @@
           <attList>
             <attDef ident="ref" usage="req">
               <datatype minOccurs="1" maxOccurs="1">
-                <dataRef key="teidata.pointer"/><!-- I need to figure out a way to require that the attribute value be a syriaca.org person URI. -->
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-on-persName" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
+                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
+                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:assert>
+                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <exemplum>
@@ -944,13 +1170,10 @@
               <div uri="http://syriaca.org/spear/119-11" resp="#dschwartz">
                 <listPerson>
                   <person>
-                    <persName ref="http://syriaca.org/person/2201"> Abgar the great king
-                    </persName>
+                    <persName ref="http://syriaca.org/person/2201"> Abgar the great king </persName>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -959,17 +1182,13 @@
               <div uri="http://syriaca.org/spear/119-200" resp="#dschwartz">
                 <listPerson>
                   <personGrp>
-                    <persName ref="http://syriaca.org/person/2224">
-                      The Huns who
-                      entered <placeName ref="http://syriaca.org/place/166"> Roman territory
-                      </placeName> in 
-                        <date when="0395-07" calendar="Gregorian">July, A. D. 395</date>
+                    <persName ref="http://syriaca.org/person/2224"> The Huns who entered <placeName
+                        ref="http://syriaca.org/place/166"> Roman territory </placeName> in <date
+                        when="0395-07" calendar="Gregorian">July, A. D. 395</date>
                     </persName>
                   </personGrp>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -978,30 +1197,23 @@
               <div uri="http://syriaca.org/spear/3033-6" resp="#ktorabi #dschwartz">
                 <listPerson>
                   <personGrp>
-                    <persName ref="http://syriaca.org/person/3041">
-                      Certain persons who ceaselessly sought ordination 
-                      from
-                      <persName ref="http://syriaca.org/person/51">
-                        Severus
-                      </persName>
-                      sometime between
-                      <date notBefore="0513" notAfter="0518">
-                        A.D. 513-518
-                      </date>
+                    <persName ref="http://syriaca.org/person/3041"> Certain persons who ceaselessly
+                      sought ordination from <persName ref="http://syriaca.org/person/51"> Severus
+                      </persName> sometime between <date notBefore="0513" notAfter="0518"> A.D.
+                        513-518 </date>
                     </persName>
                   </personGrp>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization makes ref a required attribute for the persName element and also the only allowed attribute.</p>
+            <p>This customization makes @ref a required attribute for the &lt;persName&gt; element
+              and also the only allowed attribute.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="placeName" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.placeNamePart"/>
@@ -1009,102 +1221,172 @@
           <attList>
             <attDef ident="ref" usage="req">
               <datatype minOccurs="1" maxOccurs="1">
-                <dataRef key="teidata.pointer"/><!-- I need to figure out a way to require that the attribute value be a syriaca.org place URI. -->
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-on-placeName" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/place/')">@ref attributes on
+                    &lt;placeName&gt; elements must contain a properly formatted Syriaca.org place
+                    URI that starts with 'http://syriaca.org/place/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., 'place/'), '\D')">A properly
+                    formatted Syriaca.org place URI ends with a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., 'place/'), '\d')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:assert>
+                  <!-- These schematron rules ensure that the placeName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <remarks>
-            <p>This customization makes ref a required attribute for the placeName element and also the only allowed attribute.</p>
+            <p>This customization makes ref a required attribute for the &lt;placeName&gt; element
+              and also the only allowed attribute.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="ptr" module="core" mode="change">
           <classes mode="replace">
             <memberOf key="model.ptrLike"/>
           </classes>
           <attList>
             <attDef ident="target" usage="req">
-              <datatype>
-                <dataRef key="teidata.pointer"/><!-- I need to figure out a way to require that the attribute value be a valid xml:id. I expect that I'll be able to limit this to syriaca.org keywords as well.--> <!-- Look into whether or not I can make use of the xml:base attribute to input the "http://syriaca.org/keyword/" portion of the URI here. -->
+              <datatype minOccurs="1" maxOccurs="unbounded">
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ptr-targets-in-context" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:sourceDesc//tei:bibl[@type = 'primary']/tei:ptr/@target">
+                    <sch:let name="docURIno"
+                      value="//tei:publicationStmt/tei:idno[@type]/substring-after(substring-before(., '/tei'), 'spear/')"/>
+                    <sch:assert
+                      test=". = concat('http://syriaca.org/work/', $docURIno) or starts-with(., 'http://syriaca.org/bibl/')"
+                      > The @target attribute on a &lt;ptr&gt; element inside a &lt;bibl&gt; element
+                      with @type="primary" takes limited values. It either must be
+                        "http://syriaca.org/work/<sch:value-of select="$docURIno"/>" or
+                      "http://syriaca.org/bibl/" followed by the corresponding Syriaca.org bibl URI
+                      number. </sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:sourceDesc//tei:bibl[@type = 'urn']/tei:ptr/@target">
+                    <sch:let name="docURIno"
+                      value="//tei:publicationStmt/tei:idno[@type]/substring-after(substring-before(., '/tei'), 'spear/')"/>
+                    <sch:assert
+                      test="starts-with(., concat('urn:cts:syriacLit:nhsl', $docURIno, '.syriacCorpus'))"
+                      > The @target attribute on a &lt;ptr&gt; element inside a &lt;bibl&gt; element
+                      with @type="urn" must begin either with "urn:cts:syriacLit:nhsl<sch:value-of
+                        select="$docURIno"/>.syriacCorpus" followed by the corresponding Syriac
+                      Corpus URI number. </sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:ptr[parent::tei:event]/@target">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@target
+                      attributes on &lt;ptr&gt; elements in an event factoid must point to a
+                      Syriaca.org keyword starting with "http://syriaca.org/keyword/".</sch:assert>
+                    <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                    <!-- Any keyword is fair game in this context. This gets a bit tricky.-->
+                  </sch:rule>
+                  <sch:rule context="//tei:body/tei:div/tei:bibl[@type = 'urn']/tei:ptr/@target">
+                    <sch:let name="urnBase"
+                      value="//tei:sourceDesc//tei:bibl[@type = 'urn']/tei:ptr/@target"/>
+                    <sch:assert test="starts-with(., concat($urnBase, ':'))">URN in a &lt;bibl&gt;
+                      element inside a SPEAR factoid must begin with URN in the &lt;sourceDesc&gt;
+                      element of the &lt;teiHeader&gt;: "<sch:value-of select="$urnBase"
+                      />:".</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="//tei:body//tei:bibl[@type = 'primary']/tei:ptr/@target">
+                    <sch:assert
+                      test=". = //tei:sourceDesc//tei:bibl[@type = 'primary']/tei:ptr/@target"> The
+                      @target attribute on the &lt;ptr&gt; element, "<sch:value-of select="."/>," is
+                      not among the valid options contained in the &lt;sourceDesc&gt; element of the
+                      &lt;teiHeader&gt;: (<sch:value-of
+                        select="string-join(//tei:sourceDesc//tei:bibl[@type = 'primary']/tei:ptr/@target, ';  ')"
+                      />) </sch:assert>
+                  </sch:rule>
+
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <remarks>
-            <p>This customization makes target a required attribute for the ptr element and also the only allowed attribute.</p>
+            <p>This customization requires a @target attribute for the &lt;ptr&gt; element and also
+              makes it the only attribute allowed.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="relation" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf/>
           </classes>
+          <constraintSpec ident="ref-mutual-act-pass-in-relation" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:div/tei:listRelation/tei:relation">
+                <sch:let name="ti"
+                  value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                <sch:let name="mutual"
+                  value="$ti//listURI[@ref = 'http://syriaca.org/keyword/relationships']//uri[@ana = 'mutual']"/>
+                <sch:let name="reciprocal"
+                  value="$ti//listURI[@ref = 'http://syriaca.org/keyword/relationships']//uri[@ana = 'reciprocal']"/>
+                <sch:assert test=".[@ref = $mutual]/@mutual or .[@ref = $reciprocal]/@active"
+                  >Elements of type &lt;relation&gt; take either a @mutual attribute with mutual
+                  relationship and both @active and @passive attributes with reciprocal
+                  relationships. Mutual relationships include: <sch:value-of
+                    select="string-join($mutual, ';  ')"/>. Reciprocal relationships include:
+                    <sch:value-of select="string-join($reciprocal, ';  ')"/>.</sch:assert>
+                <sch:assert test=".[@ref = $mutual]/@mutual or .[@ref = $reciprocal]/@passive"
+                  >Elements of type &lt;relation&gt; take either a @mutual attribute with mutual
+                  relationship and both @active and @passive attributes with reciprocal
+                  relationships. Mutual relationships include: <sch:value-of
+                    select="string-join($mutual, ';  ')"/>. Reciprocal relationships include:
+                    <sch:value-of select="string-join($reciprocal, ';  ')"/>.</sch:assert>
+                <sch:report test=".[@mutual]/@active">A &lt;relation&gt; element cannot take both
+                  @active and @mutual attributes.</sch:report>
+                <sch:report test=".[@mutual]/@passive">A &lt;relation&gt; element cannot take both
+                  @passive and @mutual attributes.</sch:report>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
           <attList>
             <attDef ident="ref" mode="replace" usage="req">
-              <datatype minOccurs="1">
+              <datatype minOccurs="1" maxOccurs="1">
                 <dataRef key="teidata.enumerated"/>
               </datatype>
-              <valList type="closed"><!-- I need to include a brief description of each of these. -->
-                <valItem ident="snap:AllianceWith"/>
-                <valItem ident="snap:AncestorOf"/>
-                <valItem ident="snap:CasualIntimateRelationshipWith"/>
-                <valItem ident="snap:ChildOf"/>
-                <valItem ident="snap:ChildOfSiblingOf"/>
-                <valItem ident="snap:CousinOf"/>
-                <valItem ident="snap:descendantOf"/>
-                <valItem ident="snap:EnmityFor"/>
-                <valItem ident="snap:ExtendedFamilyOf"/>
-                <valItem ident="snap:ExtendedHouseholdOf"/>
-                <valItem ident="snap:FreedSlaveOf"/>
-                <valItem ident="snap:FriendshipFor"/>
-                <valItem ident="snap:GrandchildOf"/>
-                <valItem ident="snap:GrandparentOf"/>
-                <valItem ident="snap:GreatGrandparentOf"/>
-                <valItem ident="snap:HouseholdOf"/>
-                <valItem ident="snap:HouseSlaveOf"/>
-                <valItem ident="snap:IntimateRelationshipWith"/>
-                <valItem ident="snap:KinOf"/>
-                <valItem ident="snap:LegallyRecognisedRelationshipWith"/>
-                <valItem ident="snap:ParentOf"/>
-                <valItem ident="snap:ProfessionalRelationship"/>
-                <valItem ident="snap:SeriousIntimateRelationshipWith"/>
-                <valItem ident="snap:SiblingOf"/>
-                <valItem ident="snap:SiblingOfParentOf"/>
-                <valItem ident="snap:SlaveOf"/>
-                <valItem ident="snap:SpouseOf"/>
-                <valItem ident="syriaca:Baptism"/>
-                <valItem ident="syriaca:BishopOver"/>
-                <valItem ident="syriaca:BishopOverBishop"/>
-                <valItem ident="syriaca:BishopOverClergy"/>
-                <valItem ident="syriaca:BishopOverMonk"/>
-                <valItem ident="syriaca:CarrierOfLetterBetween"/>
-                <valItem ident="syriaca:Citation"/>
-                <valItem ident="syriaca:ClergyFor"/>
-                <valItem ident="syriaca:CommandOver"/>
-                <valItem ident="syriaca:Commemoration"/>
-                <valItem ident="syriaca:CommuneTogether"/>
-                <valItem ident="syriaca:EpistolaryReferenceTo"/>
-                <valItem ident="syriaca:FellowClergy"/>
-                <valItem ident="syriaca:FellowMonastics"/>
-                <valItem ident="syriaca:Epistolary"/>
-                <valItem ident="syriaca:FollowerOf"/>
-                <valItem ident="syriaca:Judged"/>
-                <valItem ident="syriaca:LegalChargesAgainst"/>
-                <valItem ident="syriaca:MemberOfGroup"/>
-                <valItem ident="syriaca:MonasticHeadOver"/>
-                <valItem ident="syriaca:Ordination"/>
-                <valItem ident="syriaca:PatronOf"/>
-                <valItem ident="syriaca:Petitioned"/>
-                <valItem ident="syriaca:StudentOf"/>
-                <valItem ident="syriaca:ProximateEvent"/>
-                <valItem ident="syriaca:SameEvent"/>
-                <valItem ident="dcterms:isPartOf"/><!-- Remove this if we can successfully run browse by part/whole via RDF. -->
-              </valList>
+              <constraintSpec ident="refs-in-context" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation/@ref">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:assert
+                      test=". = $ti//listURI[@ref = 'http://syriaca.org/keyword/relationships']//uri"
+                      >Value must be one of the following from the Syriaca.org taxonomy:
+                        <sch:value-of
+                        select="string-join($ti//listURI[@ref = 'http://syriaca.org/keyword/relationships']//uri, ';  ')"
+                      />.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation/@ref">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:assert
+                      test=". = $ti//listURI[@ref = 'http://syriaca.org/keyword/event-relationships']/uri"
+                      >Value must be one of the following from the Syriaca.org taxonomy:
+                        <sch:value-of
+                        select="string-join($ti//listURI[@ref = 'http://syriaca.org/keyword/event-relationships']/uri, ';  ')"
+                      />.</sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
             <attDef ident="type" mode="add" usage="opt">
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.enumerated"/>
               </datatype>
-              <valList type="closed"><!-- I need to include a brief description of each of these. -->
+              <constraintSpec ident="type-on-relation" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation">
+                    <sch:report test="@type">A &lt;relation&gt; element inside an event factoid
+                      cannot take a @type attribute.</sch:report>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <valList type="closed">
+                <!-- I have chosen not to use the taxonomy index here because it doesn't trigger the auto complete feature in oXygen. -->
                 <valItem ident="snap:AcknowledgedFamilyRelationship"/>
                 <valItem ident="snap:AdoptedFamilyRelationship"/>
                 <valItem ident="snap:ClaimedFamilyRelationship"/>
@@ -1116,16 +1398,29 @@
                 <valItem ident="snap:StepFamilyRelationship"/>
                 <valItem ident="syriaca:AllegedRelationship"/>
                 <valItem ident="syriaca:RitualKinship"/>
-                <valItem ident="part"/>
               </valList>
             </attDef>
             <attDef ident="ana" mode="add" usage="rec">
               <datatype minOccurs="0" maxOccurs="unbounded">
                 <dataRef key="teidata.enumerated"/>
               </datatype>
-              <valList type="closed"><!-- I need to include a brief description. -->
-                <valItem ident="event"></valItem>
-              </valList>
+              <constraintSpec ident="ana-on-event-relation" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation">
+                    <sch:assert test="@ana">A &lt;relation&gt; element inside an event factoid must
+                      have an @ana attribute.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation/@ana">
+                    <sch:assert test=". = 'event'">A &lt;relation&gt; element inside an event
+                      factoid must have an @ana attribute with a value of "event".</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation">
+                    <sch:report test="@ana">The @ana attribute cannot appear in a relation factoid.
+                      It may only be used in a &lt;relation&gt; element describing a relationship
+                      between two events. </sch:report>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
             <attDef ident="mutual" mode="change" usage="opt">
               <datatype minOccurs="1" maxOccurs="unbounded">
@@ -1147,11 +1442,10 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/3140-21" resp="#ktorabi #dschwartz">
                 <listRelation>
-                  <relation ana="family" ref="snap:SpouseOf" mutual="http://syriaca.org/person/3121 http://syriaca.org/person/3120"/>
+                  <relation ana="family" ref="snap:SpouseOf"
+                    mutual="http://syriaca.org/person/3121 http://syriaca.org/person/3120"/>
                 </listRelation>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1159,11 +1453,11 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/3013-13" resp="#ktorabi #dschwartz">
                 <listRelation>
-                  <relation ana="monastic" ref="syriaca:MonasticHeadOver" active="http://syriaca.org/person/2669" passive="http://syriaca.org/person/3033"/>
+                  <relation ana="monastic" ref="syriaca:MonasticHeadOver"
+                    active="http://syriaca.org/person/2669" passive="http://syriaca.org/person/3033"
+                  />
                 </listRelation>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1171,11 +1465,10 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/3046-27" resp="#ktorabi #dschwartz">
                 <listRelation>
-                  <relation ana="religious" ref="syriaca:CommuneTogether" mutual="http://syriaca.org/person/2458 http://syriaca.org/person/3065"/>
+                  <relation ana="religious" ref="syriaca:CommuneTogether"
+                    mutual="http://syriaca.org/person/2458 http://syriaca.org/person/3065"/>
                 </listRelation>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1184,23 +1477,20 @@
               <div uri="http://syriaca.org/spear/119-555" resp="#dschwartz">
                 <listEvent>
                   <event>
-                    <desc>
-                      The fourth time the
-                      walls of <placeName ref="http://syriaca.org/place/78"> Edessa
-                      </placeName> were broken down  was in the days of the king 
-                      <persName ref="http://syriaca.org/person/2268"> Justin </persName> and
-                      of the bishop 
-                      <persName ref="http://syriaca.org/person/2236"> Asclepius </persName> in 
-                      <date notBefore="0524-10" notAfter="0525-09" calendar="Gregorian">A. D. 424/5</date>
+                    <desc> The fourth time the walls of <placeName ref="http://syriaca.org/place/78"
+                        > Edessa </placeName> were broken down was in the days of the king <persName
+                        ref="http://syriaca.org/person/2268"> Justin </persName> and of the bishop
+                        <persName ref="http://syriaca.org/person/2236"> Asclepius </persName> in
+                        <date notBefore="0524-10" notAfter="0525-09" calendar="Gregorian">A. D.
+                        424/5</date>
                     </desc>
                   </event>
                   <listRelation>
-                    <relation ref="syriaca:SameAs" ana="event" mutual="http://syriaca.org/spear/119-376 http://syriaca.org/spear/119-555"/>
+                    <relation ref="syriaca:SameAs" ana="event"
+                      mutual="http://syriaca.org/spear/119-376 http://syriaca.org/spear/119-555"/>
                   </listRelation>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1209,38 +1499,40 @@
               <div uri="http://syriaca.org/spear/119-542" resp="#dschwartz">
                 <listEvent>
                   <event>
-                    <desc> 
-                      In <date when="0540-05" calendar="Gregorian">May A. D. 540</date>
-                      <persName ref="http://syriaca.org/person/2244"> Chosroes </persName>
-                      broke the peace 
-                      and invaded <placeName ref="http://syriaca.org/place/166"> Roman
-                        territory </placeName>. He laid waste <placeName ref="http://syriaca.org/place/185"> Shura </placeName>, <placeName ref="http://syriaca.org/place/18"> Aleppo </placeName>, and
-                      <placeName ref="http://syriaca.org/place/10"> Antioch </placeName>.
-                    </desc>
-                    <ptr target="http://syriaca.org/keyword/war http://syriaca.org/keyword/violence"/>
+                    <desc> In <date when="0540-05" calendar="Gregorian">May A. D. 540</date>
+                      <persName ref="http://syriaca.org/person/2244"> Chosroes </persName> broke the
+                      peace and invaded <placeName ref="http://syriaca.org/place/166"> Roman
+                        territory </placeName>. He laid waste <placeName
+                        ref="http://syriaca.org/place/185"> Shura </placeName>, <placeName
+                        ref="http://syriaca.org/place/18"> Aleppo </placeName>, and <placeName
+                        ref="http://syriaca.org/place/10"> Antioch </placeName>. </desc>
+                    <ptr target="http://syriaca.org/keyword/war http://syriaca.org/keyword/violence"
+                    />
                   </event>
                   <listRelation>
-                    <relation ref="syriaca:CloseConnection" ana="event" mutual="http://syriaca.org/spear/119-542 http://syriaca.org/spear/119-424"/>
+                    <relation ref="syriaca:CloseConnection" ana="event"
+                      mutual="http://syriaca.org/spear/119-542 http://syriaca.org/spear/119-424"/>
                   </listRelation>
                 </listEvent>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes all attributes except name, type, ana, mutual, passive, active. It also restricts values for the name, type, and ana attributes and also requires the encoder to use the name and ana attributes.</p>
+            <p>This customization removes from the &lt;relation&gt; element all attributes except
+              @name, @type, @ana, @mutual, @passive, and @active. It also restricts values for the
+              @name, @type, and @ana attributes and requires the encoder to use the @name and @ana
+              attributes.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="person" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.personLike"/>
           </classes>
           <content>
             <alternate>
-                <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
+              <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
               <sequence preserveOrder="true">
                 <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="sex" minOccurs="1" maxOccurs="1"/>
@@ -1288,10 +1580,11 @@
             </alternate>
           </content>
           <remarks>
-            <p>This customization removes all attributes from the person element except for the ref attribute.</p>
+            <p>This customization removes all attributes from the &lt;person&gt; element except for
+              the @ref attribute.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="sex" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.persStateLike"/>
@@ -1303,13 +1596,16 @@
               </datatype>
               <valList type="closed">
                 <valItem ident="F">
-                  <desc>used for biological females, see trait element for describing gender</desc>
+                  <desc>used for biological females, see &lt;trait&gt; element for describing
+                    gender</desc>
                 </valItem>
                 <valItem ident="M">
-                  <desc>used for biological males, see trait element for describing gender</desc>
+                  <desc>used for biological males, see &lt;trait&gt; element for describing
+                    gender</desc>
                 </valItem>
                 <valItem ident="U">
-                  <desc>used for a person of unknown sex, see trait element for describing gender</desc>
+                  <desc>used for a person of unknown sex, see &lt;trait&gt; element for describing
+                    gender</desc>
                 </valItem>
               </valList>
             </attDef>
@@ -1321,13 +1617,12 @@
                   <person>
                     <persName ref="http://syriaca.org/person/2669"/>
                     <sex value="F">
-                      <note type="desc"><persName ref="http://syriaca.org/person/2669">Jannia</persName> was female.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/2669"
+                          >Jannia</persName> was female.</note>
                     </sex>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1338,21 +1633,21 @@
                   <person>
                     <persName ref="http://syriaca.org/person/2530"/>
                     <sex value="M">
-                      <note type="desc"><persName ref="http://syriaca.org/person/2530">Flavian</persName> was male.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/2530"
+                          >Flavian</persName> was male.</note>
                     </sex>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization makes the value attribute the only attribute available to the sex element and requires a closed list for attribute values. </p>
+            <p>This customization makes the value attribute the only attribute available to the
+              &lt;sex&gt; element and requires a closed list for attribute values. </p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="birth" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.personPart"/>
@@ -1364,12 +1659,12 @@
                 <elementRef key="date" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
               </sequence>
-              
+
               <sequence preserveOrder="true">
                 <elementRef key="choice" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
               </sequence>
-              
+
               <sequence preserveOrder="true">
                 <elementRef key="placeName" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
@@ -1387,14 +1682,15 @@
                   <person>
                     <persName ref="http://syriaca.org/person/2245"/>
                     <birth>
-                      <date notBefore="-0003-10" notAfter="-0002-09" calendar="Gregorian">3/2 B.C.</date>
-                      <note type="desc"> <persName ref="http://syriaca.org/person/2245">Jesus</persName> was born in 3/2 B.C. </note>
+                      <date notBefore="-0003-10" notAfter="-0002-09" calendar="Gregorian">3/2
+                        B.C.</date>
+                      <note type="desc">
+                        <persName ref="http://syriaca.org/person/2245">Jesus</persName> was born in
+                        3/2 B.C. </note>
                     </birth>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1407,22 +1703,23 @@
                     <birth>
                       <placeName ref="http://syriaca.org/place/486"/>
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/3218">John Urtaya</persName> was born in <persName ref="http://syriaca.org/place/486">Syria</persName>.
+                        <persName ref="http://syriaca.org/person/3218">John Urtaya</persName> was
+                        born in <persName ref="http://syriaca.org/place/486">Syria</persName>.
                       </note>
                     </birth>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization restricts the attribute classes of the birth element to att.datable.w3c but excludes the to and from attributes. If more precise dating is required for a SPEAR factoid, encoder should use the date element.</p>
+            <p>This customization restricts the attribute classes of the &lt;birth&gt; element to
+              att.datable.w3c but excludes the @to and @from attributes. If more precise dating is
+              required for a SPEAR factoid, encoder should use the &lt;date&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="death" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.personPart"/>
@@ -1434,12 +1731,12 @@
                 <elementRef key="date" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
               </sequence>
-              
+
               <sequence preserveOrder="true">
                 <elementRef key="choice" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
               </sequence>
-              
+
               <sequence preserveOrder="true">
                 <elementRef key="placeName" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="note" minOccurs="1" maxOccurs="1"/>
@@ -1451,10 +1748,12 @@
             <attDef ident="to" mode="delete"/>
           </attList>
           <remarks>
-            <p>This customization restricts the attribute classes of the birth element to att.datable.w3c but excludes the to and from attributes. If more precise dating is required for a SPEAR factoid, encoder should use the date element.</p>
+            <p>This customization restricts the attribute classes of the &lt;birth&gt; element to
+              att.datable.w3c but excludes the @to and @from attributes. If more precise dating is
+              required for a SPEAR factoid, encoder should use the &lt;date&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="education" module="namesdates" mode="change">
           <classes mode="replace">
             <memberOf key="model.persStateLike"/>
@@ -1468,13 +1767,34 @@
               <datatype minOccurs="1">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-education" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:education" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="fieldsOfStudy"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/fields-of-study']/uri"/>
+                    <sch:assert test="@ref = $fieldsOfStudy">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($fieldsOfStudy, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <remarks>
-            <p>This customization restricts the attribute classes of the education element to att.datable.w3c and the ref attribute. If more precise dating is required for a SPEAR factoid, encoder should use the date element.</p>
+            <p>This customization restricts the attribute classes of the &lt;education&gt; element
+              to att.datable.w3c and the @ref attribute. If more precise dating is required for a
+              SPEAR factoid, encoder should use the &lt;date&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="nationality" module="namesdates" mode="replace">
           <classes mode="replace">
             <memberOf key="att.datable.custom"/>
@@ -1495,22 +1815,28 @@
                     <nationality>
                       <placeName ref="http://syriaca.org/place/1469"/>
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/2562">Epiphanius</persName> was a citizen of <placeName ref="http://syriaca.org/place/1469">Perga</placeName>.
+                        <persName ref="http://syriaca.org/person/2562">Epiphanius</persName> was a
+                        citizen of <placeName ref="http://syriaca.org/place/1469">Perga</placeName>.
                       </note>
                     </nationality>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>The TEI name for this element is highly problematic from a pre-Modern perspective. Citizenship would be preferable in one sense, yet could in many instances exclude subaltern people such as slaves. SPEAR uses the "nationality" element as a general category for living under a particular jurisdiction. This customization limits the attribute classes of the nationality element to att.datable.custom and att.datable.w3c and removes the nationality element from all model classes. It also requires exactly one placeName element..</p>
+            <p>The TEI name for the &lt;nationality&gt; element is highly problematic from a
+              pre-Modern perspective. Citizenship would be preferable in one sense, yet could in
+              many instances exclude subaltern people such as slaves. SPEAR uses the
+              &lt;nationality&gt; element as a general category for living under a particular
+              jurisdiction. This customization limits the attribute classes of the
+              &lt;nationality&gt; element to att.datable.custom and att.datable.w3c and removes the
+              &lt;nationality&gt; element from all model classes. It also requires exactly one
+              &lt;placeName&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="residence" module="namesdates" mode="replace">
           <classes mode="replace">
             <memberOf key="att.datable.custom"/>
@@ -1526,36 +1852,56 @@
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <div uri="http://syriaca.org/spear/10510-12" resp="#ktorabi">
                 <listPerson>
-                  <person> 
+                  <person>
                     <persName ref="http://syriaca.org/person/3251"/>
                     <residence>
                       <placeName ref="http://syriaca.org/place/399"/>
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/3251">Mar Samuel</persName> resided in <placeName ref="http://syriaca.org/place/399">the Convent of John Urtaya</placeName>.
-                      </note>
+                        <persName ref="http://syriaca.org/person/3251">Mar Samuel</persName> resided
+                        in <placeName ref="http://syriaca.org/place/399">the Convent of John
+                          Urtaya</placeName>. </note>
                     </residence>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization limits the attribute classes of the residence element to att.datable.custom and att.datable.w3c and removes the residence element from all model classes. It also requires exactly one placeName element..</p>
+            <p>This customization limits the attribute classes of the &lt;residence&gt; element to
+              att.datable.custom and att.datable.w3c and removes the &lt;residence&gt; element from
+              all model classes. It also requires exactly one &lt;placeName&gt; element..</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="occupation" module="namesdates" mode="replace">
           <content>
             <elementRef key="note" minOccurs="1" maxOccurs="1"/>
           </content>
           <attList>
             <attDef ident="ref" usage="req">
-              <datatype minOccurs="1">
-                <dataRef key="teidata.pointer"/><!-- I need to modify this to employ a controlled vocabulary from a subset of the keyword list. -->
+              <datatype minOccurs="1" maxOccurs="1">
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-occupation" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:occupation" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="occupations"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/occupations']/uri"/>
+                    <sch:assert test="@ref = $occupations">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($occupations, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <exemplum>
@@ -1566,17 +1912,13 @@
                     <persName ref="http://syriaca.org/person/2606"/>
                     <occupation ref="http://syriaca.org/keyword/reader">
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/2606">Archelaus</persName> was a reader in the church of 
-                        <placeName ref="http://syriaca.org/place/2729">
-                          Tyre
-                        </placeName>.
-                      </note>
+                        <persName ref="http://syriaca.org/person/2606">Archelaus</persName> was a
+                        reader in the church of <placeName ref="http://syriaca.org/place/2729"> Tyre
+                        </placeName>. </note>
                     </occupation>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1587,13 +1929,12 @@
                   <person>
                     <persName ref="http://syriaca.org/person/2558"/>
                     <occupation ref="http://syriaca.org/keyword/chamberlain">
-                      <note type="desc"><persName ref="http://syriaca.org/person/2558">Misael</persName> was a chamberlain.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/2558"
+                          >Misael</persName> was a chamberlain.</note>
                     </occupation>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1605,22 +1946,23 @@
                     <persName ref="http://syriaca.org/person/2568"/>
                     <occupation ref="http://syriaca.org/keyword/physician">
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/2568">Theotecnus</persName> was an archiatros or chief physician.
-                      </note>
+                        <persName ref="http://syriaca.org/person/2568">Theotecnus</persName> was an
+                        archiatros or chief physician. </note>
                     </occupation>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes the occupation element from all attribute and member classes. It makes the note element the only acceptable child of the occupation element. It also requires a ref attribute on the occupation element.</p>
+            <p>This customization removes the &lt;occupation&gt; element from all attribute and
+              member classes. It makes the &lt;note&gt; element the only acceptable child of the
+              &lt;occupation&gt; element. It also requires a @ref attribute on the
+              &lt;occupation&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="langKnowledge" module="namesdates" mode="replace">
           <content>
             <sequence preserveOrder="true">
@@ -1629,17 +1971,38 @@
             </sequence>
           </content>
           <remarks>
-            <p>This customization removes the langKnowledge element from all attribute and member classes. It makes the langKnown element the only acceptable child of the langKnowledge element. </p>
+            <p>This customization removes the &lt;langKnowledge&gt; element from all attribute and
+              member classes. It makes the &lt;langKnown&gt; element the only acceptable child of
+              the &lt;langKnowledge&gt; element. </p>
           </remarks>
         </elementSpec>
-        
-        <elementSpec ident="langKnown" module="namesdates" mode="replace">
+
+        <elementSpec ident="langKnown" module="namesdates" mode="change">
           <attList>
-            <attDef ident="tag" mode="delete"></attDef>
-              <attDef ident="ref" mode="add" usage="req"><!-- Modify this to populate only language options from the keyword list. -->
+            <attDef ident="tag" mode="delete"/>
+            <attDef ident="ref" mode="add" usage="req">
               <datatype minOccurs="1">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-langKnown" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:langKnown" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="languages"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/languages']/uri"/>
+                    <sch:assert test="@ref = $languages">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($languages, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
             <attDef ident="level" mode="replace" usage="opt">
               <datatype>
@@ -1666,17 +2029,17 @@
                     </langKnowledge>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes the langKnown element from all model and attribute classes. It also provides a semi closed value list for the required tag attribute and a closed list for the optional level attribute. </p>
+            <p>This customization removes the &lt;langKnown&gt; element from all model and attribute
+              classes. It also provides a semi closed value list for the required @tag attribute and
+              a closed list for the optional @level attribute. </p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="socecStatus" module="namesdates" mode="replace">
           <content>
             <elementRef key="note" minOccurs="1" maxOccurs="1"/>
@@ -1684,8 +2047,27 @@
           <attList>
             <attDef ident="ref" usage="req">
               <datatype minOccurs="1">
-                <dataRef key="teidata.pointer"/><!-- I need to modify this to employ a controlled vocabulary from a subset of the keyword list. -->
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-socecStatus" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:socecStatus" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="socioeconomicStatus"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/socioeconomic-status']/uri"/>
+                    <sch:assert test="@ref = $socioeconomicStatus">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($socioeconomicStatus, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <exemplum>
@@ -1695,46 +2077,70 @@
                   <person>
                     <persName ref="http://syriaca.org/person/3119"/>
                     <socecStatus ref="http://syriaca.org/keyword/consul">
-                      <note type="desc"><persName ref="http://syriaca.org/person/3119">Anonymous 3119</persName> was of consular rank.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/3119">Anonymous
+                          3119</persName> was of consular rank.</note>
                     </socecStatus>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <remarks>
-            <p>This customization removes the socecStatus element from all attribute and member classes. It makes the note element the only acceptable child of the socecStatus element. It also requires a ref attribute on the socecStatus element.</p>
+            <p>This customization removes the &lt;socecStatus&gt; element from all attribute and
+              member classes. It makes the &lt;note&gt; element the only acceptable child of the
+              &lt;socecStatus&gt; element. It also requires a @ref attribute on the
+              &lt;socecStatus&gt; element.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="trait" module="namesdates" mode="replace">
           <content>
             <elementRef key="note" minOccurs="1" maxOccurs="1"/>
           </content>
           <attList>
-            <attDef ident="type" mode="add" usage="req" >
+            <attDef ident="type" mode="add" usage="req">
               <datatype minOccurs="1" maxOccurs="1">
                 <dataRef key="teidata.enumerated"/>
               </datatype>
               <valList type="closed">
                 <valItem ident="physical">
-                  <desc>used for references to a person's physical characteristics, such as hair color, height, weight, physical disabilities, etc.</desc>
+                  <desc>used for references to a person's physical characteristics, such as hair
+                    color, height, weight, physical disabilities, etc.</desc>
                 </valItem>
                 <valItem ident="gender">
-                  <desc>used for references to a person's gender identity (as opposed to their biological sex); such as enunchs, female saints who dress like men, etc.</desc>
+                  <desc>used for references to a person's gender identity (as opposed to their
+                    biological sex); such as enunchs, female saints who dress like men, etc.</desc>
                 </valItem>
                 <valItem ident="ethnicLabel">
-                  <desc>used for references to an ethnic label claimed by a person or ascribed to a person; such as "Goth," "Saracen," etc.</desc>
+                  <desc>used for references to an ethnic label claimed by a person or ascribed to a
+                    person; such as "Goth," "Saracen," etc.</desc>
                 </valItem>
               </valList>
             </attDef>
             <attDef ident="ref" usage="req">
-              <datatype minOccurs="1">
-                <dataRef key="teidata.pointer"/><!-- I need to modify this to employ a controlled vocabulary from a subset of the keyword list. -->
+              <datatype minOccurs="1" maxOccurs="unbounded">
+                <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-trait" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;trait&gt; element must point to a Syriaca.org keyword starting with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:trait[@type = 'ethnicLabel']" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="ethnicLabels"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/ethnicity']/uri"/>
+                    <sch:assert test="@ref = $ethnicLabels">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($ethnicLabels, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <exemplum>
@@ -1744,13 +2150,12 @@
                   <person>
                     <persName ref="http://syriaca.org/person/3218"/>
                     <trait type="ethnicLabel" ref="http://syriaca.org/keyword/syrian">
-                      <note type="desc"><persName ref="http://syriaca.org/person/3218">John Urtaya</persName> was Syrian.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/3218">John
+                          Urtaya</persName> was Syrian.</note>
                     </trait>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
@@ -1762,54 +2167,110 @@
                     <persName ref="http://syriaca.org/person/3010"/>
                     <trait type="physical" ref="http://syriaca.org/keyword/illness">
                       <note type="desc">
-                        <persName ref="http://syriaca.org/person/3010">Stephen</persName> was sickly and feeble of body.
-                      </note>
+                        <persName ref="http://syriaca.org/person/3010">Stephen</persName> was sickly
+                        and feeble of body. </note>
                     </trait>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
-          
+
           <remarks>
-            <p>This customization removes the trait element from all attribute and member classes. It makes the note element the only acceptable child of the trait element. It also requires a type attribute on the trait element and provides a closed list of values and limits the attribute values on the trait element to type and ref.</p>
+            <p>This customization removes the &lt;trait&gt; element from all attribute and member
+              classes. It makes the &lt;note&gt; element the only acceptable child of the
+              &lt;trait&gt; element. It also requires a @type attribute with closed list of values
+              on the &lt;trait&gt; element and limits the attribute values on the &lt;trait&gt;
+              element to @type and @ref.</p>
           </remarks>
         </elementSpec>
-        
+
+        <elementSpec ident="back" module="textstructure" mode="change">
+          <content>
+            <elementRef key="listBibl" minOccurs="1" maxOccurs="1"/>
+          </content>
+        </elementSpec>
+
+        <elementSpec ident="listBibl" module="core" mode="change">
+          <content>
+            <elementRef key="head" minOccurs="0" maxOccurs="1"/>
+            <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded"/>
+          </content>
+          <constraintSpec ident="head-in-sourceDesc-bibl" scheme="schematron">
+            <constraint>
+              <sch:rule context="//tei:sourceDesc/tei:listBibl">
+                <sch:assert test="tei:head">A &lt;listBibl&gt; element inside the &lt;sourceDesc&gt;
+                  must contain a &lt;head&gt; element.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+        </elementSpec>
+
+        <elementSpec ident="head" module="core" mode="change">
+          <constraintSpec ident="head-in-sourceDesc" scheme="schematron">
+            <constraint>
+              <sch:rule context="//tei:sourceDesc//tei:head">
+                <sch:assert
+                  test="normalize-space(.) = 'Sources for the Data in this Born Digital Prosopography'"
+                  > A &lt;head&gt; element inside the &lt;sourceDesc&gt; must contain the text node:
+                  "Sources for the Data in this Born Digital Prosopography". </sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+        </elementSpec>
+
         <elementSpec ident="state" module="namesdates" mode="replace">
           <content>
             <elementRef key="note" minOccurs="1" maxOccurs="1"/>
           </content>
           <attList>
             <attDef ident="ref" mode="add" usage="req">
-              <datatype minOccurs="1">
+              <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="ref-in-state" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
+                    on the &lt;trait&gt; element must point to a Syriaca.org keyword beginning with
+                    "http://syriaca.org/keyword/".</sch:assert>
+                  <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
+                  <sch:rule context="tei:state[@type = 'mental']" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="mentalStates"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/mental-states']/uri"/>
+                    <sch:assert test="@ref = $mentalStates">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($mentalStates, ';  ')"/></sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:state[@type = 'sanctity']" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="sanctity"
+                      value="$ti//listURI[@ref = 'http://syriaca.org/keyword/sanctity']/uri"/>
+                    <sch:assert test="@ref = $sanctity">SPEAR has a strong preference for using
+                      established URIs when possible but appropriate URIs are not always available in the
+                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
+                      using your own preferred descriptive term: <sch:value-of
+                        select="string-join($sanctity, ';  ')"/></sch:assert>
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
             </attDef>
-            <attDef ident="type" mode="add" usage="req" >
+            <attDef ident="type" mode="add" usage="req">
               <datatype minOccurs="1" maxOccurs="1">
                 <dataRef key="teidata.enumerated"/>
               </datatype>
               <valList type="closed">
                 <valItem ident="mental">
-                  <desc>used for references to a person's mental traits; such as intelligence, mental disability, wisdom, etc.</desc>
+                  <desc>used for references to a person's mental traits; such as intelligence,
+                    mental disability, wisdom, etc.</desc>
                 </valItem>
                 <valItem ident="sanctity">
                   <desc>used for references to a person's sanctity.</desc>
-                  <paramList>
-                    <paramSpec ident="confessor">
-                      <desc>prefered text node value for following note element.</desc><!-- I would like to change this to a ref to a required list of keywords, but only following this trait type. SCHEMATRON -->
-                    </paramSpec>
-                    <paramSpec ident="martyr">
-                      <desc>prefered text node value for following note element.</desc>
-                    </paramSpec>
-                    <paramSpec ident="saint">
-                      <desc>prefered text node value for following note element.</desc>
-                    </paramSpec>
-                  </paramList>
                 </valItem>
               </valList>
             </attDef>
@@ -1821,27 +2282,24 @@
                   <person>
                     <persName ref="http://syriaca.org/person/958"/>
                     <state type="sanctity" ref="http://syriaca.org/keyword/martyr">
-                      <note type="desc"><persName ref="http://syriaca.org/person/958">Eusebius</persName> was a martyr.</note>
+                      <note type="desc"><persName ref="http://syriaca.org/person/958"
+                          >Eusebius</persName> was a martyr.</note>
                     </state>
                   </person>
                 </listPerson>
-                <bibl>
-                  ....
-                </bibl>
+                <bibl> .... </bibl>
               </div>
             </egXML>
           </exemplum>
           <exemplum>
-            <egXML xmlns="http://www.tei-c.org/ns/Examples">
-              
-            </egXML>
+            <egXML xmlns="http://www.tei-c.org/ns/Examples"> </egXML>
           </exemplum>
         </elementSpec>
-        
-        
-        
-        
-        
+
+
+
+
+
       </schemaSpec>
 
 
