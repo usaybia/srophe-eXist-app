@@ -2107,10 +2107,12 @@
                 <valItem ident="physical">
                   <desc>used for references to a person's physical characteristics, such as hair
                     color, height, weight, physical disabilities, etc.</desc>
+                  <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                 </valItem>
                 <valItem ident="gender">
                   <desc>used for references to a person's gender identity (as opposed to their
                     biological sex); such as enunchs, female saints who dress like men, etc.</desc>
+                  <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                 </valItem>
                 <valItem ident="ethnicLabel">
                   <desc>used for references to an ethnic label claimed by a person or ascribed to a
