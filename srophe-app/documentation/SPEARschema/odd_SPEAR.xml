@@ -47,7 +47,7 @@
         <moduleRef key="header"/>
         <moduleRef key="textstructure" include="back body div TEI text"/>
         <moduleRef key="namesdates"
-          include="birth death education event langKnowledge langKnown listEvent listPerson listRelation nationality occupation orgName persName person personGrp placeName relation residence sex socecStatus state trait"/>
+          include="birth death education event langKnowledge langKnown listEvent listPerson listRelation nationality occupation orgName persName person personGrp placeName relation residence socecStatus state trait"/>
 
         <classSpec ident="att.global" type="atts" mode="change" module="tei">
           <attList>
@@ -626,10 +626,6 @@
               </sequence>
               <sequence>
                 <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
-                <elementRef key="sex" minOccurs="1" maxOccurs="1"/>
-              </sequence>
-              <sequence>
-                <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="nationality" minOccurs="0" maxOccurs="1"/>
               </sequence>
               <sequence>
@@ -660,7 +656,6 @@
           </content>
           <attList>
             <attDef ident="role" mode="delete"/>
-            <attDef ident="sex" mode="delete"/>
             <attDef ident="age" mode="delete"/>
             <attDef ident="size" mode="delete"/>
           </attList>
@@ -757,19 +752,7 @@
               </datatype>
             </attDef>
           </attList>
-          <exemplum>
-            <egXML xmlns="http://www.tei-c.org/ns/Examples">
-              <div uri="http://syriaca.org/spear/119-540" resp="#dschwartz">
-                <listPerson>
-                  <person>
-                    <persName ref="http://syriaca.org/person/2244"/>
-                    <sex value="M">Male</sex>
-                  </person>
-                </listPerson>
-                <bibl> .... </bibl>
-              </div>
-            </egXML>
-          </exemplum>
+          <!-- Include an exemplum -->
           <remarks>
             <p>This customization requires the basic pattern of SPEAR to be encoded correctly. Each
               factoid is encoded in a &lt;div&gt; element. Since each factoid contains data of type
@@ -892,10 +875,6 @@
                 <sch:assert test="tei:placeName">The &lt;note&gt; element in a residence factoid
                   must contain a &lt;placeName&gt; element.</sch:assert>
               </sch:rule>
-              <sch:rule context="tei:note[parent::tei:sex]">
-                <sch:assert test="tei:persName">The &lt;note&gt; element in a biological sex factoid
-                  must contain a &lt;persName&gt; element.</sch:assert>
-              </sch:rule>
               <sch:rule context="tei:note[parent::tei:socecStatus]">
                 <sch:assert test="tei:persName">The &lt;note&gt; element in a socioeconomic status
                   factoid must contain a &lt;persName&gt; element.</sch:assert>
@@ -982,12 +961,6 @@
                   <sch:rule context="tei:note[parent::tei:residence]/@type">
                     <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
                       attribute @type="desc" are the only notes allowed inside the &lt;residence&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:sex]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;sex&gt;
                       element. Other types of notes ("incerta", "dubia", and "errata") may appear as
                       children of the &lt;div&gt; element as needed.</sch:assert>
                   </sch:rule>
@@ -1535,10 +1508,6 @@
               <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
               <sequence preserveOrder="true">
                 <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
-                <elementRef key="sex" minOccurs="1" maxOccurs="1"/>
-              </sequence>
-              <sequence preserveOrder="true">
-                <elementRef key="persName" minOccurs="1" maxOccurs="1"/>
                 <elementRef key="birth" minOccurs="1" maxOccurs="1"/>
               </sequence>
               <sequence preserveOrder="true">
@@ -1582,69 +1551,6 @@
           <remarks>
             <p>This customization removes all attributes from the &lt;person&gt; element except for
               the @ref attribute.</p>
-          </remarks>
-        </elementSpec>
-
-        <elementSpec ident="sex" module="namesdates" mode="change">
-          <classes mode="replace">
-            <memberOf key="model.persStateLike"/>
-          </classes>
-          <attList>
-            <attDef ident="value" mode="change" usage="req">
-              <datatype>
-                <dataRef key="teidata.enumerated"/>
-              </datatype>
-              <valList type="closed">
-                <valItem ident="F">
-                  <desc>used for biological females, see &lt;trait&gt; element for describing
-                    gender</desc>
-                </valItem>
-                <valItem ident="M">
-                  <desc>used for biological males, see &lt;trait&gt; element for describing
-                    gender</desc>
-                </valItem>
-                <valItem ident="U">
-                  <desc>used for a person of unknown sex, see &lt;trait&gt; element for describing
-                    gender</desc>
-                </valItem>
-              </valList>
-            </attDef>
-          </attList>
-          <exemplum>
-            <egXML xmlns="http://www.tei-c.org/ns/Examples">
-              <div uri="http://syriaca.org/spear/3013-2" resp="#ktorabi #dschwartz">
-                <listPerson>
-                  <person>
-                    <persName ref="http://syriaca.org/person/2669"/>
-                    <sex value="F">
-                      <note type="desc"><persName ref="http://syriaca.org/person/2669"
-                          >Jannia</persName> was female.</note>
-                    </sex>
-                  </person>
-                </listPerson>
-                <bibl> .... </bibl>
-              </div>
-            </egXML>
-          </exemplum>
-          <exemplum>
-            <egXML xmlns="http://www.tei-c.org/ns/Examples">
-              <div uri="http://syriaca.org/spear/3004-12" resp="#ktorabi #dschwartz">
-                <listPerson>
-                  <person>
-                    <persName ref="http://syriaca.org/person/2530"/>
-                    <sex value="M">
-                      <note type="desc"><persName ref="http://syriaca.org/person/2530"
-                          >Flavian</persName> was male.</note>
-                    </sex>
-                  </person>
-                </listPerson>
-                <bibl> .... </bibl>
-              </div>
-            </egXML>
-          </exemplum>
-          <remarks>
-            <p>This customization makes the value attribute the only attribute available to the
-              &lt;sex&gt; element and requires a closed list for attribute values. </p>
           </remarks>
         </elementSpec>
 
@@ -2111,7 +2017,7 @@
                 </valItem>
                 <valItem ident="gender">
                   <desc>used for references to a person's gender identity (as opposed to their
-                    biological sex); such as enunchs, female saints who dress like men, etc.</desc>
+                    biological sex which SPEAR does not presume to capture).</desc>
                   <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                 </valItem>
                 <valItem ident="ethnicLabel">
@@ -2140,6 +2046,17 @@
                       Syriaca.org taxonomy. Please consider the following options from the taxonomy before
                       using your own preferred descriptive term: <sch:value-of
                         select="string-join($ethnicLabels, ';  ')"/></sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:trait[@type = 'gender']">
+                    <sch:assert
+                      test="@ref = 'http://syriaca.org/keyword/eunuch' or @ref = 'http://syriaca.org/keyword/female' or @ref = 'http://syriaca.org/keyword/male' or @ref = 'http://syriaca.org/keyword/nun-as-monk'"
+                      >Preferred values for the @ref attribute on a &lt;trait&gt; element with a @type
+                      attribute with the value "gender" are: "http://syriaca.org/keyword/eunuch";
+                      "http://syriaca.org/keyword/female"; "http://syriaca.org/keyword/male"; and
+                      "http://syriaca.org/keyword/nun-as-monk". Please use one of these if applicable.
+                      Please use a descriptive term of your choosing if one of these does not
+                      apply.</sch:assert>
+                    <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                   </sch:rule>
                 </constraint>
               </constraintSpec>
