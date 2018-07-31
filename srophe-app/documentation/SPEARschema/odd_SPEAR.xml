@@ -483,9 +483,12 @@
           <constraintSpec ident="desc-content" scheme="schematron">
             <constraint>
               <sch:rule context="tei:desc">
-                <sch:report test="not(*) and string-length(normalize-space(.)) eq 0">Element of
-                  type &lt;desc&gt; cannot be empty.</sch:report>
-                <sch:assert test="./tei:persName or tei:placeName">The &lt;desc&gt; element must contain either a &lt;persName&gt; or a &lt;placeName&gt; element. SPEAR encourages a liberal use of &lt;persName&gt;, &lt;placeName&gt;, and &lt;date&gt; elements.</sch:assert>
+                <sch:report test="not(*) and string-length(normalize-space(.)) eq 0">Element of type
+                  &lt;desc&gt; cannot be empty.</sch:report>
+                <sch:assert test="./tei:persName or tei:placeName">The &lt;desc&gt; element must
+                  contain either a &lt;persName&gt; or a &lt;placeName&gt; element. SPEAR encourages
+                  a liberal use of &lt;persName&gt;, &lt;placeName&gt;, and &lt;date&gt;
+                  elements.</sch:assert>
               </sch:rule>
             </constraint>
           </constraintSpec>
@@ -928,8 +931,8 @@
               <constraintSpec ident="type-note-child-div" scheme="schematron">
                 <constraint>
                   <sch:rule context="tei:div/tei:note/@type">
-                    <sch:report test=". = 'desc'">Only notes of @type "incerta", "dubia",
-                      or "errata" may appear as children of a &lt;div&gt; element.</sch:report>
+                    <sch:report test=". = 'desc'">Only notes of @type "incerta", "dubia", or
+                      "errata" may appear as children of a &lt;div&gt; element.</sch:report>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -1372,14 +1375,13 @@
                     <sch:assert
                       test=". = $ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri"
                       >Value must be one of the following from the Syriaca.org taxonomy:
-                      <sch:value-of
+                        <sch:value-of
                         select="string-join($ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri, ';  ')"
                       />.</sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:sourceDesc/tei:listRelation/tei:relation/@type">
-                    <sch:assert
-                      test=". = 'part'"
-                      >This @type attribute must have the value "part".</sch:assert>
+                    <sch:assert test=". = 'part'">This @type attribute must have the value
+                      "part".</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -1729,8 +1731,8 @@
               <constraintSpec ident="ref-in-education" scheme="schematron">
                 <constraint>
                   <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
-                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
-                    "http://syriaca.org/keyword/".</sch:assert>
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning
+                    with "http://syriaca.org/keyword/".</sch:assert>
                   <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
                   <sch:rule context="tei:education" role="warning">
                     <sch:let name="ti"
@@ -1738,9 +1740,9 @@
                     <sch:let name="fieldsOfStudy"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/fields-of-study']/uri"/>
                     <sch:assert test="@ref = $fieldsOfStudy">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($fieldsOfStudy, ';  ')"/></sch:assert>
                   </sch:rule>
                 </constraint>
@@ -1845,8 +1847,8 @@
               <constraintSpec ident="ref-in-occupation" scheme="schematron">
                 <constraint>
                   <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
-                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
-                    "http://syriaca.org/keyword/".</sch:assert>
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning
+                    with "http://syriaca.org/keyword/".</sch:assert>
                   <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
                   <sch:rule context="tei:occupation" role="warning">
                     <sch:let name="ti"
@@ -1854,9 +1856,9 @@
                     <sch:let name="occupations"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/occupations']/uri"/>
                     <sch:assert test="@ref = $occupations">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($occupations, ';  ')"/></sch:assert>
                   </sch:rule>
                 </constraint>
@@ -1946,8 +1948,8 @@
               <constraintSpec ident="ref-in-langKnown" scheme="schematron">
                 <constraint>
                   <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
-                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
-                    "http://syriaca.org/keyword/".</sch:assert>
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning
+                    with "http://syriaca.org/keyword/".</sch:assert>
                   <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
                   <sch:rule context="tei:langKnown" role="warning">
                     <sch:let name="ti"
@@ -1955,9 +1957,9 @@
                     <sch:let name="languages"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/languages']/uri"/>
                     <sch:assert test="@ref = $languages">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($languages, ';  ')"/></sch:assert>
                   </sch:rule>
                 </constraint>
@@ -2011,19 +2013,20 @@
               <constraintSpec ident="ref-in-socecStatus" scheme="schematron">
                 <constraint>
                   <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@ref attributes
-                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning with
-                    "http://syriaca.org/keyword/".</sch:assert>
+                    on the &lt;education&gt; element must point to a Syriaca.org keyword beginning
+                    with "http://syriaca.org/keyword/".</sch:assert>
                   <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
                   <sch:rule context="tei:socecStatus" role="warning">
                     <sch:let name="ti"
                       value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
                     <sch:let name="socioeconomicStatus"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/socioeconomic-status']/uri"/>
-                    <sch:assert test="@ref = $socioeconomicStatus">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
-                        select="string-join($socioeconomicStatus, ';  ')"/></sch:assert>
+                    <sch:assert test="@ref = $socioeconomicStatus">SPEAR has a strong preference for
+                      using established URIs when possible but appropriate URIs are not always
+                      available in the Syriaca.org taxonomy. Please consider the following options
+                      from the taxonomy before using your own preferred descriptive term:
+                        <sch:value-of select="string-join($socioeconomicStatus, ';  ')"
+                      /></sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -2095,20 +2098,21 @@
                     <sch:let name="ethnicLabels"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/ethnicity']/uri"/>
                     <sch:assert test="@ref = $ethnicLabels">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($ethnicLabels, ';  ')"/></sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:trait[@type = 'gender']">
                     <sch:assert
                       test="@ref = 'http://syriaca.org/keyword/eunuch' or @ref = 'http://syriaca.org/keyword/female' or @ref = 'http://syriaca.org/keyword/male' or @ref = 'http://syriaca.org/keyword/nun-as-monk'"
-                      >Preferred values for the @ref attribute on a &lt;trait&gt; element with a @type
-                      attribute with the value "gender" are: "http://syriaca.org/keyword/eunuch";
-                      "http://syriaca.org/keyword/female"; "http://syriaca.org/keyword/male"; and
-                      "http://syriaca.org/keyword/nun-as-monk". Please use one of these if applicable.
-                      Please use a descriptive term of your choosing if one of these does not
-                      apply.</sch:assert>
+                      >Preferred values for the @ref attribute on a &lt;trait&gt; element with a
+                      @type attribute with the value "gender" are:
+                      "http://syriaca.org/keyword/eunuch"; "http://syriaca.org/keyword/female";
+                      "http://syriaca.org/keyword/male"; and
+                      "http://syriaca.org/keyword/nun-as-monk". Please use one of these if
+                      applicable. Please use a descriptive term of your choosing if one of these
+                      does not apply.</sch:assert>
                     <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                   </sch:rule>
                 </constraint>
@@ -2213,9 +2217,9 @@
                     <sch:let name="mentalStates"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/mental-states']/uri"/>
                     <sch:assert test="@ref = $mentalStates">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($mentalStates, ';  ')"/></sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:state[@type = 'sanctity']" role="warning">
@@ -2224,9 +2228,9 @@
                     <sch:let name="sanctity"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/sanctity']/uri"/>
                     <sch:assert test="@ref = $sanctity">SPEAR has a strong preference for using
-                      established URIs when possible but appropriate URIs are not always available in the
-                      Syriaca.org taxonomy. Please consider the following options from the taxonomy before
-                      using your own preferred descriptive term: <sch:value-of
+                      established URIs when possible but appropriate URIs are not always available
+                      in the Syriaca.org taxonomy. Please consider the following options from the
+                      taxonomy before using your own preferred descriptive term: <sch:value-of
                         select="string-join($sanctity, ';  ')"/></sch:assert>
                   </sch:rule>
                 </constraint>
