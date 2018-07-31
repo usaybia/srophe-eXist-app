@@ -2173,27 +2173,25 @@
 
         <elementSpec ident="listBibl" module="core" mode="change">
           <content>
-            <elementRef key="head" minOccurs="0" maxOccurs="1"/>
+            <elementRef key="head" minOccurs="1" maxOccurs="1"/>
             <elementRef key="bibl" minOccurs="1" maxOccurs="unbounded"/>
           </content>
-          <constraintSpec ident="head-in-sourceDesc-bibl" scheme="schematron">
-            <constraint>
-              <sch:rule context="//tei:sourceDesc/tei:listBibl">
-                <sch:assert test="tei:head">A &lt;listBibl&gt; element inside the &lt;sourceDesc&gt;
-                  must contain a &lt;head&gt; element.</sch:assert>
-              </sch:rule>
-            </constraint>
-          </constraintSpec>
         </elementSpec>
 
         <elementSpec ident="head" module="core" mode="change">
-          <constraintSpec ident="head-in-sourceDesc" scheme="schematron">
+          <constraintSpec ident="head-in-listBibl " scheme="schematron">
             <constraint>
-              <sch:rule context="//tei:sourceDesc//tei:head">
+              <sch:rule context="//tei:sourceDesc/tei:listBibl/tei:head">
                 <sch:assert
                   test="normalize-space(.) = 'Sources for the Data in this Born Digital Prosopography'"
                   > A &lt;head&gt; element inside the &lt;sourceDesc&gt; must contain the text node:
                   "Sources for the Data in this Born Digital Prosopography". </sch:assert>
+              </sch:rule>
+              <sch:rule context="//tei:back/tei:listBibl/tei:head">
+                <sch:assert
+                  test="normalize-space(.) = 'Works Cited'"
+                  > A &lt;head&gt; element inside the &lt;back&gt; must contain the text node:
+                  "Works Cited". </sch:assert>
               </sch:rule>
             </constraint>
           </constraintSpec>
