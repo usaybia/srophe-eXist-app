@@ -2181,7 +2181,7 @@
         </elementSpec>
 
         <elementSpec ident="head" module="core" mode="change">
-          <constraintSpec ident="head-in-listBibl " scheme="schematron">
+          <constraintSpec ident="head-in-listBibl" scheme="schematron">
             <constraint>
               <sch:rule context="tei:sourceDesc//tei:head">
                 <sch:assert
