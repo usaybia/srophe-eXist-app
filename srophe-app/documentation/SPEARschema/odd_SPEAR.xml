@@ -1412,18 +1412,32 @@
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
-              <constraintSpec ident="mutual-on-relation" scheme="schematron">
+              <constraintSpec ident="mutual-on-relation-in-relationFactoid" scheme="schematron">
                 <constraint>
-                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
-                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
-                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
-                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:report>
-                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:assert>
-                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
-                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
-                  <!-- Problem of multiple attribute values. -->
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation/@mutual">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                    <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:report>
+                    <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:assert>
+                    <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <constraintSpec ident="mutual-on-relation-in-eventFactoid" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation/@mutual">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/spear/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/spear/'.</sch:assert>
+                    <!-- These schematron rules ensure that the relation element has a @mutual attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
                 </constraint>
               </constraintSpec>
             </attDef>
@@ -1431,18 +1445,32 @@
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
-              <constraintSpec ident="active-on-relation" scheme="schematron">
+              <constraintSpec ident="active-on-relation-in-relationFactoid" scheme="schematron">
                 <constraint>
-                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
-                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
-                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
-                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:report>
-                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:assert>
-                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
-                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
-                  <!-- Problem of multiple attribute values. -->
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation/@active">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                    <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:report>
+                    <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:assert>
+                    <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <constraintSpec ident="active-on-relation-in-eventFactoid" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation/@active">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/spear/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/spear/'.</sch:assert>
+                    <!-- These schematron rules ensure that the relation element has a @mutual attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
                 </constraint>
               </constraintSpec>
             </attDef>
@@ -1450,18 +1478,32 @@
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
-              <constraintSpec ident="passive-on-relation" scheme="schematron">
+              <constraintSpec ident="passive-on-relation-in-relationFactoid" scheme="schematron">
                 <constraint>
-                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
-                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
-                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
-                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:report>
-                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
-                    formatted Syriaca.org person URI ends with a number.</sch:assert>
-                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
-                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
-                  <!-- Problem of multiple attribute values. -->
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation/@passive">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                    <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:report>
+                    <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                      formatted Syriaca.org person URI ends with a number.</sch:assert>
+                    <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
+                </constraint>
+              </constraintSpec>
+              <constraintSpec ident="passive-on-relation-in-eventFactoid" scheme="schematron">
+                <constraint>
+                  <sch:rule context="tei:div/tei:listEvent/tei:listRelation/tei:relation/@passive">
+                    <sch:assert test="starts-with(., 'http://syriaca.org/spear/')">@ref attributes
+                      on &lt;persName&gt; elements must contain a properly formatted Syriaca.org
+                      person URI that starts with 'http://syriaca.org/spear/'.</sch:assert>
+                    <!-- These schematron rules ensure that the relation element has a @mutual attribute that conforms to Syriaca.org URIs. -->
+                    <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI.-->
+                    <!-- Problem of multiple attribute values. -->
+                  </sch:rule>
                 </constraint>
               </constraintSpec>
             </attDef>
