@@ -480,6 +480,15 @@
               <elementRef key="orgName" minOccurs="0" maxOccurs="unbounded"/>
             </sequence>
           </content>
+          <constraintSpec ident="desc-content" scheme="schematron">
+            <constraint>
+              <sch:rule context="tei:desc">
+                <sch:report test="not(*) and string-length(normalize-space(.)) eq 0">Element of
+                  type &lt;desc&gt; cannot be empty.</sch:report>
+                <sch:assert test="./tei:persName or tei:placeName">The &lt;desc&gt; element must contain either a &lt;persName&gt; or a &lt;placeName&gt; element. SPEAR encourages a liberal use of &lt;persName&gt;, &lt;placeName&gt;, and &lt;date&gt; elements.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
           <remarks>
             <p>This customization does not allow attributes on the &lt;desc&gt; element. It also
               restricts child elements to &lt;choice&gt;, &lt;date&gt;, &lt;persName&gt;, and
@@ -1134,6 +1143,7 @@
                     formatted Syriaca.org person URI ends with a number.</sch:assert>
                   <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
                   <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                  <!-- Problem of multiple attribute values. -->
                 </constraint>
               </constraintSpec>
             </attDef>
@@ -1356,22 +1366,23 @@
                     <sch:report test="@type">A &lt;relation&gt; element inside an event factoid
                       cannot take a @type attribute.</sch:report>
                   </sch:rule>
+                  <sch:rule context="tei:div/tei:listRelation/tei:relation/@type">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:assert
+                      test=". = $ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri"
+                      >Value must be one of the following from the Syriaca.org taxonomy:
+                      <sch:value-of
+                        select="string-join($ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri, ';  ')"
+                      />.</sch:assert>
+                  </sch:rule>
+                  <sch:rule context="tei:sourceDesc/tei:listRelation/tei:relation/@type">
+                    <sch:assert
+                      test=". = 'part'"
+                      >This @type attribute must have the value "part".</sch:assert>
+                  </sch:rule>
                 </constraint>
               </constraintSpec>
-              <valList type="closed">
-                <!-- I have chosen not to use the taxonomy index here because it doesn't trigger the auto complete feature in oXygen. -->
-                <valItem ident="snap:AcknowledgedFamilyRelationship"/>
-                <valItem ident="snap:AdoptedFamilyRelationship"/>
-                <valItem ident="snap:ClaimedFamilyRelationship"/>
-                <valItem ident="snap:FosterFamilyRelationship"/>
-                <valItem ident="snap:HalfFamilyRelationship"/>
-                <valItem ident="snap:InLawFamilyRelationship"/>
-                <valItem ident="snap:MaternalFamilyRelationship"/>
-                <valItem ident="snap:PaternalFamilyRelationship"/>
-                <valItem ident="snap:StepFamilyRelationship"/>
-                <valItem ident="syriaca:AllegedRelationship"/>
-                <valItem ident="syriaca:RitualKinship"/>
-              </valList>
             </attDef>
             <attDef ident="ana" mode="add" usage="rec">
               <datatype minOccurs="0" maxOccurs="unbounded">
@@ -1399,16 +1410,58 @@
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="mutual-on-relation" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
+                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
+                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:assert>
+                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                  <!-- Problem of multiple attribute values. -->
+                </constraint>
+              </constraintSpec>
             </attDef>
             <attDef ident="active" mode="change" usage="opt">
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="active-on-relation" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
+                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
+                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:assert>
+                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                  <!-- Problem of multiple attribute values. -->
+                </constraint>
+              </constraintSpec>
             </attDef>
             <attDef ident="passive" mode="change" usage="opt">
               <datatype minOccurs="1" maxOccurs="unbounded">
                 <dataRef key="teidata.pointer"/>
               </datatype>
+              <constraintSpec ident="passive-on-relation" scheme="schematron">
+                <constraint>
+                  <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@ref attributes on
+                    &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
+                    URI that starts with 'http://syriaca.org/person/'.</sch:assert>
+                  <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:report>
+                  <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
+                    formatted Syriaca.org person URI ends with a number.</sch:assert>
+                  <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
+                  <!-- They do not ensure that the URI chosen is an actual Syriaca.org URI. If URI's were not in the data yet, they would show an error.-->
+                  <!-- Problem of multiple attribute values. -->
+                </constraint>
+              </constraintSpec>
             </attDef>
           </attList>
           <exemplum>
