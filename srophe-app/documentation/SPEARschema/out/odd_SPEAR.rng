@@ -5,7 +5,7 @@
          xmlns:teix="http://www.tei-c.org/ns/Examples"
          datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
          ns="http://www.tei-c.org/ns/1.0"><!--
-Schema generated from ODD source 2018-07-31T21:40:34Z. .
+Schema generated from ODD source 2018-07-31T21:49:28Z. .
 TEI Edition: Version 3.4.0. Last updated on
 	23rd July 2018, revision 1fa0b54
 TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.4.0/
@@ -5269,24 +5269,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                </attribute>
             </optional>
             <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                     id="SPEAR-relation-mutual-mutual-on-relation-in-relationFactoid-constraint-rule-59">
-               <sch:rule xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-                         context="tei:div/tei:listRelation/tei:relation/@mutual">
-                    <sch:assert test="starts-with(., 'http://syriaca.org/person/')">@mutual
-                      attributes on &lt;relation&gt; elements of relation factoids must contain a
-                      properly formatted Syriaca.org person URI that starts with
-                      'http://syriaca.org/person/'.</sch:assert>
-                    <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
-                      formatted Syriaca.org person URI ends with a number.</sch:report>
-                    <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
-                      formatted Syriaca.org person URI ends with a number.</sch:assert>
-                    
-                    
-                    
-                  </sch:rule>
-            </pattern>
-            <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                     id="SPEAR-relation-mutual-mutual-on-relation-in-eventFactoid-constraint-rule-60">
+                     id="SPEAR-relation-mutual-mutual-on-relation-in-eventFactoid-constraint-rule-59">
                <sch:rule xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                          context="tei:div/tei:listRelation/tei:relation/@mutual">
                     <sch:assert test="every $i in (tokenize(., ' ')) satisfies starts-with($i, 'http://syriaca.org/person/')">@mutual attributes on
@@ -5318,7 +5301,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </attribute>
          </optional>
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-relation-passive-passive-on-relation-in-relationFactoid-constraint-rule-61">
+                  id="SPEAR-relation-passive-passive-on-relation-in-relationFactoid-constraint-rule-60">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
@@ -5356,7 +5339,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             <data type="anyURI"/>
          </attribute>
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-socecStatus-ref-ref-in-socecStatus-constraint-assert-80">
+                  id="SPEAR-socecStatus-ref-ref-in-socecStatus-constraint-assert-78">
             <rule context="tei:socecStatus/@ref">
                <sch:assert xmlns="http://www.tei-c.org/ns/1.0"
                            xmlns:sch="http://purl.oclc.org/dsdl/schematron"
@@ -5367,7 +5350,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-socecStatus-ref-ref-in-socecStatus-constraint-rule-62">
+                  id="SPEAR-socecStatus-ref-ref-in-socecStatus-constraint-rule-61">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
@@ -5401,7 +5384,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </list>
          </attribute>
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-state-ref-ref-in-state-constraint-assert-82">
+                  id="SPEAR-state-ref-ref-in-state-constraint-assert-80">
             <rule context="tei:state/@ref">
                <sch:assert xmlns="http://www.tei-c.org/ns/1.0"
                            xmlns:sch="http://purl.oclc.org/dsdl/schematron"
@@ -5412,7 +5395,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-state-ref-ref-in-state-constraint-rule-63">
+                  id="SPEAR-state-ref-ref-in-state-constraint-rule-62">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
@@ -5430,7 +5413,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-state-ref-ref-in-state-constraint-rule-64">
+                  id="SPEAR-state-ref-ref-in-state-constraint-rule-63">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
@@ -5483,7 +5466,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </list>
          </attribute>
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-trait-ref-ref-in-trait-constraint-assert-85">
+                  id="SPEAR-trait-ref-ref-in-trait-constraint-assert-83">
             <rule context="tei:trait/@ref">
                <sch:assert xmlns="http://www.tei-c.org/ns/1.0"
                            xmlns:sch="http://purl.oclc.org/dsdl/schematron"
@@ -5494,7 +5477,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
             </rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-trait-ref-ref-in-trait-constraint-rule-65">
+                  id="SPEAR-trait-ref-ref-in-trait-constraint-rule-64">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
@@ -5512,7 +5495,7 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
-                  id="SPEAR-trait-ref-ref-in-trait-constraint-rule-66">
+                  id="SPEAR-trait-ref-ref-in-trait-constraint-rule-65">
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
