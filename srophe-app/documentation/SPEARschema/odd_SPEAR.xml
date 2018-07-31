@@ -2183,13 +2183,13 @@
         <elementSpec ident="head" module="core" mode="change">
           <constraintSpec ident="head-in-listBibl " scheme="schematron">
             <constraint>
-              <sch:rule context="//tei:sourceDesc/tei:listBibl/tei:head">
+              <sch:rule context="tei:sourceDesc/tei:listBibl/tei:head">
                 <sch:assert
                   test="normalize-space(.) = 'Sources for the Data in this Born Digital Prosopography'"
                   > A &lt;head&gt; element inside the &lt;sourceDesc&gt; must contain the text node:
                   "Sources for the Data in this Born Digital Prosopography". </sch:assert>
               </sch:rule>
-              <sch:rule context="//tei:back/tei:listBibl/tei:head">
+              <sch:rule context="tei:back/tei:listBibl/tei:head">
                 <sch:assert
                   test="normalize-space(.) = 'Works Cited'"
                   > A &lt;head&gt; element inside the &lt;back&gt; must contain the text node:
