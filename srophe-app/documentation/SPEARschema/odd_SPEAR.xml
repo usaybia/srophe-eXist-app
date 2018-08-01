@@ -1143,7 +1143,8 @@
                     &lt;persName&gt; elements must contain a properly formatted Syriaca.org person
                     URI that starts with 'http://syriaca.org/person/'.</sch:assert>
                   <sch:report test="matches(substring-after(., 'person/'), '\D')">A properly
-                    formatted Syriaca.org person URI cannot end with anything other than a number.</sch:report>
+                    formatted Syriaca.org person URI cannot end with anything other than a
+                    number.</sch:report>
                   <sch:assert test="matches(substring-after(., 'person/'), '\d')">A properly
                     formatted Syriaca.org person URI ends with a number.</sch:assert>
                   <!-- These schematron rules ensure that the persName element has a @ref attribute that conforms to Syriaca.org URIs. -->
@@ -1263,12 +1264,21 @@
                         select="$docURIno"/>.syriacCorpus" followed by the corresponding Syriac
                       Corpus URI number. </sch:assert>
                   </sch:rule>
-                  <sch:rule context="tei:ptr[parent::tei:event]/@target">
-                    <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@target
-                      attributes on &lt;ptr&gt; elements in an event factoid must point to a
-                      Syriaca.org keyword starting with "http://syriaca.org/keyword/".</sch:assert>
-                    <!-- Problem of mutliple attribute values. Try tokenizing so this rule applies to each attribute value. -->
-                    <!-- Any keyword is fair game in this context. This gets a bit tricky.-->
+                  <sch:rule context="tei:event/tei:ptr/@target" role="warning">
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="taxonomyAllURIs"
+                      value="$ti//listURI[@type = 'taxonomyAllURIs']/uri"/>
+                    <sch:assert
+                      test="
+                      every $i in (tokenize(., ' '))
+                      satisfies $i = $allTaxonomy"
+                      >SPEAR has a strong preference for using established URIs when possible but
+                      appropriate URIs are not always available in the Syriaca.org taxonomy. For the
+                      @target attribute on a &lt;ptr&gt; element within an event factoid, please
+                      look for the appropriate keyword(s) in the Syriaca.org Taxonomy. If you cannot
+                      find an appropriate term, apply a preferred term of your
+                      choosing.</sch:assert>
                   </sch:rule>
                   <sch:rule context="//tei:body/tei:div/tei:bibl[@type = 'urn']/tei:ptr/@target">
                     <sch:let name="urnBase"
@@ -1379,14 +1389,16 @@
                       cannot take a @type attribute.</sch:report>
                   </sch:rule>
                   <sch:rule context="tei:div/tei:listRelation/tei:relation/@type">
-                    <sch:let name="ti" value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="ti"
+                      value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
                     <sch:let name="qrURI"
                       value="$ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri"/>
                     <sch:assert
                       test="
                       every $i in (tokenize(., ' '))
                       satisfies $i = $qrURI"
-                      >The value(s) of this @type attribute must come from the qualifier relationships in the Syriaca.org taxonomy: <sch:value-of
+                      >The value(s) of this @type attribute must come from the qualifier
+                      relationships in the Syriaca.org taxonomy: <sch:value-of
                         select="string-join($qrURI, ';  ')"/>.</sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:sourceDesc/tei:listRelation/tei:relation/@type">
@@ -1772,9 +1784,9 @@
                       satisfies $i = $fieldsOfStudy"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($fieldsOfStudy, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($fieldsOfStudy, ';  ')"/>.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -1891,9 +1903,9 @@
                       satisfies $i = $occupations"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($occupations, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($occupations, ';  ')"/>.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -1995,9 +2007,9 @@
                       satisfies $i = $languages"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($languages, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($languages, ';  ')"/>.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -2063,9 +2075,9 @@
                       satisfies $i = $socioeconomicStatus"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($socioeconomicStatus, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($socioeconomicStatus, ';  ')"/>.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
@@ -2141,21 +2153,22 @@
                       satisfies $i = $ethnicLabels"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($ethnicLabels, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($ethnicLabels, ';  ')"/>.</sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:trait[@type = 'gender']/@ref" role="warning">
                     <sch:assert
                       test="
                       every $i in (tokenize(., ' '))
                       satisfies $i = 'http://syriaca.org/keyword/eunuch' or $i = 'http://syriaca.org/keyword/female' or $i = 'http://syriaca.org/keyword/male' or $i = 'http://syriaca.org/keyword/nun-as-monk'"
-                      >Preferred values for the @ref attribute on a &lt;trait&gt; element
-                      with a @type attribute with the value "gender" are:
+                      >Preferred values for the @ref attribute on a &lt;trait&gt; element with a
+                      @type attribute with the value "gender" are:
                       "http://syriaca.org/keyword/eunuch"; "http://syriaca.org/keyword/female";
-                      "http://syriaca.org/keyword/male"; and "http://syriaca.org/keyword/nun-as-monk". Use
-                      these if applicable. If one of these does not apply, please use a descriptive term
-                      of your choosing.</sch:assert>
+                      "http://syriaca.org/keyword/male"; and
+                      "http://syriaca.org/keyword/nun-as-monk". Use these if applicable. If one of
+                      these does not apply, please use a descriptive term of your
+                      choosing.</sch:assert>
                     <!-- I need to update the taxonomy before I can use it to validate the corresponding @ref values. -->
                   </sch:rule>
                 </constraint>
@@ -2260,9 +2273,9 @@
                       satisfies $i = $mentalStates"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($mentalStates, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($mentalStates, ';  ')"/>.</sch:assert>
                   </sch:rule>
                   <sch:rule context="tei:state[@type = 'sanctity']/@ref" role="warning">
                     <sch:let name="ti"
@@ -2275,9 +2288,9 @@
                       satisfies $i = $sanctity"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($sanctity, ';  ')"
-                      />.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of
+                        select="string-join($sanctity, ';  ')"/>.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
