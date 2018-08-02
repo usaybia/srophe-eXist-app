@@ -5,7 +5,7 @@
          xmlns:teix="http://www.tei-c.org/ns/Examples"
          datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
          ns="http://www.tei-c.org/ns/1.0"><!--
-Schema generated from ODD source 2018-08-01T05:07:34Z. .
+Schema generated from ODD source 2018-08-02T02:37:47Z. .
 TEI Edition: Version 3.4.0. Last updated on
 	23rd July 2018, revision 1fa0b54
 TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.4.0/
@@ -2089,12 +2089,18 @@ attributes @target and @cRef may be supplied on <name/>.</report>
             <sch:rule xmlns="http://www.tei-c.org/ns/1.0"
                       xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                       xmlns:syriaca="http://syriaca.org/#schema"
-                      context="tei:ptr[parent::tei:event]/@target">
-                    <sch:assert test="starts-with(., 'http://syriaca.org/keyword/')">@target
-                      attributes on &lt;ptr&gt; elements in an event factoid must point to a
-                      Syriaca.org keyword starting with "http://syriaca.org/keyword/".</sch:assert>
-                    
-                    
+                      context="tei:event/tei:ptr/@target"
+                      role="warning">
+                    <sch:let name="ti"
+                        value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
+                    <sch:let name="taxonomyAllURIs"
+                        value="$ti//listURI[@type = 'taxonomyAllURIs']/uri"/>
+                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $allTaxonomy">SPEAR has a strong preference for using established URIs when possible but
+                      appropriate URIs are not always available in the Syriaca.org taxonomy. For the
+                      @target attribute on a &lt;ptr&gt; element within an event factoid, please
+                      look for the appropriate keyword(s) in the Syriaca.org Taxonomy. If you cannot
+                      find an appropriate term, apply a preferred term of your
+                      choosing.</sch:assert>
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
@@ -4605,7 +4611,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                            xmlns:sch="http://purl.oclc.org/dsdl/schematron"
                            xmlns:syriaca="http://syriaca.org/#schema"
                            test="matches(substring-after(., 'person/'), '\D')">A properly
-                    formatted Syriaca.org person URI cannot end with anything other than a number.</sch:report>
+                    formatted Syriaca.org person URI cannot end with anything other than a
+                    number.</sch:report>
             </rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
@@ -4746,8 +4753,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/fields-of-study']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $fieldsOfStudy">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($fieldsOfStudy, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($fieldsOfStudy, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern>
          <empty/>
@@ -4819,8 +4826,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/languages']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $languages">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($languages, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($languages, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern>
          <empty/>
@@ -4888,8 +4895,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/occupations']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $occupations">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($occupations, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($occupations, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern>
          <empty/>
@@ -5156,7 +5163,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
                     <sch:let name="qrURI"
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/qualifier-relationships']//uri"/>
-                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $qrURI">The value(s) of this @type attribute must come from the qualifier relationships in the Syriaca.org taxonomy: <sch:value-of select="string-join($qrURI, ';  ')"/>.</sch:assert>
+                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $qrURI">The value(s) of this @type attribute must come from the qualifier
+                      relationships in the Syriaca.org taxonomy: <sch:value-of select="string-join($qrURI, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
@@ -5370,8 +5378,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/socioeconomic-status']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $socioeconomicStatus">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($socioeconomicStatus, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($socioeconomicStatus, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern>
          <empty/>
@@ -5413,8 +5421,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/mental-states']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $mentalStates">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($mentalStates, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($mentalStates, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
@@ -5430,8 +5438,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/sanctity']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $sanctity">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($sanctity, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($sanctity, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern>
          <attribute name="type">
@@ -5493,8 +5501,8 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                         value="$ti//listURI[@ref = 'http://syriaca.org/keyword/ethnicity']/uri"/>
                     <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $ethnicLabels">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. Please
-                      consider the following options from the taxonomy before using your own preferred
-                      descriptive term: <sch:value-of select="string-join($ethnicLabels, ';  ')"/>.</sch:assert>
+                      consider the following options from the taxonomy before using your own
+                      preferred descriptive term: <sch:value-of select="string-join($ethnicLabels, ';  ')"/>.</sch:assert>
                   </sch:rule>
          </pattern> 
          <pattern xmlns="http://purl.oclc.org/dsdl/schematron"
@@ -5504,12 +5512,13 @@ Suggested values include: 1] sent; 2] received; 3] transmitted; 4] redirected; 5
                       xmlns:syriaca="http://syriaca.org/#schema"
                       context="tei:trait[@type = 'gender']/@ref"
                       role="warning">
-                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = 'http://syriaca.org/keyword/eunuch' or $i = 'http://syriaca.org/keyword/female' or $i = 'http://syriaca.org/keyword/male' or $i = 'http://syriaca.org/keyword/nun-as-monk'">Preferred values for the @ref attribute on a &lt;trait&gt; element
-                      with a @type attribute with the value "gender" are:
+                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = 'http://syriaca.org/keyword/eunuch' or $i = 'http://syriaca.org/keyword/female' or $i = 'http://syriaca.org/keyword/male' or $i = 'http://syriaca.org/keyword/nun-as-monk'">Preferred values for the @ref attribute on a &lt;trait&gt; element with a
+                      @type attribute with the value "gender" are:
                       "http://syriaca.org/keyword/eunuch"; "http://syriaca.org/keyword/female";
-                      "http://syriaca.org/keyword/male"; and "http://syriaca.org/keyword/nun-as-monk". Use
-                      these if applicable. If one of these does not apply, please use a descriptive term
-                      of your choosing.</sch:assert>
+                      "http://syriaca.org/keyword/male"; and
+                      "http://syriaca.org/keyword/nun-as-monk". Use these if applicable. If one of
+                      these does not apply, please use a descriptive term of your
+                      choosing.</sch:assert>
                     
                   </sch:rule>
          </pattern>
