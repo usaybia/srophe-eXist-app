@@ -179,7 +179,7 @@
             </constraint>
           </constraintSpec>
           <attList>
-            <attDef ident="type" mode="add" usage="req">
+            <attDef ident="type" mode="change" usage="req">
               <valList type="closed">
                 <valItem ident="primary"/>
                 <valItem ident="secondary"/>
@@ -940,69 +940,12 @@
               </constraintSpec>
               <constraintSpec ident="notes-type-desc" scheme="schematron">
                 <constraint>
-                  <sch:rule context="tei:note[parent::tei:birth]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;birth&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:nationality]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the
-                      &lt;nationality&gt; element. Other types of notes ("incerta", "dubia", and
-                      "errata") may appear as children of the &lt;div&gt; element as
-                      needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:death]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;death&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:education]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;education&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:occupation]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the
-                      &lt;occupation&gt; element. Other types of notes ("incerta", "dubia", and
-                      "errata") may appear as children of the &lt;div&gt; element as
-                      needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:residence]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;residence&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:socecStatus]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the
-                      &lt;socecStatus&gt; element. Other types of notes ("incerta", "dubia", and
-                      "errata") may appear as children of the &lt;div&gt; element as
-                      needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:langKnowledge]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain a the
-                      attribute @type="desc" are the only notes allowed inside the
-                      &lt;langKnowledge&gt; element. Other types of notes ("incerta", "dubia", and
-                      "errata") may appear as children of the &lt;div&gt; element as
-                      needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:trait]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;trait&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
-                  </sch:rule>
-                  <sch:rule context="tei:note[parent::tei:state]/@type">
-                    <sch:assert test=". = 'desc'">Elements of type &lt;note&gt; that contain the
-                      attribute @type="desc" are the only notes allowed inside the &lt;state&gt;
-                      element. Other types of notes ("incerta", "dubia", and "errata") may appear as
-                      children of the &lt;div&gt; element as needed.</sch:assert>
+                  <sch:rule
+                    context="tei:note[parent::tei:birth or parent::tei:death or parent::tei:education or parent::tei:langKnowledge or parent::tei:nationality or parent::occupation or parent::tei:residence or parent::tei:socecStatus or parent::tei:state or parent::tei:trait]">
+                    <sch:assert test="@type = 'desc'">Elements of type &lt;note&gt; must contain the
+                      attribute @type="desc" and other &lt;note&gt; types are not allowed in this context.
+                      Other types of notes ("incerta", "dubia", and "errata") may appear as children of
+                      the &lt;div&gt; element as needed.</sch:assert>
                   </sch:rule>
                 </constraint>
               </constraintSpec>
