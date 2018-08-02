@@ -1272,7 +1272,7 @@
                     <sch:assert
                       test="
                       every $i in (tokenize(., ' '))
-                      satisfies $i = $allTaxonomy"
+                      satisfies $i = $taxonomyAllURIs"
                       >SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. For the
                       @target attribute on a &lt;ptr&gt; element within an event factoid, please

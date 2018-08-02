@@ -5,7 +5,7 @@
          xmlns:teix="http://www.tei-c.org/ns/Examples"
          datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
          ns="http://www.tei-c.org/ns/1.0"><!--
-Schema generated from ODD source 2018-08-02T02:37:47Z. .
+Schema generated from ODD source 2018-08-02T02:41:20Z. .
 TEI Edition: Version 3.4.0. Last updated on
 	23rd July 2018, revision 1fa0b54
 TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.4.0/
@@ -2095,7 +2095,7 @@ attributes @target and @cRef may be supplied on <name/>.</report>
                         value="doc('https://raw.githubusercontent.com/srophe/srophe-app-data/dev/data/subjects/taxonomyIndex.xml')"/>
                     <sch:let name="taxonomyAllURIs"
                         value="$ti//listURI[@type = 'taxonomyAllURIs']/uri"/>
-                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $allTaxonomy">SPEAR has a strong preference for using established URIs when possible but
+                    <sch:assert test="                       every $i in (tokenize(., ' '))                       satisfies $i = $taxonomyAllURIs">SPEAR has a strong preference for using established URIs when possible but
                       appropriate URIs are not always available in the Syriaca.org taxonomy. For the
                       @target attribute on a &lt;ptr&gt; element within an event factoid, please
                       look for the appropriate keyword(s) in the Syriaca.org Taxonomy. If you cannot
