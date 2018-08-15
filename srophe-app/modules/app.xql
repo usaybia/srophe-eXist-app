@@ -803,7 +803,11 @@ function app:google-analytics($node as node(), $model as map(*)){
 :)
 declare %templates:wrap function app:linked-data($node as node(), $model as map(*)){
     (:if($model("data")//@ref[contains(.,'http://syriaca.org/')] and $model("data")//tei:idno[@type="subject"][contains(.,'http://syriaca.org/')]) then:) 
-    if($model("data")//@ref[contains(.,'http://syriaca.org/')] or $model("data")//tei:idno[contains(.,'http://syriaca.org/')]) then
+    if($model("data")//@ref[contains(.,'http://syriaca.org/')] 
+    or $model("data")//@active[contains(.,'http://syriaca.org/')] 
+    or $model("data")//@passive[contains(.,'http://syriaca.org/')] 
+    or $model("data")//@mutual[contains(.,'http://syriaca.org/')] 
+    or $model("data")//tei:idno[contains(.,'http://syriaca.org/')]) then
         <div class="panel panel-default" style="margin-top:1em;" xmlns="http://www.w3.org/1999/xhtml">
             <div class="panel-heading">
             <a href="#" data-toggle="collapse" data-target="#showLinkedData">Linked Data  </a>
@@ -814,12 +818,16 @@ declare %templates:wrap function app:linked-data($node as node(), $model as map(
             </div>
             <div class="panel-body">
                 {(
-                 if($model("data")//@ref[contains(.,'http://syriaca.org/')]) then
-                    let $other-resources := distinct-values($model("data")//@ref[contains(.,'http://syriaca.org/')])
+                 if($model("data")//@ref[contains(.,'http://syriaca.org/')] or $model("data")//@active[contains(.,'http://syriaca.org/')] or $model("data")//@passive[contains(.,'http://syriaca.org/')] or $model("data")//@mutual[contains(.,'http://syriaca.org/')]) then
+                    let $other-resources := distinct-values(
+                        ($model("data")//@ref[contains(.,'http://syriaca.org/')], 
+                        tokenize($model("data")//@active[contains(.,'http://syriaca.org/')],' '), 
+                        tokenize($model("data")//@passive[contains(.,'http://syriaca.org/')],' '), 
+                        tokenize($model("data")//@mutual[contains(.,'http://syriaca.org/')],'')))
                     let $count := count($other-resources)
                     return 
                         <div class="other-resources" xmlns="http://www.w3.org/1999/xhtml">
-                            <h4>Resources related to {$count} other topics in this article. </h4>
+                            <h4>Resources related to {$count} topics in this article. </h4>
                             <div class="collapse in" id="showOtherResources">
                                 <form class="form-inline hidden" action="{$global:nav-base}/api/sparql" method="post">
                                     <input type="hidden" name="format" id="format" value="json"/>
