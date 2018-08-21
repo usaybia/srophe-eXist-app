@@ -10,7 +10,7 @@ xquery version "3.1";
 
 import module namespace http="http://expath.org/ns/http-client";
 import module namespace global="http://syriaca.org/global" at "../modules/lib/global.xqm";
-import module namespace tei2rdf="http://syriaca.org/tei2rdf" at "../modules/lib/tei2rdf.xqm ";
+import module namespace tei2rdf="http://syriaca.org/tei2rdf" at "../modules/content-negotiation/tei2rdf.xqm ";
 import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
 
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -243,7 +243,11 @@ declare function local:process-results($records as item()*, $total, $start, $per
                     string($r/descendant-or-self::tei:div[@uri][1]/@uri) 
                 else replace($r/descendant::tei:idno[starts-with(.,$global:base-uri)][1],'/tei','')
          let $uri := document-uri(root($r))
-         let $rdf := tei2rdf:rdf-output($r)
+         let $rdf := try {tei2rdf:rdf-output($r)}catch *{
+                 <response status="fail" xmlns="http://www.w3.org/1999/xhtml">
+                     <message>RDF fail {$uri} {concat($err:code, ": ", $err:description)}</message>
+                 </response>
+                 }
          let $file-name := substring-before(tokenize($uri,'/')[last()],'.xml')
          let $collection := substring-before(substring-before($uri, $file-name),'/tei/')
          let $repository := replace($global:app-root,'/db/apps/','')
@@ -251,6 +255,8 @@ declare function local:process-results($records as item()*, $total, $start, $per
          let $rdf-filename := concat(replace(substring-after($id,'http://'),'/|\.','-'),'.rdf')
          let $rdf-path := concat($repository,'/',$rdf-collection) 
          return 
+            if($rdf/@status='fail') then ()
+            else 
              try {
                  <response status="200" xmlns="http://www.w3.org/1999/xhtml">
                      <message>{(

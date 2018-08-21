@@ -605,7 +605,7 @@ return
 :)
 declare %templates:wrap function spear:bibl($node as node(), $model as map(*)){
 let $data := $model("data")
-let $bibl := $data/tei:div[@uri]/descendant::tei:bibl
+let $bibl := $data/tei:div[@uri]/descendant::tei:bibl[starts-with(descendant::tei:ptr/@target,'http://syriaca.org/bibl/')]
 return global:tei2html(<spear-citation xmlns="http://www.tei-c.org/ns/1.0">{($bibl)}</spear-citation>)
 };
 

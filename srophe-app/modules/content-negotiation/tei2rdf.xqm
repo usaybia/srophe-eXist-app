@@ -482,8 +482,8 @@ declare function tei2rdf:spear($rec, $id){
         for $bibl in $rec//tei:teiHeader/descendant::tei:sourceDesc/descendant::*/@ref[contains(.,'/work/')]
         return tei2rdf:create-element('lawd:hasAttestation', (), $bibl, ()),
         tei2rdf:create-element('dcterms:isPartOf', (), replace($rec/ancestor::tei:TEI/descendant::tei:publicationStmt/tei:idno[@type="URI"][1],'/tei',''), ()),
-        let $work-uris := distinct-values(root($rec)/descendant::tei:teiHeader/descendant::tei:sourceDesc/descendant::tei:title/@ref) 
-        for $work-uri in $work-uris[contains(.,'/work/')]
+        let $work-uris := distinct-values(root($rec)/descendant::tei:sourceDesc/descendant::*/@ref[contains(.,'/work/')] | root($rec)/descendant::tei:sourceDesc/descendant::*/@target[contains(.,'/work/')]) 
+        for $work-uri in $work-uris
         return  tei2rdf:create-element('dcterms:source', (), $work-uri, ()),        
         tei2rdf:create-element('dcterms:isPartOf', (), 'http://syriaca.org/spear', ()), 
         (: Other formats:)
