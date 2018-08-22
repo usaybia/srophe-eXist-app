@@ -207,11 +207,9 @@ declare function tei2rdf:rec-label-and-titles($rec, $element as xs:string?){
         return tei2rdf:create-element($element, string($headword/@xml:lang), string-join($headword/descendant-or-self::text(),''), 'literal')
     else if($rec[self::tei:div/@uri]) then 
         if(tei2rdf:rec-type($rec) = 'http://syriaca.org/schema#/relationFactoid') then
-            tei2rdf:create-element($element, (), rel:relationship-sentence($rec/descendant::tei:listRelation/tei:relation), 'literal')
-        else 
-        tei2rdf:create-element($element, (),
-        normalize-space(string-join((tei2html:tei2html($rec/child::*[not(self::tei:bibl)])/descendant-or-self::text()),''))
-        , 'literal')        
+            tei2rdf:create-element($element, (), normalize-space(rel:relationship-sentence($rec/descendant::tei:listRelation/tei:relation)), 'literal')
+        else tei2rdf:create-element($element, (),
+        normalize-space(string-join((tei2html:tei2html($rec/child::*[not(self::tei:bibl)])),' ')), 'literal')
     else tei2rdf:create-element($element, string($rec/descendant::tei:title[1]/@xml:lang), string-join($rec/descendant::tei:title[1]/text(),''), 'literal')
 };
 

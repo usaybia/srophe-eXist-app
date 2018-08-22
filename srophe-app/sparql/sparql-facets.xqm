@@ -24,7 +24,7 @@ declare variable $sparql-facets:prefixes {"
  "
 };
 
-(: Build SPARQL facets :)
+(: Build SPARQL different facet lists for each tab, on SPEAR browse. Called by run-sparql.xql to build facet lists.  :)
 declare function sparql-facets:build-sparql-facets($parameters as node()*){
     if(matches($parameters/parameter[name = 'facet-name']/value/text(),'events')) then
         concat($sparql-facets:prefixes, "
@@ -89,7 +89,7 @@ declare function sparql-facets:build-sparql-facets($parameters as node()*){
               }")
 };
 
-(: Construnct main query, add selects, groups and limits to base query :)
+(: Construnct main query, add selects, groups and limits to base query, called by run-sparql.xql to return full results set.  :)
 declare function sparql-facets:build-sparql($parameters as node()*){
  if(matches($parameters/parameter[name = 'type']/value/text(),'force|Force|sankey|Sankey')) then
     if(matches($parameters/parameter[name = 'facet-name']/value/text(),'events')) then
@@ -97,6 +97,10 @@ declare function sparql-facets:build-sparql($parameters as node()*){
                 SELECT DISTINCT * WHERE { 
                 ",sparql-facets:build-base-query($parameters)
                 ,"
+                ?s dcterms:subject ?eventValue.
+                FILTER CONTAINS(str(?eventValue), 'keyword').
+                ?eventValue rdfs:label ?eventLabel.
+                FILTER ( langMatches(lang(?eventLabel), 'en')).
                 }  
                 LIMIT 50 ")
     else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'persons')) then
@@ -111,6 +115,10 @@ declare function sparql-facets:build-sparql($parameters as node()*){
                 SELECT DISTINCT  (?person as ?uri) (?persName as ?title) ?s ?label WHERE { 
                 ",sparql-facets:build-base-query($parameters)
                 ,"
+                ?s dcterms:subject ?person.
+                FILTER CONTAINS(str(?person), 'person').
+                ?person rdfs:label ?persName.
+                FILTER ( langMatches(lang(?persName), 'en')). 
                 }  
                 LIMIT 50 ")
     else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'uri')) then
@@ -124,6 +132,10 @@ declare function sparql-facets:build-sparql($parameters as node()*){
                 SELECT DISTINCT * WHERE { 
                 ",sparql-facets:build-base-query($parameters)
                 ,"
+                ?s dcterms:subject ?person.
+                FILTER CONTAINS(str(?person), 'person').
+                ?person rdfs:label ?persName.
+                FILTER ( langMatches(lang(?persName), 'en')). 
                 } 
                 LIMIT 50 ")
 else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'persons')) then
@@ -157,41 +169,56 @@ else
 };
 
 (:
-    Build SPARQL query based on parameters passed from SPEAR form. Parameters: id, event, relationship
-    Used as a subquery by facets 
+    Build SPARQL query based on parameters passed from SPEAR form. 
+    @param $id, $event, $relationship
+    Used as a subquery by facets.    
 :)
 declare function sparql-facets:build-main-query($parameters){
-concat("{SELECT DISTINCT * WHERE { 
-    ",sparql-facets:build-base-query($parameters),"
-    } }")
+(:
+if(matches($parameters/parameter[name = 'facet-name']/value/text(),'persons')) then
+    concat("
+             {SELECT distinct  (?person as ?uri) (?persName as ?title) WHERE {",
+             sparql-facets:build-base-query($parameters),"
+            } GROUP BY ?person ?persName
+            }")
+else
+:)
+    concat("{SELECT DISTINCT * WHERE { 
+        ",sparql-facets:build-base-query($parameters),"
+        } }")
 };
 
 (: Build SPARQL query based on parameters passed from SPEAR form. Parameters: id, event, relationship :)
 declare function sparql-facets:build-base-query($parameters as node()*){
 if(matches($parameters/parameter[name = 'facet-name']/value/text(),'persons')) then
     concat("
-            ?s dcterms:isPartOf <http://syriaca.org/spear>;
+            ?s rdf:type <http://syriaca.org/schema#/personFactoid>;
                 rdfs:label ?label.
+            ?s dcterms:subject ?person.
+            FILTER CONTAINS(str(?person), 'person').
+            ?person rdfs:label ?persName.
+            FILTER ( langMatches(lang(?persName), 'en')).   
                 ",sparql-facets:spear-sources($parameters),
                 sparql-facets:dates($parameters),
-                sparql-facets:person($parameters),
                 sparql-facets:place($parameters), 
-                sparql-facets:eventsType($parameters))
-                
+                sparql-facets:eventsType($parameters),
+                sparql-facets:relationshipType($parameters),
+                sparql-facets:personType($parameters),
+                sparql-facets:sex($parameters),
+                sparql-facets:ethnic-labels($parameters),
+                sparql-facets:occupation($parameters),
+                sparql-facets:citizenship($parameters),
+                sparql-facets:rank($parameters),
+                sparql-facets:mental-state($parameters)
+        )   
 else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'events')) then
     concat(sparql-facets:eventsType($parameters),"
             ?s rdf:type <http://syriaca.org/schema#/eventFactoid>;
-                   rdfs:label ?label.    
+                   rdfs:label ?label.       
                 ",sparql-facets:dates($parameters),
                 sparql-facets:place($parameters),
                 sparql-facets:spear-sources($parameters),
-                "
-                {SELECT DISTINCT * WHERE {      
-                ",
-                sparql-facets:person($parameters),
-                "
-                } }
-                ")    
+                sparql-facets:person($parameters))    
 else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'relations')) then
     concat(sparql-facets:eventsType($parameters),"
             ?s rdf:type <http://syriaca.org/schema#/relationFactoid>;
@@ -201,13 +228,8 @@ else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'relatio
                 sparql-facets:place($parameters),
                 sparql-facets:spear-sources($parameters),
                 sparql-facets:eventsType($parameters),
-                "
-                {SELECT DISTINCT * WHERE {      
-                ",
-                sparql-facets:person($parameters),
-                "
-                } }
-                ")                  
+                sparql-facets:person($parameters)
+                )                  
 else if(matches($parameters/parameter[name = 'facet-name']/value/text(),'uri')) then
 let $uri := tokenize($parameters/parameter[name = 'uri']/value/text(),' ')
 return
@@ -230,7 +252,7 @@ else
                       rdfs:label ?label.",   
                   sparql-facets:spear-sources($parameters),
                   sparql-facets:dates($parameters),
-                  sparql-facets:person($parameters), 
+                  sparql-facets:personID($parameters), 
                   sparql-facets:eventsType($parameters),
                   sparql-facets:place($parameters))
 };
@@ -291,23 +313,32 @@ declare function sparql-facets:dates-facets($parameters){
             ")
 };
 
-declare function sparql-facets:person($parameters){
-concat(sparql-facets:personID($parameters),"
+declare function sparql-facets:person-facet($parameters){
+    "
     ?s dcterms:subject ?person.
     FILTER CONTAINS(str(?person), 'person').
-    ?person rdfs:label ?persName.
-    FILTER ( langMatches(lang(?persName), 'en')).
-    ",
-    sparql-facets:relationshipType($parameters),
-    sparql-facets:sex($parameters),
-    sparql-facets:personType($parameters),
-    sparql-facets:sex($parameters),
-    sparql-facets:ethnic-labels($parameters),
-    sparql-facets:occupation($parameters),
-    sparql-facets:citizenship($parameters),
-    sparql-facets:rank($parameters),
-    sparql-facets:mental-state($parameters),"
-    ")            
+    "
+};
+
+declare function sparql-facets:person($parameters){
+concat(sparql-facets:personID($parameters),
+    if($parameters/parameter[name = ('personType', 'sex','ethnicLabel','occupation','citizenship','socialRank','mentalStatus','physicalTrait')]/value[. != '']) then
+      concat("{SELECT DISTINCT * WHERE { 
+        ?s dcterms:subject ?person.
+        FILTER CONTAINS(str(?person), 'person').
+        ?person rdfs:label ?persName.
+        FILTER ( langMatches(lang(?persName), 'en')).
+        ",
+        sparql-facets:relationshipType($parameters),
+        sparql-facets:personType($parameters),
+        sparql-facets:sex($parameters),
+        sparql-facets:ethnic-labels($parameters),
+        sparql-facets:occupation($parameters),
+        sparql-facets:citizenship($parameters),
+        sparql-facets:rank($parameters),
+        sparql-facets:mental-state($parameters),
+        "}}")
+    else())            
 };
 
 declare function sparql-facets:personID($parameters){
@@ -396,7 +427,7 @@ declare function sparql-facets:relations-categories($parameters){
 };
 
 declare function sparql-facets:relations-categories-facet($parameters) {
-    concat("{ # sex facet
+    concat("{ # relationshipCategory facet
                 SELECT distinct ('relationshipCategory' as ?key) (?relationshipCategory as ?facet_value) (?relationshipCategoryLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
                 WHERE{
                     ?s rdf:type <http://syriaca.org/schema#/relationFactoid>;
@@ -411,7 +442,7 @@ declare function sparql-facets:relations-categories-facet($parameters) {
 };
 
 declare function sparql-facets:relations-facet($parameters){
-    concat("{ # sex facet
+    concat("{ # relationshipType facet
                 SELECT distinct ('relationshipType' as ?key) (?relationshipValue as ?facet_value) (?relationshipLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
                 WHERE{
                     ?s rdf:type <http://syriaca.org/schema#/relationFactoid>;
@@ -435,15 +466,15 @@ declare function sparql-facets:personType($parameters){
 declare function sparql-facets:sex($parameters){
     let $sex-parm := tokenize($parameters/parameter[name = 'sex']/value/text(),' ') 
     return 
-        if($sex-parm != '') then concat("?person syriaca:sex '",$sex-parm,"'.")
+        if($sex-parm != '') then concat("?person syriaca:gender <",$sex-parm,">.")
         else () 
 };
 
 declare function sparql-facets:sex-facet($parameters){
     concat("{ # sex facet
-                SELECT distinct ('sex' as ?key) (?sexLabel as ?facet_value) (?sexLabel as ?facet_label) (count(distinct ?person) as ?facet_count)
-                WHERE{
-                    ?person syriaca:sex ?sexLabel
+                SELECT distinct ('sex' as ?key) (?sexLabel as ?facet_value) (?sexLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?person syriaca:gender ?sexLabel
                     ",sparql-facets:build-main-query($parameters),"
                     } GROUP BY ?sexLabel
                     ORDER BY asc(str(?sexLabel))
@@ -462,14 +493,14 @@ declare function sparql-facets:ethnic-labels($parameters){
 
 declare function sparql-facets:ethnic-labels-facet($parameters){
    concat("{ # Ethnic-label facet
-                SELECT distinct ('ethnicLabel' as ?key) (?ethnicValue as ?facet_value) (?ethnicValue as ?facet_label) (count(distinct ?person) as ?facet_count)
-                WHERE{
+                SELECT distinct ('ethnicLabel' as ?key) (?ethnicValue as ?facet_value) (?ethnicValue as ?facet_label) (count(distinct ?s) as ?facet_count)
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').
                     ?person cwrc:hasEthnicity ?ethnicValue.
-                    ?ethnicValue rdfs:label ?ethnicLabel.
-                    FILTER ( langMatches(lang(?ethnicLabel), 'en')).
                     ",sparql-facets:build-main-query($parameters),"
-                    } GROUP BY ?ethnicLabel ?ethnicValue
-                    ORDER BY asc(str(?ethnicLabel))
+                    } GROUP BY ?ethnicValue
+                    ORDER BY asc(str(?ethnicValue))
             }")
 };
 
@@ -485,8 +516,10 @@ declare function sparql-facets:occupation($parameters){
 
 declare function sparql-facets:occupation-facet($parameters){
     concat("{ # occupation facet
-                SELECT distinct ('occupation' as ?key) (?occupationValue as ?facet_value) (?occupationLabel as ?facet_label) (count(distinct ?person) as ?facet_count)
-                WHERE{
+                SELECT distinct ('occupation' as ?key) (?occupationValue as ?facet_value) (?occupationLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').                
                     ?person snap:occupation ?occupationValue. 
                     ?occupationValue rdfs:label ?occupationLabel.
                     FILTER ( langMatches(lang(?occupationLabel), 'en')).
@@ -508,8 +541,10 @@ declare function sparql-facets:citizenship($parameters){
 
 declare function sparql-facets:citizenship-facet($parameters){
     concat("{ # Citizenship facet
-                SELECT distinct ('citizenship' as ?key) (?citizenshipValue as ?facet_value) (?citizenshipLabel as ?facet_label) (count(distinct ?person) as ?facet_count)
+                SELECT distinct ('citizenship' as ?key) (?citizenshipValue as ?facet_value) (?citizenshipLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
                 WHERE{
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').                
                     ?person person:citizenship ?citizenshipValue.
                     ?citizenshipValue rdfs:label ?citizenshipLabel.
                     FILTER ( langMatches(lang(?citizenshipLabel), 'en')).
@@ -531,8 +566,10 @@ declare function sparql-facets:rank($parameters){
 
 declare function sparql-facets:rank-facet($parameters){
     concat("{ # Social rank facet
-                SELECT distinct ('socialRank' as ?key) (?rankValue as ?facet_value) (?rankLabel as ?facet_label) (count(distinct ?person) as ?facet_count)
-                WHERE{
+                SELECT distinct ('socialRank' as ?key) (?rankValue as ?facet_value) (?rankLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').                
                     ?person syriaca:hasSocialRank ?rankValue.
                     ?rankValue rdfs:label ?rankLabel.
                     FILTER ( langMatches(lang(?rankLabel), 'en')).
@@ -555,7 +592,9 @@ declare function sparql-facets:mental-state($parameters){
 declare function sparql-facets:mental-state-facet($parameters){
     concat("{ # Mental Status facet
                 SELECT distinct ('mentalStatus' as ?key) (?mentalState as ?facet_value) (?mentalStateLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
-                WHERE{
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').                
                     ?person syriaca:hasMentalState ?mentalState.
                     ?mentalState rdfs:label ?mentalStateLabel.
                     FILTER ( langMatches(lang(?mentalStateLabel), 'en')).
@@ -577,8 +616,10 @@ declare function sparql-facets:physical-trait($parameters){
 
 declare function sparql-facets:physical-trait-facet($parameters){
     concat("{ # Physical trait facet
-                SELECT distinct ('physicalTrait' as ?key) (?physicalTrait as ?facet_value) (?physicalTraitLabel as ?facet_label) (count(distinct ?person) as ?facet_count)
-                WHERE{
+                SELECT distinct ('physicalTrait' as ?key) (?physicalTrait as ?facet_value) (?physicalTraitLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
+                WHERE{",sparql-facets:person-facet($parameters),"
+                    ?s dcterms:subject ?person.
+                    FILTER CONTAINS(str(?person), 'person').                
                     ?person syriaca:hasPhysicalTrait  ?physicalTrait.
                     ?physicalTrait rdfs:label ?physicalTraitLabel.
                     FILTER ( langMatches(lang(?physicalTraitLabel), 'en')).
@@ -588,13 +629,3 @@ declare function sparql-facets:physical-trait-facet($parameters){
             }")
 };
 
-(: Note used: Display as list:)
-declare function sparql-facets:output-list($results){
-  <div class="results">
-    {
-        for $r at $p in $results/descendant::*/*:bindings/child::*
-        return 
-            <p><badge>{$p}</badge> {$r/*:label/text()} <a href="/exist/apps/srophe/spear/factoid.html?id={$r/*:s/text()}">Go to Factoid</a></p>
-    }
-  </div>
-};

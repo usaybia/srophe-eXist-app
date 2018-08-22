@@ -10,7 +10,7 @@ xquery version "3.1";
 
 import module namespace http="http://expath.org/ns/http-client";
 import module namespace global="http://syriaca.org/global" at "../modules/lib/global.xqm";
-import module namespace tei2rdf="http://syriaca.org/tei2rdf" at "../modules/content-negotiation/tei2rdf.xqm ";
+import module namespace tei2rdf="http://syriaca.org/tei2rdf" at "../modules/content-negotiation/tei2rdf.xqm";
 import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
 
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -51,7 +51,7 @@ declare function local:get-records($action as xs:string?, $collection as xs:stri
                         ) 
                 else collection($global:data-root || '/' || $collection)/tei:TEI
         let $total := count($records)
-        let $perpage := 50
+        let $perpage := 10
         let $pages := xs:integer($total div $perpage)
         let $start := 0
         return 
@@ -68,7 +68,7 @@ declare function local:get-records($action as xs:string?, $collection as xs:stri
                         <strong>Pages: </strong>{$pages}<br/>
                         <strong>Collection: </strong>{$collection}<br/>
                     </message>
-                    <output>{(local:process-results($records, $total, $start, $perpage, $collection),local:create-void-record($records, $total, $start, $perpage, $collection))}</output>
+                    <output>{(local:process-results($records, $total, $start, $perpage, $collection)(:,local:create-void-record($records, $total, $start, $perpage, $collection):))}</output>
                 </response>
     else if($action = 'update') then 
         let $records := 
@@ -76,7 +76,7 @@ declare function local:get-records($action as xs:string?, $collection as xs:stri
                 collection($global:data-root || '/' || $collection)/tei:TEI[xmldb:find-last-modified-since(., xs:dateTime($date))] 
             else collection($global:data-root)/tei:TEI[xmldb:find-last-modified-since(., xs:dateTime($date))]
         let $total := count($records)
-        let $perpage := 50
+        let $perpage := 10
         let $pages := xs:integer($total div $perpage)
         let $start := 0
         return 
@@ -243,7 +243,7 @@ declare function local:process-results($records as item()*, $total, $start, $per
                     string($r/descendant-or-self::tei:div[@uri][1]/@uri) 
                 else replace($r/descendant::tei:idno[starts-with(.,$global:base-uri)][1],'/tei','')
          let $uri := document-uri(root($r))
-         let $rdf := try {tei2rdf:rdf-output($r)}catch *{
+         let $rdf := try {tei2rdf:rdf-output($r)} catch *{
                  <response status="fail" xmlns="http://www.w3.org/1999/xhtml">
                      <message>RDF fail {$uri} {concat($err:code, ": ", $err:description)}</message>
                  </response>
@@ -312,6 +312,7 @@ declare function local:build-collection-rdf(){
  : If $action is not empty, check for specified collection, create if it does not exist. 
  : Run Zotero request. 
 :)
+
 if(request:get-parameter('action', '') != '') then
     if(request:get-parameter('pelagios', '') = 'dump') then
         local:update-rdf()
@@ -324,8 +325,8 @@ else if(request:get-parameter('id', '') != '') then
         if(xmldb:collection-available('/db/rdftest')) then         
             <response xmlns="http://www.w3.org/1999/xhtml">{ local:process-results($rec, 1,1,1,()) }</response>
         else <response xmlns="http://www.w3.org/1999/xhtml">{(: (local:build-collection-rdf(),local:update-rdf()) :) 'Error'}</response>
-
 else 
     <div xmlns="http://www.w3.org/1999/xhtml">
         <p><label>Last Updated: </label> {$last-modified-version}</p>
     </div>
+    

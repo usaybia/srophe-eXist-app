@@ -823,7 +823,7 @@ declare %templates:wrap function app:linked-data($node as node(), $model as map(
                         ($model("data")//@ref[contains(.,'http://syriaca.org/')], 
                         tokenize($model("data")//@active[contains(.,'http://syriaca.org/')],' '), 
                         tokenize($model("data")//@passive[contains(.,'http://syriaca.org/')],' '), 
-                        tokenize($model("data")//@mutual[contains(.,'http://syriaca.org/')],'')))
+                        tokenize($model("data")//@mutual[contains(.,'http://syriaca.org/')],' ')))
                     let $count := count($other-resources)
                     return 
                         <div class="other-resources" xmlns="http://www.w3.org/1999/xhtml">

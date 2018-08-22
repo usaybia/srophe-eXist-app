@@ -66,7 +66,7 @@ else if(replace($exist:path, $exist:resource,'') =  ($exist:record-uris) or ends
                 <forward url="{concat('/restxq/srophe', $path)}" absolute="yes"/>
             </dispatch>
     (: Special handling for collections with app-root that matches record-URI-pattern sends html pages to html, others are assumed to be records :)
-    else if($exist:resource = ('index.html','search.html','browse.html','about.html','aggregate.html','factoid.html')) then 
+    else if($exist:resource = ('index.html','search.html','browse.html','about.html','facets.html','aggregate.html','factoid.html','events.html')) then 
         <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
            <view>
                <forward url="{$exist:controller}/modules/view.xql"/>
