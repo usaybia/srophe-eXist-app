@@ -472,11 +472,13 @@ declare function sparql-facets:sex($parameters){
 
 declare function sparql-facets:sex-facet($parameters){
     concat("{ # sex facet
-                SELECT distinct ('sex' as ?key) (?sexLabel as ?facet_value) (?sexLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
+                SELECT distinct ('sex' as ?key) (?sexValue as ?facet_value) (?sexLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
                 WHERE{",sparql-facets:person-facet($parameters),"
-                    ?person syriaca:gender ?sexLabel
+                    ?person syriaca:gender ?sexValue.
+                    ?sexValue rdfs:label ?sexLabel.
+                    FILTER ( langMatches(lang(?sexLabel), 'en')).
                     ",sparql-facets:build-main-query($parameters),"
-                    } GROUP BY ?sexLabel
+                    } GROUP BY ?sexLabel ?sexValue
                     ORDER BY asc(str(?sexLabel))
             }")
 };
@@ -493,13 +495,15 @@ declare function sparql-facets:ethnic-labels($parameters){
 
 declare function sparql-facets:ethnic-labels-facet($parameters){
    concat("{ # Ethnic-label facet
-                SELECT distinct ('ethnicLabel' as ?key) (?ethnicValue as ?facet_value) (?ethnicValue as ?facet_label) (count(distinct ?s) as ?facet_count)
+                SELECT distinct ('ethnicLabel' as ?key) (?ethnicValue as ?facet_value) (?ethnicLabel as ?facet_label) (count(distinct ?s) as ?facet_count)
                 WHERE{",sparql-facets:person-facet($parameters),"
                     ?s dcterms:subject ?person.
                     FILTER CONTAINS(str(?person), 'person').
                     ?person cwrc:hasEthnicity ?ethnicValue.
+                    ?ethnicValue rdfs:label ?ethnicLabel.
+                    FILTER ( langMatches(lang(?ethnicLabel), 'en')).
                     ",sparql-facets:build-main-query($parameters),"
-                    } GROUP BY ?ethnicValue
+                    } GROUP BY ?ethnicValue ?ethnicLabel
                     ORDER BY asc(str(?ethnicValue))
             }")
 };
