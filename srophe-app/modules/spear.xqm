@@ -361,7 +361,7 @@ else
                     </div>    
                 else ()
                 )}
-               <p>View entry in <a href="{$spear:id}">{if(contains($spear:id,'person')) then 'Syriac Biographical Dictionary' else if(contains($spear:id,'keyword')) then 'A Taxonomy of Syriac Studies' else 'The Syriac Gazetteer' }</a></p>
+               <p>View entry in <a href="{replace($spear:id,$global:base-uri,$global:nav-base)}">{if(contains($spear:id,'person')) then 'Syriac Biographical Dictionary' else if(contains($spear:id,'keyword')) then 'A Taxonomy of Syriac Studies' else 'The Syriac Gazetteer' }</a></p>
               </div>
             </div> 
         else ()       
