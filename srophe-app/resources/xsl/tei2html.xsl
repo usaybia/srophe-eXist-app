@@ -277,65 +277,7 @@
             </xsl:if>
         </li>
     </xsl:template>
-
-    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-     handle standard output of a listBibl element 
-     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    <xsl:template match="t:listBibl">
-        <xsl:choose>
-            <xsl:when test="parent::t:note">
-                <xsl:choose>
-                    <xsl:when test="t:bibl/t:msIdentifier">
-                        <xsl:choose>
-                            <xsl:when test="t:bibl/t:msIdentifier/t:altIdentifier">
-                                <xsl:text> </xsl:text>
-                                <a href="{t:bibl/t:msIdentifier/t:altIdentifier/t:idno[@type='URI']/text()}">
-                                    <xsl:value-of select="t:bibl/t:msIdentifier/t:idno"/>
-                                </a>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="t:idno"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:apply-templates mode="plain"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:when>
-            <xsl:when test="ancestor::t:licence">
-                <ul class="listBibl">
-                    <xsl:for-each select="t:bibl">
-                        <li>
-                            <xsl:if test="@xml:id">
-                                <xsl:attribute name="id">
-                                    <xsl:value-of select="@xml:id"/>
-                                </xsl:attribute>
-                            </xsl:if>
-                            <xsl:apply-templates mode="biblist"/>
-                            <xsl:text>.</xsl:text>
-                        </li>
-                    </xsl:for-each>
-                </ul>
-            </xsl:when>
-            <xsl:otherwise>
-                <ul class="listBibl">
-                    <xsl:for-each select="t:bibl">
-                        <li>
-                            <xsl:if test="@xml:id">
-                                <xsl:attribute name="id">
-                                    <xsl:value-of select="@xml:id"/>
-                                </xsl:attribute>
-                            </xsl:if>
-                            <xsl:apply-templates/>
-                            <xsl:text>.</xsl:text>
-                        </li>
-                    </xsl:for-each>
-                </ul>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-    <!-- suppress bibl in titles -->
+    <!-- suppress bibl -->
     <xsl:template match="t:bibl" mode="title"/>
     <xsl:template match="t:bibl">
         <xsl:choose>
@@ -557,22 +499,6 @@
             <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:apply-templates select="." mode="plain"/>
-    </xsl:template>
-    <xsl:template match="t:choice" mode="#all">
-        <xsl:apply-templates/>
-    </xsl:template>
-    <xsl:template match="t:orig">
-        <xsl:text> (</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>) </xsl:text>
-    </xsl:template>
-    <xsl:template match="t:occupation">
-        <xsl:apply-templates/>
-    </xsl:template>
-    <xsl:template match="t:sic">
-        <xsl:text> [sic: </xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>] </xsl:text>
     </xsl:template>
     
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -1665,23 +1591,23 @@
                 <xsl:if test="t:related-items/t:relation[contains(@uri,'place')]">
                     <div>
                         <dl class="dl-horizontal dl-srophe">
-                            <xsl:for-each-group select="t:related-items/t:relation[contains(@uri,'place')]" group-by="@name">
+                            <xsl:for-each-group select="t:related-items/t:relation[contains(@uri,'place')]" group-by="@ref">
                                 <xsl:variable name="desc-ln" select="string-length(t:desc)"/>
                                 <xsl:choose>
                                     <xsl:when test="not(current-group()/descendant::*:geo)">
                                         <dt> </dt>
                                     </xsl:when>
-                                    <xsl:when test="current-grouping-key() = 'born-at'">
+                                    <xsl:when test="current-grouping-key() = ('born-at','syriaca:bornAt')">
                                         <dt>
                                             <i class="srophe-marker born-at"/>
                                         </dt>
                                     </xsl:when>
-                                    <xsl:when test="current-grouping-key() = 'died-at'">
+                                    <xsl:when test="current-grouping-key() = ('died-at','syriaca:diedAt')">
                                         <dt>
                                             <i class="srophe-marker died-at"/>
                                         </dt>
                                     </xsl:when>
-                                    <xsl:when test="current-grouping-key() = 'has-literary-connection-to-place'">
+                                    <xsl:when test="current-grouping-key() = ('has-literary-connection-to-place','syriaca:hasLiteraryConnectionToPlace')">
                                         <dt>
                                             <i class="srophe-marker literary"/>
                                         </dt>

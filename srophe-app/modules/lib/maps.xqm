@@ -53,44 +53,49 @@ declare function maps:build-leaflet-map($nodes as node()*, $total-count as xs:in
             <![CDATA[                                
             var sropheIcon = L.Icon.extend({
                                             options: {
-                                                iconSize:     [38, 38],
+                                                iconSize:     [35, 35],
                                                 iconAnchor:   [22, 94],
                                                 popupAnchor:  [-3, -76]
                                                 }
                                             });
                                             var redIcon =
                                                 L.AwesomeMarkers.icon({
-                                                    icon:'fa-circle',
+                                                    icon:'glyphicon-flag',
                                                     markerColor: 'red'
                                                 }),
                                             orangeIcon =  
                                                 L.AwesomeMarkers.icon({
-                                                    icon:'fa-circle',
+                                                    icon:'glyphicon-flag',
                                                     markerColor: 'orange'
                                                 }),
                                             purpleIcon = 
                                                 L.AwesomeMarkers.icon({
-                                                    icon:'fa-circle',
+                                                    icon:'glyphicon-flag',
                                                     markerColor: 'purple'
                                                 }),
                                             blueIcon =  L.AwesomeMarkers.icon({
-                                                    icon:'fa-circle',
+                                                    icon:'glyphicon-flag',
                                                     markerColor: 'blue'
                                                 });
                                         
             var geojson = L.geoJson(placesgeo, {onEachFeature: function (feature, layer){
+                            var typeText 
                             var popupContent = 
                                 "<a href='" + feature.properties.uri + "' class='map-pop-title'>" +
-                                feature.properties.name + "</a>" + (feature.properties.type ? "Type: " + feature.properties.type : "") +
+                                feature.properties.name + "</a>" + (feature.properties.type ? "Type: " + typeText : "") +
                                 (feature.properties.desc ? "<span class='map-pop-desc'>"+ feature.properties.desc +"</span>" : "");
                                 layer.bindPopup(popupContent);
         
                                 switch (feature.properties.type) {
                                     case 'born-at': return layer.setIcon(orangeIcon);
+                                    case 'syriaca:bornAt' : return layer.setIcon(orangeIcon);
                                     case 'died-at':   return layer.setIcon(redIcon);
+                                    case 'syriaca:diedAt' : return layer.setIcon(redIcon);
                                     case 'has-literary-connection-to-place':   return layer.setIcon(purpleIcon);
+                                    case 'syriaca:hasLiteraryConnectionToPlace' : return layer.setIcon(purpleIcon);
                                     case 'has-relation-to-place':   return layer.setIcon(blueIcon);
-                                    default : return layer.setIcon(defaultIcon);
+                                    case 'syriaca:hasRelationToPlace' :   return layer.setIcon(blueIcon);
+                                    default : '';
                                  }               
                                 }
                             })
