@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround" data-template-with="templates/geo.html" data-template-at="content">
     <div class="container top-padding">
-        <h1>Browse Gazetteer</h1>
+        <h1 class="title about">Index of Places</h1>
         <div data-template="browse:get-all" data-template-element="tei:place/tei:placeName">
             <!-- Example limits data to places collection, see example entry in repo-config.xml -->    
             <!--        <div data-template="browse:get-all" data-template-collection="places">-->
@@ -22,8 +22,11 @@
                     </a>
                     </li>
                     <li>
-                        <a href="browse.html?view=map">Map</a>
+                        <a href="browse.html?view=type">Map</a>
                     </li>
+                    <li>
+                        <a href="browse.html?view=map">Map</a>
+                    </li>             
                 </ul>
                 <!-- Browse Content -->
                 <div class="tab-content">
