@@ -354,7 +354,7 @@
     <xsl:function name="local:translate-label">
         <xsl:param name="label"/>
         <xsl:param name="count"/>
-        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$app-root,'/documentation/syriaca-tei-main.odd'))"/>
+        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$nav-base,'/documentation/syriaca-tei-main.odd'))"/>
         <!--<xsl:variable name="odd" select="doc('http://syriaca.org/documentation/syriaca-tei-main.odd')"/>-->
         <xsl:choose>
             <xsl:when test="$odd/descendant::t:valItem[@ident=$label]/t:gloss">
@@ -385,7 +385,7 @@
         <xsl:param name="element"/>
         <xsl:param name="label"/>
         <xsl:param name="count"/>
-        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$app-root,'/documentation/syriaca-tei-main.odd'))"/>
+        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$nav-base,'/documentation/syriaca-tei-main.odd'))"/>
         <!--<xsl:variable name="odd" select="doc('http://syriaca.org/documentation/syriaca-tei-main.odd')"/>-->
         <xsl:variable name="element" select="$odd/descendant::t:elementSpec[@ident = name($element)]"/>
         <xsl:choose>
@@ -431,7 +431,7 @@
         <xsl:variable name="file">
             <xsl:choose>
                 <xsl:when test="contains($file-name,$base-uri)">
-                    <xsl:value-of select="replace($file-name,$base-uri,concat('xmldb:exist://',$app-root))"/>
+                    <xsl:value-of select="replace($file-name,$base-uri,concat('xmldb:exist://',$nav-base))"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="doc($ref)"/>

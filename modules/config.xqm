@@ -42,9 +42,9 @@ declare variable $config:get-access-config := doc($config:app-root || '/access-c
 
 (: Establish eXist-db data root defined in repo.xml 'data-root':)
 declare variable $config:data-root := 
-    let $app-root := $config:get-config//repo:app-root/text()  
+    let $nav-base := $config:get-config//repo:app-root/text()  
     let $data-root := concat($config:get-config//repo:data-root/text(),'/data') 
-    return replace($config:app-root, $app-root, $data-root);
+    return replace($config:app-root, $nav-base, $data-root);
 
 (: Establish main navigation for app, used in templates for absolute links. :)
 declare variable $config:nav-base := 
