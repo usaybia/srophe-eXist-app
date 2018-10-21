@@ -90,55 +90,13 @@ return
 (:~
  : Add descriptions information 
 :)
-declare %templates:wrap function place:description($node as node(), $model as map(*)){
-    let $desc-nodes := 
-    <place xmlns="http://www.tei-c.org/ns/1.0">
-            {for $desc in $model("hits")//tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))] return $desc}
-    </place>
-    return global:tei2html($desc-nodes)
-};
-
-(:~
- : Add notes information
-:)
-declare %templates:wrap function place:notes($node as node(), $model as map(*)){
-    let $notes-nodes := 
-    <place xmlns="http://www.tei-c.org/ns/1.0">
-            {
-                for $note in $model("hits")//tei:place/tei:note
-                return $note
-            }
-    </place>
-    return global:tei2html($notes-nodes)
-};
-
-(:~
- : Add descriptions events
-:)
-declare %templates:wrap function place:events($node as node(), $model as map(*)){
-    let $events-nodes := 
-    <place xmlns="http://www.tei-c.org/ns/1.0">
-            {
-                for $event in $model("hits")//tei:place/tei:event
-                return $event
-            }
-    </place>
-    return global:tei2html($events-nodes)
-};
-
-(:~
- : Get nested locations
- : Pull all places records with @type="nested" and also references current place id in @ref
- :            <location type="nested" source="#bib110-3">
- :              <region ref="http://syriaca.org/place/722">Mosul region</region>
- :           </location>       
-:)
-declare function place:nested-loc($node as node(), $model as map(*)){
-    let $ref-id := concat($global:base-uri,'/place/',$place:id)
-    return 
-        global:tei2html(<place xmlns="http://www.tei-c.org/ns/1.0">
-        {
-            for $nested-loc in collection($global:data-root || "/places/tei")//tei:location[@type="nested"]/tei:*[@ref=$ref-id]
+declare %templates:wrap function place:body($node as node(), $model as map(*)){
+    let $ref-id := concat($config:base-uri,'/place/',$place:id)
+    let $desc-nodes := $model("hits")//tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))] return $desc}
+    let $notes-nodes := $model("hits")//tei:place/tei:note
+    let $events-nodes := $model("hits")//tei:place/tei:event
+    let $nested-loc := 
+            for $nested-loc in collection($config:data-root || "/places/tei")//tei:location[@type="nested"]/tei:*[@ref=$ref-id]
             let $parent-name := $nested-loc//tei:placeName[1]
             let $place-id := substring-after($nested-loc/ancestor::*/tei:place[1]/@xml:id,'place-')
             let $place-type := $nested-loc/ancestor::*/tei:place[1]/@type
@@ -146,7 +104,10 @@ declare function place:nested-loc($node as node(), $model as map(*)){
                 <nested-place id="{$place-id}" type="{$place-type}">
                     {$nested-loc/ancestor::*/tei:placeName[1]}
                 </nested-place>
-          }      
+    let $confessions := place:confessions($node, $model)
+    return 
+        global:tei2html(<place xmlns="http://www.tei-c.org/ns/1.0">
+            {($desc-nodes, $notes-nodes, $events-nodes)}
         </place>)
 };
 
@@ -155,22 +116,18 @@ declare function place:nested-loc($node as node(), $model as map(*)){
 :)
 declare function place:confessions($node as node(), $model as map(*)){
     let $data := $model("hits")//tei:place
-    return if($data/tei:state[@type='confession']) then 
-        let $confessions := doc($global:app-root || "/documentation/confessions.xml")//tei:list
-        return 
-        global:tei2html(
-        <place xmlns="http://www.tei-c.org/ns/1.0">
-            <confessions xmlns="http://www.tei-c.org/ns/1.0">
+    return 
+        if($data/tei:state[@type='confession']) then 
+            let $confessions := doc($config:app-root || "/documentation/confessions.xml")//tei:list
+            return <confessions xmlns="http://www.tei-c.org/ns/1.0">
                {(
                 $confessions,
                 for $event in $data/tei:event
                 return $event,
                 for $state in $data/tei:state[@type='confession']
-                return $state)
-                }
+                return $state)}
             </confessions>
-        </place>)
-     else ()   
+        else ()   
  };
  
 (:~
@@ -301,56 +258,4 @@ let $links:=
         </see-also>
     </place>
 return global:tei2html($links)
-};
-
-
-
-(:~
- : Add contact form for submitting corrections
-:)
-declare %templates:wrap function place:contact($node as node(), $model as map(*)){
-<div class="modal fade" id="feedback" tabindex="-1" role="dialog" aria-labelledby="feedbackLabel" aria-hidden="true" xmlns="http://www.w3.org/1999/xhtml">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
-            <h2 class="modal-title" id="feedbackLabel">Corrections/Additions?</h2>
-        </div>
-        <form action="/exist/apps/srophe/modules/email.xql" method="post" id="email" role="form">
-            <div class="modal-body" id="modal-body">
-                <!-- More information about submitting data from howtoadd.html -->
-                <p><strong>Notify the editors of a mistake:</strong>
-                <a class="btn btn-link togglelink" data-toggle="collapse" data-target="#viewdetails" data-text-swap="hide information">more information...</a>
-                </p>
-                <div class="container">
-                    <div class="collapse" id="viewdetails">
-                    <p>Using the following form, please inform us which page URI the mistake is on, where on the page the mistake occurs,
-                    the content of the correction, and a citation for the correct information (except in the case of obvious corrections, such as misspelled words). 
-                    Please also include your email address, so that we can follow up with you regarding 
-                    anything which is unclear. We will publish your name, but not your contact information as the author of the  correction.</p>
-                    <h4>Add data to an existing entry</h4>
-                    <p>The Syriac Gazetteer is an ever expanding resource  created by and for users. The editors actively welcome additions to the gazetteer. If there is information which you would like to add to an existing place entry in The Syriac Gazetteer, please use the link below to inform us about the information, your (primary or scholarly) source(s) 
-                    for the information, and your contact information so that we can credit you for the modification. For categories of information which  The Syriac Gazetteer structure can support, please see the section headings on the entry for Edessa and  specify in your submission which category or 
-                    categories this new information falls into.  At present this information should be entered into  the email form here, although there is an additional  delay in this process as the data needs to be encoded in the appropriate structured data format  and assigned a URI. A structured form for submitting  new entries is under development.</p>
-                    </div>
-                </div>
-                <input type="text" name="name" placeholder="Name" class="form-control" style="max-width:300px"/>
-                <br/>
-                <input type="text" name="email" placeholder="email" class="form-control" style="max-width:300px"/>
-                <br/>
-                <input type="text" name="subject" placeholder="subject" class="form-control" style="max-width:300px"/>
-                <br/>
-                <textarea name="comments" id="comments" rows="3" class="form-control" placeholder="Comments" style="max-width:500px"/>
-                <input type="hidden" name="id" value="{$place:id}"/>
-                <input type="hidden" name="place" value="{string($model("hits")//tei:place/tei:placeName[1])}"/>
-                <!-- start reCaptcha API-->
-                <div class="g-recaptcha" data-sitekey="6Lc8sQ4TAAAAAEDR5b52CLAsLnqZSQ1wzVPdl0rO"></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">Close</button><input id="email-submit" type="submit" value="Send e-mail" class="btn"/>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
 };

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
 
  <!-- ================================================================== 
@@ -57,6 +56,8 @@
     <!-- Helper functions and templates -->
     <xsl:import href="helper-functions.xsl"/>
     <xsl:import href="collations.xsl"/>
+    <!-- Syriaca.org stylesheets -->
+    <xsl:import href="link-icons.xsl"/>
     
  <!-- =================================================================== -->
  <!-- set output so we get (mostly) indented HTML -->
@@ -937,7 +938,16 @@
             <xsl:call-template name="citationInfo"/>
         </xsl:if>
         
+        <!-- Build see also -->
+        <xsl:if test="t:see-also">
+            <xsl:call-template name="link-icons-list">
+                <xsl:with-param name="title">
+                    <xsl:value-of select="@title"/>
+                </xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
+    
     <xsl:template match="t:placeName | t:title | t:persName" mode="list">
         <xsl:variable name="nameID" select="concat('#',@xml:id)"/>
         <xsl:choose>
@@ -1056,7 +1066,9 @@
             <h1 class="col-md-8">
                 <!-- Format title, calls template in place-title-std.xsl -->
                 <xsl:call-template name="title"/>
-            </h1>   
+            </h1>
+            <!-- Call link icons (located in link-icons.xsl) -->
+            <xsl:call-template name="link-icons"/>   
             <!-- End Title -->
         </div>
         <!-- emit record URI and associated help links -->
@@ -1181,6 +1193,7 @@
             </small>
         </div>
     </xsl:template>
+    
     <xsl:template name="title">
         <span id="title">
             <xsl:choose>
