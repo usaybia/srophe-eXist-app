@@ -453,3 +453,24 @@ declare %templates:wrap function app:build-editor-list($node as node(), $model a
             else ''
         else ''  
 };
+
+(: Syriaca.org specific functions :)
+(:~
+ : Grabs latest news for Syriaca.org home page
+ : http://syriaca.org/feed/
+ :) 
+declare %templates:wrap function app:get-feed($node as node(), $model as map(*)){
+    try {
+        if(doc('http://syriaca.org/blog/feed/')/child::*) then 
+            let $news := doc('http://syriaca.org/blog/feed/')/child::*
+            for $latest at $n in subsequence($news//item, 1, 3)
+            return 
+                <li>
+                     <a href="{$latest/link/text()}">{$latest/title/text()}</a>
+                </li>
+        else ()
+       } catch * {
+           <error>Caught error {$err:code}: {$err:description}</error>
+    }     
+};
+
