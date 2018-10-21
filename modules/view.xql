@@ -13,6 +13,8 @@ import module namespace templates="http://exist-db.org/xquery/templates" ;
  :)
 import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
 import module namespace app="http://syriaca.org/srophe/templates" at "app.xql";
+(: Syriaca.org specific functions :)
+import module namespace place="http://syriaca.org/place" at "place.xqm";
 
 (: Srophe specific modules :)
 import module namespace browse="http://syriaca.org/srophe/browse" at "lib/browse.xqm";
