@@ -466,6 +466,18 @@ declare %templates:wrap function app:build-editor-list($node as node(), $model a
         else ''  
 };
 
+(:~ 
+ : Adds google analytics from config.xml
+ : @param $node
+ : @param $model
+ : @param $path path to html content file, relative to app root. 
+:)
+declare  
+    %templates:wrap 
+function app:google-analytics($node as node(), $model as map(*)){
+   $config:get-config//google_analytics/text() 
+};
+
 (: Syriaca.org specific functions :)
 (:~
  : Grabs latest news for Syriaca.org home page
