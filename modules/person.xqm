@@ -3,15 +3,17 @@
  :)
 xquery version "3.0";
 
-module namespace person="http://syriaca.org/person";
+module namespace person="http://syriaca.org/srophe/person";
 
 import module namespace templates="http://exist-db.org/xquery/templates" ;
-import module namespace app="http://syriaca.org/templates" at "app.xql";
-import module namespace data="http://syriaca.org/data" at "lib/data.xqm";
-import module namespace rel="http://syriaca.org/related" at "lib/get-related.xqm";
-import module namespace global="http://syriaca.org/global" at "lib/global.xqm";
-import module namespace maps="http://syriaca.org/maps" at "lib/maps.xqm";
-import module namespace timeline="http://syriaca.org/timeline" at "lib/timeline.xqm";
+import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
+import module namespace global="http://syriaca.org/srophe/global" at "lib/global.xqm";
+import module namespace app="http://syriaca.org/srophe/templates" at "app.xql";
+import module namespace maps="http://syriaca.org/srophe/maps" at "lib/maps.xqm";
+import module namespace data="http://syriaca.org/srophe/data" at "lib/data.xqm";
+import module namespace rel="http://syriaca.org/srophe/related" at "lib/get-related.xqm";
+import module namespace timeline="http://syriaca.org/srophe/timeline" at "lib/timeline.xqm";
+import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "content-negotiation/tei2html.xqm";
 
 declare namespace http="http://expath.org/ns/http-client";
 declare namespace xslt="http://exist-db.org/xquery/transform";
@@ -40,7 +42,7 @@ declare %templates:wrap function person:h1($node as node(), $model as map(*)){
                     $model("hits")//tei:person/descendant::tei:birth,
                     $model("hits")//tei:person/descendant::tei:death,
                     $model("hits")//tei:person/descendant::tei:floruit,
-                    $model("hits")//tei:person/descendant::tei:idno[contains(.,$global:base-uri)]
+                    $model("hits")//tei:person/descendant::tei:idno[contains(.,$config:base-uri)]
                 )}
             </srophe-title>
     return global:tei2html($title-nodes)
@@ -148,7 +150,7 @@ return
                                 <relation uri="{$rel-rec}" xmlns="http://www.tei-c.org/ns/1.0">
                                     {(for $att in $r/@*
                                       return attribute {name($att)} {$att},
-                                      let $rec := collection($global:data-root)//tei:idno[. = $rel-rec] 
+                                      let $rec := collection($config:data-root)//tei:idno[. = $rel-rec] 
                                       let $title := 
                                         if($rec/ancestor::tei:place) then 
                                             <place xml:id="{$rec/ancestor::tei:place/@xml:id}" type="{$rec/ancestor::tei:place/@type}" xmlns="http://www.tei-c.org/ns/1.0">
@@ -180,7 +182,7 @@ declare function person:get-related($rec as node()*){
 for $related in $rec//tei:relation
 let $uris := string($related/@passive)
 for $item-uri in tokenize($uris,' ')
-let $rec := collection($global:data-root)//tei:idno[. = $item-uri]
+let $rec := collection($config:data-root)//tei:idno[. = $item-uri]
 let $geo := if($rec/ancestor::tei:TEI//tei:geo) then $rec/ancestor::tei:TEI//tei:geo
                 else ()
 let $title := string(root($rec)/descendant::*[@syriaca-tags="#syriaca-headword"][1])
@@ -257,15 +259,15 @@ return
 :)
 declare %templates:wrap function person:relations($node as node(), $model as map(*)){
 if($model("hits")/descendant::tei:relation) then 
-    let $idno := replace($model("hits")/descendant::tei:idno[@type='URI'][starts-with(.,$global:base-uri)][1]/text(),'/tei','')
+    let $idno := replace($model("hits")/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1]/text(),'/tei','')
     return rel:build-relationships($model("hits")//tei:relation, $idno)
 else ()
 };
 
 declare %templates:wrap function person:authored-by($node as node(), $model as map(*)){
 let $rec := $model("hits")
-let $recid := replace($rec/descendant::tei:idno[@type='URI'][starts-with(.,$global:base-uri)][1]/text(),'/tei','')
-let $works := collection($global:data-root || '/works/tei')//tei:author[@ref =  $recid]  
+let $recid := replace($rec/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1]/text(),'/tei','')
+let $works := collection($config:data-root || '/works/tei')//tei:author[@ref =  $recid]  
 let $count := count($works)
 return 
     if($count gt 0) then 
@@ -279,13 +281,13 @@ return
                         <div>
                          {
                              for $r in subsequence($works, 1, 3)
-                             let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$global:base-uri)][1],'/tei','')
+                             let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
                              let $rec :=  data:get-rec($workid)
-                             return global:display-recs-short-view($rec,'',$recid)
+                             return tei2html:summary-view($rec, (), $recid[1])
                          }
                             <div>
                             <a href="#" class="btn btn-info getData" style="width:100%; margin-bottom:1em;" data-toggle="modal" data-target="#moreInfo" 
-                            data-ref="{$global:nav-base}/bhse/search.html?author={$recid}&amp;perpage={$count}&amp;sort=alpha" 
+                            data-ref="{$config:data-root}/bhse/search.html?author={$recid}&amp;perpage={$count}&amp;sort=alpha" 
                             data-label="Works by {substring-before($rec/descendant::tei:title[1],' — ')} in the New Handbook of Syriac Literature" id="works">
                               See all {count($works)} works
                              </a>
@@ -293,9 +295,9 @@ return
                          </div>    
                 else 
                     for $r in $works
-                    let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$global:base-uri)][1],'/tei','')
+                    let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
                     let $rec :=  data:get-rec($workid)
-                    return global:display-recs-short-view($rec,'',$recid)
+                    return tei2html:summary-view($rec, (), $recid[1])
             )}
         </div>
     else ()     
@@ -347,7 +349,7 @@ return global:tei2html($links)
 :)
 declare %templates:wrap function person:display-persons-map($node as node(), $model as map(*)){
     let $persons := 
-    for $p in collection($global:data-root || '/persons/tei')//tei:relation[contains(@passive,'/place/') or contains(@active,'/place/') or contains(@mutual,'/place/')]
+    for $p in collection($config:data-root || '/persons/tei')//tei:relation[contains(@passive,'/place/') or contains(@active,'/place/') or contains(@mutual,'/place/')]
     let $name := string($p/ancestor::tei:TEI/descendant::tei:title[1])
     let $pers-id := string($p/ancestor::tei:TEI/descendant::tei:idno[1])
     let $relation := string($p/@name)
@@ -360,7 +362,7 @@ declare %templates:wrap function person:display-persons-map($node as node(), $mo
     let $places := distinct-values($persons/descendant::tei:placeName/text()) 
     let $locations := 
         for $id in $places
-        for $geo in collection($global:data-root || '/places/tei')//tei:idno[. = $id][ancestor::tei:TEI[descendant::tei:geo]]
+        for $geo in collection($config:data-root || '/places/tei')//tei:idno[. = $id][ancestor::tei:TEI[descendant::tei:geo]]
         let $title := $geo/ancestor::tei:TEI/descendant::*[@syriaca-tags="#syriaca-headword"][1]
         let $type := string($geo/ancestor::tei:TEI/descendant::tei:place/@type)
         let $geo := $geo/ancestor::tei:TEI/descendant::tei:geo

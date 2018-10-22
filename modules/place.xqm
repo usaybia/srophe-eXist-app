@@ -3,7 +3,7 @@
  :)
 xquery version "3.0";
 
-module namespace place="http://syriaca.org/place";
+module namespace place="http://syriaca.org/srophe/place";
 import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
 import module namespace global="http://syriaca.org/srophe/global" at "lib/global.xqm";
 import module namespace app="http://syriaca.org/srophe/templates" at "app.xql";
