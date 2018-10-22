@@ -260,7 +260,7 @@ return
 declare %templates:wrap function person:relations($node as node(), $model as map(*)){
 if($model("hits")/descendant::tei:relation) then 
     let $idno := replace($model("hits")/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1]/text(),'/tei','')
-    return rel:build-relationships($model("hits")//tei:relation, $idno)
+    return rel:build-relationships($model("hits")//tei:relation, $idno,())
 else ()
 };
 
@@ -282,7 +282,7 @@ return
                          {
                              for $r in subsequence($works, 1, 3)
                              let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
-                             let $rec :=  data:get-rec($workid)
+                             let $rec :=  data:get-document($workid)
                              return tei2html:summary-view($rec, (), $recid[1])
                          }
                             <div>
@@ -296,7 +296,7 @@ return
                 else 
                     for $r in $works
                     let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
-                    let $rec :=  data:get-rec($workid)
+                    let $rec :=  data:get-document($workid)
                     return tei2html:summary-view($rec, (), $recid[1])
             )}
         </div>

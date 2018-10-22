@@ -4,14 +4,14 @@
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title data-template="person:app-title">The Syriac Biographical Dictionary</title>
+        <title data-template="config:app-title">The Syriac Biographical Dictionary</title>
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
         <!--<meta name="DC.subject" property="dc.subject" content="Geography, Ancient"/>-->
         <meta name="DC.type" property="dc.type" content="Text"/>
         <meta name="DC.isPartOf" property="dc.ispartof" content="Syriaca.org: The Syriac Reference Portal"/>
         <meta name="DC.isPartOf" property="dc.ispartof" content="The Syriac Biographical Dictionary"/>
-        <!--<link rel="shortcut icon" href="$shared/resources/images/exist_icon_16x16.ico"/>-->
+        <link rel="shortcut icon" href="$nav-base/resources/images/fav-icons/sbd-favicon.ico"/>
         <!-- Bootstrap 3 -->
         <link rel="stylesheet" type="text/css" href="$nav-base/resources/bootstrap/css/bootstrap.min.css"/>
         <!-- Smart menus -->
@@ -99,17 +99,16 @@
                     <span class="icon-bar"/>
                 </button>
                 <a class="navbar-brand banner-container" href="$nav-base/geo/index.html"> 
-                    <span class="syriaca-icon syriaca-geo banner-icon">
+                    <span class="syriaca-icon syriaca-sbd banner-icon">
                         <span class="path1"/><span class="path2"/><span class="path3"/><span class="path4"/>
                     </span>
-                    <span class="banner-text" data-template="config:collection-title" data-template-collection="places">Collection Title</span>
+                    <span class="banner-text" data-template="config:collection-title" data-template-collection="sbd">Collection Title</span>
                 </a>
             </div>
             <div class="navbar-collapse collapse pull-right" id="navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle nav-text" data-toggle="dropdown"> Browse<b class="caret"/>
-                        </a>
+                        <a href="#" class="dropdown-toggle nav-text" data-toggle="dropdown"> Browse<b class="caret"/></a>
                         <ul class="dropdown-menu pull-right">
                             <li>
                                 <a href="$nav-base/persons/browse.html" class="icon-container">
@@ -139,7 +138,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="dropdown">
                         <a href="$nav-base/index.html" class="icon-container">
                             <span class="syriaca-icon syriaca-syriaca icon-nav">
                                 <span class="path1"/><span class="path2"/><span class="path3"/><span class="path4"/>
