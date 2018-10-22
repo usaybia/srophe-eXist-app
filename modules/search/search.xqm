@@ -50,7 +50,7 @@ declare %templates:wrap function search:search-data($node as node(), $model as m
         else if($collection = 'manuscripts') then ms:query-string()
         else data:create-query($collection)                    
     return
-        if(empty($queryExpr) or $queryExpr = "") then ()
+        if(empty($queryExpr) or $queryExpr = "" or empty(request:get-parameter-names())) then ()
         else 
             let $hits := data:search($collection)
             return
