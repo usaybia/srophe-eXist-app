@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
     
     <!-- ================================================================== 
@@ -103,8 +102,8 @@
                 <img src="{$nav-base}/resources/images/atom-25.png" alt="The Atom format icon" data-toggle="tooltip" title="Click to view this data in Atom XML format."/>
             </a>
             <!-- Print link -->
-            <a href="javascript:window.print();" type="button" class="btn btn-default btn-xs" id="teiBtn" data-toggle="tooltip" title="Click to send this page to the printer." >
-                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+            <a href="javascript:window.print();" type="button" class="btn btn-default print" id="teiBtn" data-toggle="tooltip" title="Click to send this page to the printer.">
+                <span class="glyphicon glyphicon-print" aria-hidden="true"/>
             </a>
             <button type="button" class="btn btn-default copy" id="titleBtn" data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." data-clipboard-action="copy" data-clipboard-text="{normalize-space($resource-title)} - {normalize-space($resource-id)}">
                 <span class="glyphicon glyphicon-copy" aria-hidden="true"/>

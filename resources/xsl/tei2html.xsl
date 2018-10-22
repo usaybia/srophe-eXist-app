@@ -84,8 +84,11 @@
             <xsl:when test="string(/*/@id)">
                 <xsl:value-of select="string(/*/@id)"/>
             </xsl:when>
-            <xsl:when test="//t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)]">
-                <xsl:value-of select="replace(replace(//t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)][1],'/tei',''),'/source','')"/>
+            <xsl:when test="/descendant::t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)]">
+                <xsl:value-of select="replace(replace(/descendant::t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)][1],'/tei',''),'/source','')"/>
+            </xsl:when>
+            <xsl:when test="/descendant::t:idno[@type='URI'][1]">
+                <xsl:value-of select="replace(replace(/descendant::t:idno[@type='URI'][1],'/tei',''),'/source','')"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="concat($base-uri,'/0000')"/>
@@ -484,7 +487,7 @@
                         <xsl:sort collation="{$languages}" select="if (contains(@xml:lang, '-')=true()) then substring-before(@xml:lang, '-') else @xml:lang"/>
                         <xsl:for-each select="current-group()">
                             <xsl:sort lang="{current-grouping-key()}" select="normalize-space(.)"/>
-                            <xsl:apply-templates select="."/>
+                            <li><xsl:apply-templates select="."/></li>
                         </xsl:for-each>
                     </xsl:for-each-group>
                 </ul>

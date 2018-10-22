@@ -92,7 +92,7 @@ return
 :)
 declare %templates:wrap function place:body($node as node(), $model as map(*)){
     let $ref-id := concat($config:base-uri,'/place/',$place:id)
-    let $desc-nodes := $model("hits")//tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))] return $desc}
+    let $desc-nodes := $model("hits")//tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))]
     let $notes-nodes := $model("hits")//tei:place/tei:note
     let $events-nodes := $model("hits")//tei:place/tei:event
     let $nested-loc := 
