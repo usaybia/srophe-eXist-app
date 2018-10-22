@@ -13,12 +13,14 @@ import module namespace templates="http://exist-db.org/xquery/templates" ;
  :)
 import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
 import module namespace app="http://syriaca.org/srophe/templates" at "app.xql";
-(: Syriaca.org specific functions :)
-import module namespace place="http://syriaca.org/place" at "place.xqm";
 
 (: Srophe specific modules :)
 import module namespace browse="http://syriaca.org/srophe/browse" at "lib/browse.xqm";
 import module namespace search="http://syriaca.org/srophe/search" at "search/search.xqm";
+
+(: Syriaca.org specific functions :)
+import module namespace place="http://syriaca.org/place" at "place.xqm";
+import module namespace person="http://syriaca.org/person" at "person.xqm";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
