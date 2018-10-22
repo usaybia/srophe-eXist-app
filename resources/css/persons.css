@@ -32,7 +32,7 @@ h3.label {
 
 .title {border-bottom:2px solid #666666;margin-bottom:1em;}
 .about {padding-top: .5em; border-bottom:2px solid #666666;margin-bottom:1em;}
-.pers-label {margin:.25em; padding:.5em; background-color: #cdcdcd; color:black; font-weight:normal; display:inline-block}
+
 /*.custom-map-marker {width:14px; height:14px; margin:0;padding:0; padding-right:14px;}*/
 .dl-srophe dt{width: 14px; margin-top:0; height:20px !important;}
 .dl-srophe dd {margin-left: 2em;}
@@ -61,3 +61,6 @@ h3.label {
 .relation {
     background-position: -42px 0;
 }
+
+.persNames {list-style: none; display:inline; margin-bottom:1.5em;}
+.persNames li {margin:.25em; padding:.5em; background-color: #cdcdcd; color:black; font-weight:normal; display:inline-block; border-radius: .25em;}

@@ -497,7 +497,7 @@
                 <xsl:if test="t:desc[@type='abstract'] | t:desc[starts-with(@xml:id, 'abstract-en')] | t:note[@type='abstract']">
                     <div style="margin-bottom:1em;">
                         <h3>Abstract</h3>
-                        <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']" mode="abstract"/>
+                        <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']"/>
                     </div>
                 </xsl:if>
                 <xsl:if test="t:term">
@@ -520,12 +520,12 @@
                 <xsl:if test="t:desc[@type='abstract'] | t:desc[starts-with(@xml:id, 'abstract-en')] | t:note[@type='abstract']">
                     <div style="margin-bottom:1em;">
                         <h4>Identity</h4>
-                        <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']" mode="abstract"/>
+                        <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']"/>
                     </div>
                 </xsl:if>
                 <xsl:if test="t:persName[not(empty(descendant-or-self::text()))]">
-                    <h4>Names</h4>
-                    <ul>
+                    <h4>Names:</h4>
+                    <ul class="persNames">
                         <xsl:apply-templates select="t:persName[@syriaca-tags='#syriaca-headword' and starts-with(@xml:lang,'syr')]" mode="list">
                             <xsl:sort lang="syr" select="."/>
                         </xsl:apply-templates>
@@ -591,7 +591,7 @@
                 </xsl:if>
                 <xsl:if test="not(empty(t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']))">
                     <h3>Abstract</h3>
-                    <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']" mode="abstract"/>
+                    <xsl:apply-templates select="t:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')][1] | t:note[@type='abstract']"/>
                 </xsl:if>
                 <xsl:if test="@ana">
                     <xsl:for-each select="tokenize(@ana,' ')">
@@ -795,16 +795,14 @@
         <!-- Events/attestation -->
         <xsl:if test="t:event[@type='attestation']">
             <div id="event">
-                <h3>Attestation<xsl:if test="count(t:event[@type='attestation']) &gt; 1">s</xsl:if>
-                </h3>
+                <h3>Attestation<xsl:if test="count(t:event[@type='attestation']) &gt; 1">s</xsl:if></h3>
+                <ul>
                     <!-- Sorts events on dates, checks first for @notBefore and if not present, uses @when -->
                     <xsl:for-each select="t:event[@type='attestation']">
                         <xsl:sort select="if(exists(@notBefore)) then @notBefore else @when"/>
-                        <span class="tei-event">
-                        <xsl:apply-templates select="." mode="event"/>
-                    </span>
+                       <li><span class="tei-event"><xsl:apply-templates/></span></li>
                     </xsl:for-each>
-                
+                </ul>
             </div>
         </xsl:if>
         
@@ -1306,7 +1304,24 @@
             </span>
         </xsl:if>
     </xsl:template>
-    
+   
+    <xsl:template match="t:title">
+        <xsl:choose>
+            <xsl:when test="@ref">
+                <a href="{@ref}">
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates/>
+                    [<xsl:value-of select="@ref"/>]
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <span>
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
     <!-- S -->
     <!-- Template to print out confession section -->
     <xsl:template match="t:state[@type='confession']">
@@ -1508,7 +1523,7 @@
         <xsl:value-of select="."/>
     </xsl:template>
     
-    <!-- Named template to build confession dates bassed on attestation dates -->
+    <!-- Named template to build confession dates based on attestation dates -->
     <xsl:template name="confession-dates">
         <!-- param passes place data for processing -->
         <xsl:param name="place-data"/>

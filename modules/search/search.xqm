@@ -17,6 +17,15 @@ import module namespace global="http://syriaca.org/srophe/global" at "../lib/glo
 import module namespace page="http://syriaca.org/srophe/page" at "../lib/paging.xqm";
 import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "../content-negotiation/tei2html.xqm";
 
+(: Syriaca.org search modules :)
+import module namespace bhses="http://syriaca.org/srophe/bhses" at "bhse-search.xqm";
+import module namespace bibls="http://syriaca.org/srophe/bibls" at "bibl-search.xqm";
+import module namespace ms="http://syriaca.org/srophe/ms" at "ms-search.xqm";
+import module namespace nhsls="http://syriaca.org/srophe/nhsls" at "nhsl-search.xqm";
+import module namespace persons="http://syriaca.org/srophe/persons" at "persons-search.xqm";
+import module namespace places="http://syriaca.org/srophe/places" at "places-search.xqm";
+import module namespace spears="http://syriaca.org/srophe/spears" at "spear-search.xqm";
+
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 (: Variables:)
@@ -32,7 +41,14 @@ declare variable $search:perpage {request:get-parameter('perpage', 20) cast as x
  data:search($collection)
 :)
 declare %templates:wrap function search:search-data($node as node(), $model as map(*), $collection as xs:string?){
-    let $queryExpr := data:create-query($collection)                        
+    let $queryExpr :=  
+        if($collection = ('sbd','q','authors','saints','persons')) then persons:query-string($collection)
+        else if($collection ='spear') then spears:query-string()
+        else if($collection = 'places') then places:query-string()
+        else if($collection = ('bhse','nhsl','bible')) then bhses:query-string($collection)
+        else if($collection = 'bibl') then bibls:query-string()
+        else if($collection = 'manuscripts') then ms:query-string()
+        else data:create-query($collection)                    
     return
         if(empty($queryExpr) or $queryExpr = "") then ()
         else 
@@ -88,9 +104,15 @@ else
     let $search-config := 
         if($collection != '') then concat($config:app-root, '/', string(config:collection-vars($collection)/@app-root),'/','search-config.xml')
         else concat($config:app-root, '/','search-config.xml')
-    return 
+    return
         if(doc-available($search-config)) then 
-            search:build-form($search-config) 
+            search:build-form($search-config)
+        else if($collection = ('persons','sbd','authors','q','saints')) then <div>{persons:search-form($collection)}</div>
+        else if($collection ='spear') then <div>{spears:search-form()}</div>
+        else if($collection ='manuscripts') then <div>{ms:search-form()}</div>
+        else if($collection = ('bhse','nhsl')) then <div>{bhses:search-form($collection)}</div>
+        else if($collection ='bibl') then <div>{bibls:search-form()}</div>
+        else if($collection ='places') then <div>{places:search-form()}</div> 
         else search:default-search-form()
 };
 

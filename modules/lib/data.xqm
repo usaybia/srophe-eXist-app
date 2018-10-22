@@ -311,9 +311,75 @@ declare function data:element-search($element, $query){
                 normalize-space($search:bibl)
             else 
                 string-join(distinct-values(
-                for $r in collection($global:data-root || '/bibl')//tei:body[ft:query(.,$terms, data:search-options())]/ancestor::tei:TEI/descendant::tei:publicationStmt/tei:idno[starts-with(.,'http://syriaca.org')][1]
+                for $r in collection($config:data-root || '/bibl')//tei:body[ft:query(.,$terms, data:search-options())]/ancestor::tei:TEI/descendant::tei:publicationStmt/tei:idno[starts-with(.,'http://syriaca.org')][1]
                 return concat(substring-before($r,'/tei'),'(\s|$)')),'|')
         return concat("[descendant::tei:bibl/tei:ptr[@target[matches(.,'",$ids,"')]]]")
     else ()  
 };
 :)
+
+(: Syriaca.org specific search functions :)
+(:~
+ : Generic search related places 
+:)
+declare function data:related-places() as xs:string?{
+    if(request:get-parameter('related-place', '') != '') then
+        let $related-place := request:get-parameter('related-place', '')
+        let $ids := 
+            if(matches($related-place,'^http://syriaca.org/')) then
+                normalize-space($related-place)
+            else 
+                string-join(distinct-values(
+                    for $r in collection($config:data-root || '/places')//tei:place[ft:query(tei:placeName,$related-place,data:search-options())]
+                    let $id := $r//tei:idno[starts-with(.,'http://syriaca.org')]
+                    return $id),'|')                   
+        return 
+            if($ids != '') then 
+                if(request:get-parameter('place-type', '') !='' and request:get-parameter('place-type', '') !='any') then 
+                    if(request:get-parameter('place-type', '') = 'birth') then 
+                        concat("[descendant::tei:relation[@name ='born-at'][@passive[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')]]]")
+                    else if(request:get-parameter('place-type', '') = 'death') then
+                        concat("[descendant::tei:relation[@name ='died-at'][@passive[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')]]]")   
+                    else if(request:get-parameter('place-type', '') = 'venerated') then 
+                        concat("[descendant::tei:event[matches(@contains,'",$ids,"(\W.*)?$')]]")
+                    else concat("[descendant::tei:relation[@name ='",request:get-parameter('place-type', ''),"'][@passive[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')]]]")             
+                else concat("[descendant::tei:relation[@passive[matches(.,'",$ids,"(\W.*)?$')] or @mutual[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')]]]")
+           else ()     
+    else ()
+};
+
+(:~
+ : Generic search related persons 
+:)
+declare function data:related-persons() as xs:string?{
+    if(request:get-parameter('related-persons', '') != '') then
+        let $rel-person := request:get-parameter('related-persons', '')
+        let $ids := 
+            if(matches($rel-person,'^http://syriaca.org/')) then
+                normalize-space($rel-person)
+            else 
+                string-join(distinct-values(
+                    for $r in collection($config:data-root || '/persons')//tei:person[ft:query(tei:persName,$rel-person,data:search-options())]
+                    let $id := $r//tei:idno[starts-with(.,'http://syriaca.org')]
+                    return $id),'|')   
+        return 
+            if(request:get-parameter('person-type', '')) then
+                let $relType := request:get-parameter('person-type', '')
+                return 
+                    concat("[descendant::tei:relation[@passive[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')] or @mutual[matches(.,'",$ids,"(\W.*)?$')]][@ref = '",$relType,"' or @name = '",$relType,"']]")
+            else concat("[descendant::tei:relation[@passive[matches(.,'",$ids,"(\W.*)?$')] or @mutual[matches(.,'",$ids,"(\W.*)?$')] or @active[matches(.,'",$ids,"(\W.*)?$')]]]")
+    else ()
+};
+
+(:~
+ : Generic search related titles 
+:)
+declare function data:mentioned() as xs:string?{
+    if(request:get-parameter('mentioned', '') != '') then 
+        if(matches(request:get-parameter('mentioned', ''),'^http://syriaca.org/')) then 
+            let $id := normalize-space(request:get-parameter('mentioned', ''))
+            return concat("[descendant::*[@ref[matches(.,'",$id,"(\W.*)?$')]]]")
+        else 
+            concat("[descendant::*[ft:query(tei:title,'",data:clean-string(request:get-parameter('mentioned', '')),"',data:search-options())]]")
+    else ()  
+};

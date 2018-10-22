@@ -260,7 +260,7 @@ return
 declare %templates:wrap function person:relations($node as node(), $model as map(*)){
 if($model("hits")/descendant::tei:relation) then 
     let $idno := replace($model("hits")/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1]/text(),'/tei','')
-    return rel:build-relationships($model("hits")//tei:relation, $idno,())
+    return rel:build-relationships($model("hits")//tei:relation, $idno,'list-description', ())
 else ()
 };
 
@@ -286,9 +286,7 @@ return
                              return tei2html:summary-view($rec, (), $recid[1])
                          }
                             <div>
-                            <a href="#" class="btn btn-info getData" style="width:100%; margin-bottom:1em;" data-toggle="modal" data-target="#moreInfo" 
-                            data-ref="{$config:data-root}/bhse/search.html?author={$recid}&amp;perpage={$count}&amp;sort=alpha" 
-                            data-label="Works by {substring-before($rec/descendant::tei:title[1],' — ')} in the New Handbook of Syriac Literature" id="works">
+                            <a href="{$config:data-root}/bhse/search.html?author={$recid}&amp;perpage={$count}&amp;sort=alpha" class="btn btn-info getData" style="width:100%; margin-bottom:1em;" >
                               See all {count($works)} works
                              </a>
                             </div>
