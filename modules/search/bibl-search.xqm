@@ -92,24 +92,6 @@ else
 };
 
 (:~
- : Build a search string for search results page from search parameters
-:)
-declare function bibls:search-string(){
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-        return 
-            if(request:get-parameter($parameter, '') != '') then
-                if($parameter = 'start' or $parameter = 'sort-element') then ()
-                else if($parameter = 'q') then 
-                    (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
-                else if ($parameter = 'author') then 
-                    (<span class="param">Author/Editor: </span>,<span class="match">{$bibls:author}&#160; </span>)
-                else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
-            else ()               
-};
-
-
-(:~
  : Builds advanced search form for persons
  :)
 declare function bibls:search-form() {   
@@ -128,12 +110,7 @@ declare function bibls:search-form() {
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                         <input type="text" id="qs" name="q" class="form-control keyboard" placeholder="Any word in citation"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('qs')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('qs')}</div>
                     </div>                 
                 </div>
             </div> 
@@ -143,12 +120,7 @@ declare function bibls:search-form() {
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                         <input type="text" id="title" name="title" class="form-control keyboard"  placeholder="Title of article, journal, book, or series"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('title')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('title')}</div>
                     </div>                 
                 </div>
             </div>
@@ -157,12 +129,7 @@ declare function bibls:search-form() {
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                         <input type="text" id="author" name="author" class="form-control keyboard" placeholder="First Last or Last, First"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('author')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('author')}</div>
                     </div>                
                 </div>
             </div>  
@@ -171,12 +138,7 @@ declare function bibls:search-form() {
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                         <input type="text" id="pubPlace" name="pub-place" class="form-control keyboard" placeholder="First Last or Last, First"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('pubPlace')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('pubPlace')}</div>
                     </div>                
                 </div>
             </div>
@@ -185,12 +147,7 @@ declare function bibls:search-form() {
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                     <input type="text" id="publisher" name="publisher" class="form-control keyboard" placeholder="Publisher Name"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                    {global:keyboard-select-menu('publisher')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('publisher')}</div>
                     </div>                 
                 </div>
             </div>   

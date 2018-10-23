@@ -41,6 +41,14 @@ declare variable $search:perpage {request:get-parameter('perpage', 20) cast as x
  data:search($collection)
 :)
 declare %templates:wrap function search:search-data($node as node(), $model as map(*), $collection as xs:string?){
+    let $search-string := 
+        if($collection = ('sbd','q','authors','saints','persons')) then persons:query-string($collection)
+        else if($collection ='spear') then spears:query-string()
+        else if($collection = 'places') then places:query-string()
+        else if($collection = ('bhse','nhsl','bible')) then bhses:query-string($collection)
+        else if($collection = 'bibl') then bibls:query-string()
+        else if($collection = 'manuscripts') then ms:query-string()
+        else ()
     let $queryExpr :=  
         if($collection = ('sbd','q','authors','saints','persons')) then persons:query-string($collection)
         else if($collection ='spear') then spears:query-string()
@@ -52,7 +60,7 @@ declare %templates:wrap function search:search-data($node as node(), $model as m
     return
         if(empty($queryExpr) or $queryExpr = "" or empty(request:get-parameter-names())) then ()
         else 
-            let $hits := data:search($collection,'')
+            let $hits := data:search($collection,$search-string)
             return
                 map {
                         "hits" := $hits,

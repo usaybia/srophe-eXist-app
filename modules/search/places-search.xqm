@@ -303,7 +303,7 @@ declare function places:limit-by-lang-ar(){
 :)
 declare function places:query-string() as xs:string?{
     concat("collection('",$config:data-root,"/places/tei')//tei:body",
-    places:keyword(),
+    data:keyword-search(),
     places:type(),
     places:place-name(),
     places:location(),
@@ -316,60 +316,6 @@ declare function places:query-string() as xs:string?{
     data:mentioned(),
     places:limit-by-lang-en(),places:limit-by-lang-syr(),places:limit-by-lang-ar()
     )
-};
-
-(:~
- : Build search parameter string for search results page
-:)
-declare function places:search-string(){
-<span xmlns="http://www.w3.org/1999/xhtml">
-{(
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-    return 
-        if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
-            else if($parameter = 'q') then 
-                (<span class="param">Keyword: </span>,<span class="match">{$places:q}&#160; </span>)
-            else if($parameter = 'p') then 
-                (<span class="param">Place Name: </span>,<span class="match">{$places:p}&#160; </span>)
-            else if($parameter = 'type') then 
-                (<span class="param">Type: </span>,<span class="match">{$places:type}&#160; </span>)
-            else if($parameter = 'loc') then 
-                (<span class="param">Location: </span>,<span class="match">{$places:loc}&#160; </span>)
-            else if($parameter = 'e') then 
-                (<span class="param">Event: </span>,<span class="match">{$places:e}&#160; </span>)
-            else if($parameter = 'eds') then 
-                (<span class="param">Event Start Date: </span>,<span class="match">{$places:eds}&#160; </span>)
-            else if($parameter = 'ede') then 
-                (<span class="param">Event End Date: </span>,<span class="match">{$places:ede}&#160; </span>)
-            else if($parameter = 'a') then 
-                (<span class="param">Attestations: </span>,<span class="match">{$places:a}&#160; </span>)
-            else if($parameter = 'ads') then 
-                (<span class="param">Attestations Start Date: </span>,<span class="match">{$places:ads}&#160; </span>)
-            else if($parameter = 'ade') then 
-                (<span class="param">Attestations End Date: </span>,<span class="match">{$places:ade}&#160; </span>)
-            else if($parameter = 'c') then 
-                (<span class="param">Religious Communities: </span>,<span class="match">{$places:c}&#160; </span>)
-            else if($parameter = 'cds') then 
-                (<span class="param">Religious Communities Start Date: </span>,<span class="match">{$places:cds}&#160; </span>)
-            else if($parameter = 'cde') then 
-                (<span class="param">Religious Communities End Date: </span>,<span class="match">{$places:cde}&#160; </span>)            
-            else if($parameter = 'existds') then 
-                (<span class="param">Existence Start Date: </span>,<span class="match">{$places:existds}&#160; </span>)
-            else if($parameter = 'existde') then 
-                (<span class="param">Existence End Date: </span>,<span class="match">{$places:existde}&#160; </span>)        
-            
-            else if($parameter = 'en' and $places:en != '') then 
-                (<span class="param">English </span>)  
-            else if($parameter = 'syr' and $places:syr != '') then 
-                (<span class="param">Syriac </span>)
-            else if($parameter = 'ar' and $places:ar != '') then 
-                (<span class="param">Arabic </span>)    
-            else (<span class="param"> {replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
-        else ())
-        }
-</span>                                            
 };
 
 declare function places:results-node($hit){
@@ -416,12 +362,7 @@ declare function places:search-form() {
                     <div class="col-sm-10 col-md-9 ">
                        <div class="input-group">
                         <input type="text" id="qs" name="q" class="form-control keyboard"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                {global:keyboard-select-menu('qs')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('qs')}</div>
                     </div> 
                     </div>
                   </div>
@@ -431,12 +372,7 @@ declare function places:search-form() {
                     <div class="col-sm-10 col-md-9 ">
                        <div class="input-group">
                             <input type="text" id="p" name="p" class="form-control keyboard"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                    {global:keyboard-select-menu('p')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('p')}</div>
                         </div> 
                     </div>
                   </div>
@@ -446,12 +382,7 @@ declare function places:search-form() {
                         <div class="col-sm-10 col-md-9 ">
                            <div class="input-group">
                                 <input type="text" id="loc" name="loc" class="form-control keyboard"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                    {global:keyboard-select-menu('loc')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('loc')}</div>
                             </div>                         
                         </div>
                     </div>
@@ -461,12 +392,7 @@ declare function places:search-form() {
                         <div class="col-sm-10 col-md-9 ">
                            <div class="input-group">
                             <input type="text" id="e" name="e" class="form-control keyboard"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                    {global:keyboard-select-menu('e')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('e')}</div>
                             </div>                              
                         </div>
                     </div>
@@ -485,12 +411,7 @@ declare function places:search-form() {
                         <div class="col-sm-10 col-md-9 ">
                            <div class="input-group">
                             <input type="text" id="a" name="a" class="form-control keyboard"/>
-                            <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                        &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                    </button>
-                                    {global:keyboard-select-menu('a')}
-                            </div>
+                            <div class="input-group-btn">{global:keyboard-select-menu('a')}</div>
                             </div>                             
                         </div>
                     </div>

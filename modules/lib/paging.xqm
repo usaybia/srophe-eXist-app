@@ -11,7 +11,6 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace xi = "http://www.w3.org/2001/XInclude";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 
-
 (:~
  : Build paging menu for search results, includes search string
  : $param @hits hits as nodes
@@ -155,6 +154,12 @@ declare function page:sort($param-string as xs:string?, $start as xs:integer?, $
  : Filters out $start, $sort-element and $perpage parameters. 
 :)
 declare function page:display-search-params($collection as xs:string?){
+    if($collection = ('sbd','q','authors','saints','persons')) then page:person-search-string()
+    else if($collection ='spear') then page:spear-search-string()
+    else if($collection = 'places') then page:place-search-string()
+    else if($collection = ('bhse','nhsl','bible')) then page:bhse-search-string()
+    else if($collection = 'bibl') then page:bibl-search-string()
+    else 
     <span xmlns="http://www.w3.org/1999/xhtml">
     {(
         let $parameters :=  request:get-parameter-names()
@@ -177,4 +182,155 @@ declare function page:display-search-params($collection as xs:string?){
             else ())
             }
     </span>
+};
+
+(: Syriaca.org collection speccific search params :)
+(: Places :)
+declare function page:place-search-string(){
+<span xmlns="http://www.w3.org/1999/xhtml">
+{(
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+    return 
+        if(request:get-parameter($parameter, '') != '') then
+            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            else if($parameter = ('q','keyword')) then 
+                (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'p') then 
+                (<span class="param">Place Name: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'type') then 
+                (<span class="param">Type: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'loc') then 
+                (<span class="param">Location: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'e') then 
+                (<span class="param">Event: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'eds') then 
+                (<span class="param">Event Start Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'ede') then 
+                (<span class="param">Event End Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'a') then 
+                (<span class="param">Attestations: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'ads') then 
+                (<span class="param">Attestations Start Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'ade') then 
+                (<span class="param">Attestations End Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'c') then 
+                (<span class="param">Religious Communities: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'cds') then 
+                (<span class="param">Religious Communities Start Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'cde') then 
+                (<span class="param">Religious Communities End Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)            
+            else if($parameter = 'existds') then 
+                (<span class="param">Existence Start Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'existde') then 
+                (<span class="param">Existence End Date: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)        
+            else if($parameter = 'en' and request:get-parameter($parameter, '') != '') then 
+                (<span class="param">English </span>)  
+            else if($parameter = 'syr' and request:get-parameter($parameter, '') != '') then 
+                (<span class="param">Syriac </span>)
+            else if($parameter = 'ar' and request:get-parameter($parameter, '') != '') then 
+                (<span class="param">Arabic </span>)    
+            else (<span class="param"> {replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+        else ())
+        }
+</span>                                            
+};
+
+(: Spear :)
+declare function page:spear-search-string() as xs:string*{
+<span xmlns="http://www.w3.org/1999/xhtml">
+{(
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+    return 
+        if(request:get-parameter($parameter, '') != '') then
+            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            else if($parameter = 'fq') then ()
+            else if($parameter = ('q','keyword')) then 
+                (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160;</span>)
+            else if($parameter = 'keyword') then 
+                (<span class="param">Controlled Keyword: </span>,<span class="match">{lower-case(functx:camel-case-to-words(substring-after(request:get-parameter($parameter, ''),'/keyword/'),' '))}&#160; </span>)
+            else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+        else ())
+        }
+</span>
+};
+
+declare function page:bhse-search-string(){
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+    return 
+            if(request:get-parameter($parameter, '') != '') then
+                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                else if($parameter = 'q') then 
+                    (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'related-pers') then 
+                    (<span class="param">Related Persons: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'modern') then 
+                    (<span class="param">Modern Translations: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'ancient') then 
+                    (<span class="param">Ancient Versions: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'mss') then 
+                    (<span class="param">Manuscript: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)            
+                else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160;  </span>)    
+            else ()               
+};
+
+declare function page:bibl-search-string(){
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+        return 
+            if(request:get-parameter($parameter, '') != '') then
+                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                else if($parameter = 'q') then 
+                    (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if ($parameter = 'author') then 
+                    (<span class="param">Author/Editor: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+            else ()               
+};
+
+declare function page:nhsl-search-string(){
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+        return 
+            if(request:get-parameter($parameter, '') != '') then
+                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                else if($parameter = 'q') then 
+                    (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'related-pers') then 
+                    (<span class="param">Related Persons: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'modern') then 
+                    (<span class="param">Modern Translations: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'ancient') then 
+                    (<span class="param">Ancient Versions: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'mss') then 
+                    (<span class="param">Manuscript: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)            
+                else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+            else ()               
+};
+
+declare function page:person-search-string() as node()*{
+<span xmlns="http://www.w3.org/1999/xhtml">
+{(
+    let $parameters :=  request:get-parameter-names()
+    for  $parameter in $parameters
+    return 
+        if(request:get-parameter($parameter, '') != '') then
+            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            else if($parameter = 'q') then 
+                (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+           (: else if($parameter = 'coll') then 
+                (<span class="param">Resource: </span>,<span class="match">{
+                    if($persons:coll = 'sbd' ) then '"The Syriac Biographical Dictionary"'
+                    else if($persons:coll = 'q' ) then '"Qadishe: A Guide to the Syriac Saints"'
+                    else if($persons:coll = 'authors' ) then '"A Guide to Syriac Authors"'
+                    else $persons:coll
+                }&#160; </span>):)
+            else if($parameter = 'gender') then 
+                (<span class="param">Sex or Gender: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else (<span class="param"> {replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+        else ())
+        }
+      </span>
 };

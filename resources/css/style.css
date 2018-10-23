@@ -90,7 +90,7 @@ footer .poweredby img { width: 120px; }
 .geo-home #map {border-bottom:4px solid #456889}
 
 /* I */
-.indent {margin-left: 1em;}
+.indent {margin-left: 2em;}
 img{ margin:0px }
 .img-credit{
     position:absolute;
@@ -301,7 +301,7 @@ pre {
     padding-right:.5em;    
 }
 
-.top-padding {margin-top:4.5em !important;}
+.top-padding {margin-top:2.5em !important;}
 
 /* W */
 .white-link{color:white;}

@@ -90,7 +90,7 @@ declare function config:collection-vars($collection as xs:string?) as node()?{
  : Get collection data
  : @param $collection match collection name in repo-config.xml 
 :)
-declare function config:collection-title($node as node(), $model as map(*), $collection as xs:string?) as xs:string?{
+declare %templates:wrap function config:collection-title($node as node(), $model as map(*), $collection as xs:string?) as xs:string?{
     if(config:collection-vars($collection)/@title != '') then 
         string(config:collection-vars($collection)/@title)
     else $config:app-title

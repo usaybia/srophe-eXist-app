@@ -296,7 +296,7 @@ declare function persons:query-string($collection as xs:string?) as xs:string? {
     persons:type(),
     persons:gender(),
     persons:state(),
-    persons:keyword(),
+    data:keyword-search(),
     persons:name(),
     persons:uri(),
     persons:date-range(),
@@ -304,34 +304,6 @@ declare function persons:query-string($collection as xs:string?) as xs:string? {
     data:related-persons(),
     data:mentioned()
     )
-};
-
-(:~
- : Build a search string for search results page from search parameters
-:)
-declare function persons:search-string() as node()*{
-<span xmlns="http://www.w3.org/1999/xhtml">
-{(
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-    return 
-        if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
-            else if($parameter = 'q') then 
-                (<span class="param">Keyword: </span>,<span class="match">{$persons:q}&#160; </span>)
-            else if($parameter = 'coll') then 
-                (<span class="param">Resource: </span>,<span class="match">{
-                    if($persons:coll = 'sbd' ) then '"The Syriac Biographical Dictionary"'
-                    else if($persons:coll = 'q' ) then '"Qadishe: A Guide to the Syriac Saints"'
-                    else if($persons:coll = 'authors' ) then '"A Guide to Syriac Authors"'
-                    else $persons:coll
-                }&#160; </span>)
-            else if($parameter = 'gender') then 
-                (<span class="param">Sex or Gender: </span>,<span class="match">{$persons:gender}&#160; </span>)
-            else (<span class="param"> {replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
-        else ())
-        }
-      </span>
 };
 
 (:~
@@ -412,12 +384,7 @@ declare function persons:search-form($collection) {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                         <input type="text" id="qs" name="q" class="form-control keyboard" placeholder="Any script (Syriac, Roman, etc.)"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('qs')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('qs')}</div>
                     </div> 
                 </div>
             </div>
@@ -427,33 +394,11 @@ declare function persons:search-form($collection) {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                         <input type="text" id="persNameSearch" name="persName" class="form-control keyboard" placeholder="Any script (Syriac, Roman, etc.)"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                    {global:keyboard-select-menu('persNameSearch')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('persNameSearch')}</div>
                     </div> 
                 </div>
             </div>
             <hr/>            
-                <!-- URI
-                    <div class="row-fluid">
-                        <div class="span2">URI: </div>
-                        <div class="span10 form-inline">
-                        <input type="text" name="uri"/>&#160;
-                        <input type="text" name="uri"/>&#160;
-                            <select name="uri-type" class="input-medium">
-                                <option value="">- Select -</option>
-                                <option value="any">any</option>
-                                <option value="viaf">VIAF</option>
-                                <option value="worldcat">WorldCat</option>
-                                <option value="fihrist">Fihrist</option>
-                                <option value="wikipedia">Wikipedia</option>
-                            </select>
-                        </div>
-                    </div>
-                    -->
             <!-- Date range-->
                 <div class="form-group">
                         <label for="start-date" class="col-sm-2 col-md-3  control-label">Gregorian Date Range: </label>

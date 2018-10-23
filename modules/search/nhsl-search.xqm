@@ -122,37 +122,13 @@ declare function nhsls:related-persons() as xs:string?{
 :)
 declare function nhsls:query-string() as xs:string? {
  concat("collection('",$config:data-root,"/works/tei')//tei:body",
-    nhsls:keyword(),nhsls:title(),nhsls:author(),nhsls:prologue(),
+    data:keyword-search(),nhsls:title(),nhsls:author(),nhsls:prologue(),
     nhsls:incipit(),nhsls:explicit(),nhsls:editions(),
     nhsls:modern(),nhsls:ancient(),nhsls:mss(),
     nhsls:refs(),nhsls:related-persons(),
     nhsls:idno()
     )
 };
-
-(:~
- : Build a search string for search results page from search parameters
-:)
-declare function nhsls:search-string(){
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-        return 
-            if(request:get-parameter($parameter, '') != '') then
-                if($parameter = 'start' or $parameter = 'sort-element') then ()
-                else if($parameter = 'q') then 
-                    (<span class="param">Keyword: </span>,<span class="match">{$nhsls:q}&#160; </span>)
-                else if($parameter = 'related-pers') then 
-                    (<span class="param">Related Persons: </span>,<span class="match">{$nhsls:related-pers}&#160; </span>)
-                else if($parameter = 'modern') then 
-                    (<span class="param">Modern Translations: </span>,<span class="match">{$nhsls:modern}&#160; </span>)
-                else if($parameter = 'ancient') then 
-                    (<span class="param">Ancient Versions: </span>,<span class="match">{$nhsls:ancient}&#160; </span>)
-                else if($parameter = 'mss') then 
-                    (<span class="param">Manuscript: </span>,<span class="match">{$nhsls:mss}&#160; </span>)            
-                else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
-            else ()               
-};
-
 
 (:~
  : Builds advanced search form for persons

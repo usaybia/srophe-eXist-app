@@ -119,28 +119,6 @@ declare function spears:query-string() as xs:string? {
 };
 
 (:~
- : Build a search string for search results page from search parameters
-:)
-declare function spears:search-string() as xs:string*{
-<span xmlns="http://www.w3.org/1999/xhtml">
-{(
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-    return 
-        if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
-            else if($parameter = 'fq') then ()
-            else if($parameter = 'q') then 
-                (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160;</span>)
-            else if($parameter = 'keyword') then 
-                (<span class="param">Controlled Keyword: </span>,<span class="match">{lower-case(functx:camel-case-to-words(substring-after($spears:keyword,'/keyword/'),' '))}&#160; </span>)
-            else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
-        else ())
-        }
-</span>
-};
-
-(:~
  : Format search results
  : Need a better uri for factoids, 
 :)
@@ -214,12 +192,7 @@ declare function spears:search-form() {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                         <input type="text" id="qs" name="q" class="form-control keyboard"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('qs')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('qs')}</div>
                     </div> 
                 </div>
             </div>
@@ -229,12 +202,7 @@ declare function spears:search-form() {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                     <input type="text" id="name" name="name" class="form-control keyboard"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('name')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('name')}</div>
                     </div> 
                 </div>
             </div>            
@@ -243,12 +211,7 @@ declare function spears:search-form() {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                     <input type="text" id="place" name="place" class="form-control keyboard"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('place')} 
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('place')}</div>
                     </div> 
                 </div>
             </div> 
@@ -257,26 +220,10 @@ declare function spears:search-form() {
                 <div class="col-sm-10 col-md-6">
                     <div class="input-group">
                     <input type="text" id="event" name="event" class="form-control keyboard"/>
-                        <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                    &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                                </button>
-                                {global:keyboard-select-menu('event')}
-                        </div>
+                        <div class="input-group-btn">{global:keyboard-select-menu('event')}</div>
                     </div> 
                 </div>
-            </div>              
-            <!-- Person gender 
-            <div class="form-group">            
-                <label for="gender" class="col-sm-2 col-md-3  control-label">Gender: </label>
-                <div class="col-sm-10 col-md-6">
-                    <select name="gender" id="gender" class="form-control">
-                            <option value="any">any</option>
-                            <option value="M">M</option>
-                            <option value="F">F</option>
-                    </select>
-                </div>
-            </div>     -->   
+            </div>               
             <hr/>
             <h4>Limit by</h4>
             <div class="form-group">            

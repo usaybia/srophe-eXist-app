@@ -21,21 +21,6 @@ declare function ms:query-string() as xs:string? {
 };
 
 (:~
- : Build a search string for search results page from search parameters
-:)
-declare function ms:search-string() as xs:string*{
-    let $parameters :=  request:get-parameter-names()
-    for  $parameter in $parameters
-    return 
-        if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
-            else if($parameter = 'q') then 
-                (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160;</span>)
-            else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')} &#160;</span>)    
-        else ()            
-};
-
-(:~
  : Format search results
  : Need a better uri for factoids, 
 :)
@@ -68,12 +53,7 @@ declare function ms:search-form() {
             <div class="col-sm-10 col-md-9 ">
                 <div class="input-group">
                     <input type="text" id="qs" name="q" class="form-control keyboard"/>
-                    <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Select Keyboard">
-                                &#160;<span class="syriaca-icon syriaca-keyboard">&#160; </span><span class="caret"/>
-                            </button>
-                            {global:keyboard-select-menu('qs')}
-                    </div>
+                    <div class="input-group-btn">{global:keyboard-select-menu('qs')}</div>
                 </div> 
             </div>
         </div>
