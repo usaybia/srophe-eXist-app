@@ -248,5 +248,64 @@ return
     else()
 };
 
+(: Syriaca.org specific functions :)
+(:
+ : HTML display of 'subject headings' using 'cited by' relationships
+ : @param $idno bibl idno
+:)
+declare function rel:subject-headings($idno){
+    let $hits := rel:get-cited(replace($idno[1]/text(),'/tei',''))?cited
+    let $total := count($hits)
+    return 
+        if(exists($hits)) then
+            <div class="well relation">
+                <h4>Subject Headings:</h4>
+                {
+                    (
+                    for $recs in subsequence($hits,1,20)
+                    let $headword := substring-after($recs,'headword:=')
+                    let $id := replace(substring-before($recs,'headword:='),'/tei','')
+                    return 
+                            <span class="sh pers-label badge">{replace($headword,' — ','')} 
+                            <a href="search.html?subject={$id}" class="sh-search">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </a></span>
+                            ,
+                       if($total gt 20) then
+                        (<div class="collapse" id="showAllSH">
+                            {
+                            for $recs in subsequence($hits,20,$total)
+                            let $headword := substring-after($recs,'headword:=')
+                            let $id := replace(substring-before($recs,'headword:='),'/tei','')
+                            return 
+                               <span class="sh pers-label badge">{replace($headword,' — ',' ')} 
+                               <a href="search.html?subject={$id}" class="sh-search"> 
+                               <span class="glyphicon glyphicon-search" aria-hidden="true">
+                               </span></a></span>
+                            }
+                        </div>,
+                        <a class="btn btn-info getData" style="width:100%; margin-bottom:1em;" data-toggle="collapse" data-target="#showAllSH" data-text-swap="Hide"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Show All </a>
+                        )
+                    else ()
+                    )
+                }
+            </div>
+        else ()
+};
 
 
+(:~ 
+ : Get 'cited by' relationships. Used in bibl module. 
+ : @param $idno bibl idno
+:)
+declare function rel:get-cited($idno){
+let $data := 
+    for $r in collection($global:data-root)//tei:body[.//@target[. = replace($idno[1],'/tei','')]]
+    let $headword := replace($r/ancestor::tei:TEI/descendant::tei:title[1]/text()[1],' — ','')
+    let $id := $r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][1]
+    let $sort := global:build-sort-string($headword,'')
+    where $sort != ''
+    order by $sort
+    return concat($id, 'headword:=', $headword)
+return  map { "cited" := $data}    
+};

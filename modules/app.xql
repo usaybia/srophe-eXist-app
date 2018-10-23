@@ -498,3 +498,105 @@ declare %templates:wrap function app:get-feed($node as node(), $model as map(*))
     }     
 };
 
+(:~    
+ : Special output for NHSL work records
+:)
+declare %templates:wrap function app:display-work($node as node(), $model as map(*)){
+        <div class="row">
+            <div class="col-md-8 column1">
+                {
+                    let $data := $model("hits")/descendant::tei:body/tei:bibl
+                    let $infobox := 
+                        <body xmlns="http://www.tei-c.org/ns/1.0">
+                        <bibl>
+                        {(
+                            $data/@*,
+                            $data/tei:title[not(@type=('initial-rubric','final-rubric'))],
+                            $data/tei:author,
+                            $data/tei:editor,
+                            $data/tei:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')],
+                            $data/tei:note[@type='abstract'],
+                            $data/tei:date,
+                            $data/tei:extent,
+                            $data/tei:idno[starts-with(.,'http://syriaca.org')]
+                         )}
+                        </bibl>
+                        </body>
+                     let $allData := 
+                     <body xmlns="http://www.tei-c.org/ns/1.0"><bibl>
+                        {(
+                            $data/@*,
+                            $data/child::*
+                            [not(self::tei:title[not(@type=('initial-rubric','final-rubric'))])]
+                            [not(self::tei:author)]
+                            [not(self::tei:editor)]
+                            [not(self::tei:desc[@type='abstract' or starts-with(@xml:id, 'abstract-en')])]
+                            [not(self::tei:note[@type='abstract'])]
+                            [not(self::tei:date)]
+                            [not(self::tei:extent)]
+                            [not(self::tei:idno)])}
+                        </bibl></body>
+                     return 
+                        (
+                        app:work-toc($data),
+                        global:tei2html($infobox),
+                        app:external-relationships($node, $model,'dcterms:isPartOf','',''),
+                        app:external-relationships($node, $model,'skos:broadMatch','',''),
+                        app:external-relationships($node, $model,'syriaca:sometimesCirculatesWith','',''),
+                        app:external-relationships($node, $model,'syriaca:part-of-tradition','',''),
+                        global:tei2html($allData))  
+                } 
+            </div>
+            <div class="col-md-4 column2">
+                {(
+                app:rec-status($node, $model,''),
+                <div class="info-btns">  
+                    <button class="btn btn-default" data-toggle="modal" data-target="#feedback">Corrections/Additions?</button>&#160;
+                    <a href="#" class="btn btn-default" data-toggle="modal" data-target="#selection" data-ref="../documentation/faq.html" id="showSection">Is this record complete?</a>
+                </div>,                
+                if($model("hits")//tei:body/child::*/tei:listRelation) then 
+                rel:build-relationships($model("hits")//tei:body/child::*/tei:listRelation, request:get-parameter('id', ''), 'list-description', 'false')
+                else (),
+                app:link-icons-list($node, $model)
+                )}  
+            </div>
+        </div>
+};
+
+(:~    
+ : Works TOC on bibl elements
+:)
+declare function app:work-toc($data){
+let $data := $data/tei:bibl[@type != ('lawd:Citation','lawd:ConceptualWork')]
+return global:tei2html(<work-toc xmlns="http://www.tei-c.org/ns/1.0" >{$data}</work-toc>)
+};
+
+(:~
+ : bibl module relationships
+:)                   
+declare function app:subject-headings($node as node(), $model as map(*)){
+    rel:subject-headings($model("data")//tei:idno[@type='URI'][ends-with(.,'/tei')])
+};
+
+(:~  
+ : Display any TEI nodes passed to the function via the paths parameter
+ : Used by templating module, defaults to tei:body if no nodes are passed. 
+ : @param $paths comma separated list of xpaths for display. Passed from html page  
+:)
+declare function app:link-icons-list($node as node(), $model as map(*)){
+let $data := $model("data")//tei:body/descendant::tei:idno[not(contains(., $global:base-uri))]  
+return 
+    if(not(empty($data))) then 
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">See Also </h3></div>
+            <div class="panel-body">
+                <ul>
+                    {for $l in $data
+                     return <li>{global:tei2html($l)}</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    else ()
+}; 
+
