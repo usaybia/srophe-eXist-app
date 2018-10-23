@@ -53,7 +53,7 @@
 body {background-color:#385978;}
 #main { padding: 0; background-color:#999; }
 #content{background-color:white; padding-top: 50px;}
-.main-content-block {padding:1em 2em;}
+.main-content-block {padding:1em 2em; background-color:white;}
 
 /* Adds a little extra padding around interior content, useful when for when nav wraps. */
 .interior-content {padding:0; padding-top: 50px;}
