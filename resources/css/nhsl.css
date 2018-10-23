@@ -12,14 +12,14 @@ body {background-color:#666;}
 
 /* Banner styles SPEAR */
 .banner-index {
-	background-image:url('../img/nhsl-banner.png');
+	background-image:url('../images/nhsl-banner.png');
 	background-position:top center;
     height:200px;
 }
 
 /* BHSE banner internal pages */
 .banner-interior {
-	background-image:url('../img/nhsl-banner.png');
+	background-image:url('../images/nhsl-banner.png');
     background-position:top center;
     height:200px;
 }

@@ -20,8 +20,8 @@ body {
 .navbar {border-bottom:4px solid #456889 !important;}
 .navbar-inner {border-bottom:.5em solid #456889 !important;}
 .navbar-inner .container{height: 45px !important; padding-top:.5em; margin-left:.5em;}
-.brand {margin-top:-.75em; margin-left:40px;padding-left:0;}
-.brand img {margin-left:1.5em;padding-left:0;}
+.$nav-base {margin-top:-.75em; margin-left:40px;padding-left:0;}
+.$nav-base img {margin-left:1.5em;padding-left:0;}
 
 .navbar-inner .nav > li > a:hover, .advanced-search > a:hover {
         border-bottom: 4px solid #DDEAF1 !important;  
@@ -75,46 +75,46 @@ h3.syr{
 }
 
 .places-slide {
-    background-image:url('../img/places.jpg');    
+    background-image:url('../images/places.jpg');    
     background-size:cover;
 }
 .persons-slide {
-    background-image:url('../img/persons-home.png');  
+    background-image:url('../images/persons-home.png');  
     background-size:cover;
 }
 .saints-slide {
-    background-image:url('../img/q-home.png');     
+    background-image:url('../images/q-home.png');     
     background-size:cover;
 }
 .authors-slide {
-    background-image:url('../img/authors-home.jpg');     
+    background-image:url('../images/authors-home.jpg');     
     background-size:cover;
 }
 .works-slide {
-    background-image:url('../img/bhse-home.jpg');        
+    background-image:url('../images/bhse-home.jpg');        
     background-size:cover;
 }
 .mss-slide {
-    background-image:url('../img/works-home.jpg');        
+    background-image:url('../images/works-home.jpg');        
     background-size:cover;
 }
 .events-slide {
-    background-image:url('../img/spear-home.png');        
+    background-image:url('../images/spear-home.png');        
     background-size:cover;
 }
    
 .bibl-slide {
-    background-image:url('../img/bibl-home.png');        
+    background-image:url('../images/bibl-home.png');        
     background-size:cover;
 }
 
 .nhsl-slide {
-    background-image:url('../img/nhsl-home.png');        
+    background-image:url('../images/nhsl-home.png');        
     background-size:cover;
 }
 
 .bible-slide {
-    background-image:url('../img/bible-home.png');        
+    background-image:url('../images/bible-home.png');        
     background-size:cover;
 }
 /* styles for index4 */
