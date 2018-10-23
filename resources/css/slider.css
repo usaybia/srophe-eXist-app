@@ -1,56 +1,4 @@
 /* Application styles could go here */
-/*
- * Colors:
- * Dark red: 753C28
- * Dark orange: B3522B
- * Light orange: E69849
- * Pale tan: F5F2E9
- * Dark Blue: 456889
- * Blue/grey: A2B1B9
- * Light Blue: DDEAF1
- * Dark Grey #333
- * Light Grey (text): #999
- */
-body {
-    background-color:#385978;
-}
-#main {background-color:#999;}
-
-/* Main content blocks */
-.navbar {border-bottom:4px solid #456889 !important;}
-.navbar-inner {border-bottom:.5em solid #456889 !important;}
-.navbar-inner .container{height: 45px !important; padding-top:.5em; margin-left:.5em;}
-.$nav-base {margin-top:-.75em; margin-left:40px;padding-left:0;}
-.$nav-base img {margin-left:1.5em;padding-left:0;}
-
-.navbar-inner .nav > li > a:hover, .advanced-search > a:hover {
-        border-bottom: 4px solid #DDEAF1 !important;  
-}
-.navbar-inner > .container > .nav > li.selected {border-bottom: 4px solid #E69849 !important; }
-.advanced-search > a {color:#999; text-decoration:none;}
-.transparent {
-    /* default fallback */
-    background: rgb(255, 255, 255) transparent;
-    /* nice browsers */
-    background: rgba(255, 255, 255, 0.8);
-    
-}
-
-
-/* Typography */
-h1 {color:#456889;}
-h2 {color:#999;}
-h3 {color:#333;}
-h3.underline {color:#999; border-bottom:3px solid #456889;}
-
-h3.syr{
-    margin-right:.75em;
-    margin-top:.5em;
-    float:right !important;
-}
-
-.srp-label {background-color:none; color:#999999; font-weight:bold;}
-
 /* Slider customizations */
 .slide {
     margin:0; 
@@ -59,11 +7,9 @@ h3.syr{
     height:450px;   
     position:relative;
 }
-
 .more-info {
     display:none;
 }
-
 .slide:hover > .more-info{
    display:block; 
    padding:2em;
@@ -73,7 +19,6 @@ h3.syr{
    background: rgba(34,34,34,0.35);
    height:450px;
 }
-
 .places-slide {
     background-image:url('../images/places.jpg');    
     background-size:cover;
@@ -101,25 +46,21 @@ h3.syr{
 .events-slide {
     background-image:url('../images/spear-home.png');        
     background-size:cover;
-}
-   
+}  
 .bibl-slide {
     background-image:url('../images/bibl-home.png');        
     background-size:cover;
 }
-
 .nhsl-slide {
     background-image:url('../images/nhsl-home.png');        
     background-size:cover;
 }
-
 .bible-slide {
     background-image:url('../images/bible-home.png');        
     background-size:cover;
 }
 /* styles for index4 */
 a.gradient{color:white; text-decoration:none;}
-
 .gradient{  
     -webkit-transition: background 1s ease-out;  
     -moz-transition: background 1s ease-out;  
@@ -182,7 +123,6 @@ a.gradient{color:white; text-decoration:none;}
     background: linear-gradient(#f5d9bc,#e67605);    
     border: 1px solid #e67605; 
 }
-
 .events-slide .gradient {
     background: -webkit-linear-gradient(#98ce84,#2b4a2b);  
     background: -moz-linear-gradient(#98ce84,#2b4a2b);  
@@ -190,7 +130,6 @@ a.gradient{color:white; text-decoration:none;}
     background: linear-gradient(#98ce84,#2b4a2b);    
     border: 1px solid #2b4a2b; 
 }
-
 .bibl-slide .gradient {
     background: -webkit-linear-gradient(#636363,#333333);  
     background: -moz-linear-gradient(#636363,#333333);  
@@ -198,7 +137,6 @@ a.gradient{color:white; text-decoration:none;}
     background: linear-gradient(#636363,#333333);    
     border: 1px solid #333333; 
 }
-
 .nhsl-slide .gradient {
     background: -webkit-linear-gradient(#689dcf,#333333);  
     background: -moz-linear-gradient(#689dcf,#333333);  
@@ -228,7 +166,5 @@ a.gradient{color:white; text-decoration:none;}
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 }
-
 .slide-credit a {color:white; text-decoration:none;}
-
 .slider-control {font-size: 5em; color:white; text-shadow: 2px 2px #000000;}

@@ -150,7 +150,7 @@ declare %templates:wrap function app:other-data-formats($node as node(), $model 
 let $id := (:replace($model("data")/descendant::tei:idno[contains(., $config:base-uri)][1],'/tei',''):)request:get-parameter('id', '')
 return 
     if($formats) then
-        <div class="container" style="width:100%;clear:both;margin-bottom:1em; text-align:right;">
+        <div class="indent" style="width:100%;clear:both;margin-bottom:1em; text-align:right;">
             {
                 for $f in tokenize($formats,',')
                 return 
@@ -536,14 +536,14 @@ function app:google-analytics($node as node(), $model as map(*)){
  :) 
 declare %templates:wrap function app:get-feed($node as node(), $model as map(*)){
     try {
-        if(doc('http://syriaca.org/blog/feed/')/child::*) then 
-            let $news := doc('http://syriaca.org/blog/feed/')/child::*
-            for $latest at $n in subsequence($news//item, 1, 3)
-            return 
-                <li>
-                     <a href="{$latest/link/text()}">{$latest/title/text()}</a>
-                </li>
-        else ()
+        let $feed := http:send-request(<http:request http-version="1.1" href="{xs:anyURI('http://syriaca.org/blog/feed/')}" method="get"/>)[2]
+        return  if($feed != '') then 
+                for $latest at $n in subsequence($feed//*:item, 1, 3)
+                return 
+                    <li>
+                         <a href="{$latest/link/text()}">{$latest/*:title/text()}</a>
+                    </li>
+                else ()
        } catch * {
            <error>Caught error {$err:code}: {$err:description}</error>
     }     
