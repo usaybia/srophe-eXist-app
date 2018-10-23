@@ -477,9 +477,9 @@ declare function tei2html:title-display($nodes as node()*){
 declare function tei2html:translate-series($series as xs:string?){
     if($series = 'The Syriac Biographical Dictionary') then ()
     else if($series = 'A Guide to Syriac Authors') then 
-        <a href="{$config:nav-base}/authors/index.html"><img src="{$config:nav-base}/resources/img/icons-authors-sm.png" alt="A Guide to Syriac Authors"/>author</a>
+        <a href="{$config:nav-base}/authors/index.html"><img src="{$config:nav-base}/resources/images/icons-authors-sm.png" alt="A Guide to Syriac Authors"/>author</a>
     else if($series = 'Qadishe: A Guide to the Syriac Saints') then 
-        <a href="{$config:nav-base}/q/index.html"><img src="{$config:nav-base}/resources/img/icons-q-sm.png" alt="Qadishe: A Guide to the Syriac Saints"/>saint</a>        
+        <a href="{$config:nav-base}/q/index.html"><img src="{$config:nav-base}/resources/images/icons-q-sm.png" alt="Qadishe: A Guide to the Syriac Saints"/>saint</a>        
     else $series
 };
 
