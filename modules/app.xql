@@ -20,7 +20,6 @@ import module namespace rel="http://syriaca.org/srophe/related" at "lib/get-rela
 import module namespace teiDocs="http://syriaca.org/srophe/teiDocs" at "teiDocs/teiDocs.xqm";
 import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "content-negotiation/tei2html.xqm";
 
-
 (: Namespaces :)
 declare namespace http="http://expath.org/ns/http-client";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
@@ -137,7 +136,7 @@ declare function app:h1($node as node(), $model as map(*)){
     if($model("data")/descendant::*[@syriaca-tags='#syriaca-headword']) then
         $model("data")/descendant::*[@syriaca-tags='#syriaca-headword']
     else $model("data")/descendant::tei:titleStmt[1]/tei:title[1], 
-    $model("data")/descendant::tei:idno[1]
+    $model("data")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
     )}
  </srophe-title>)
 }; 

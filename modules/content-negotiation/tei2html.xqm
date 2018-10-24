@@ -68,9 +68,9 @@ declare function tei2html:tei2html($nodes as node()*) as item()* {
             case element(tei:persName) return 
                 <span class="tei-persName">{
                     let $name := if($node/child::*) then 
-                                    for $part in $node/child::*
+                                    string-join(for $part in $node/child::*
                                     order by $part/@sort ascending, string-join($part/descendant-or-self::text(),' ') descending
-                                    return tei2html:tei2html($part/node())
+                                    return tei2html:tei2html($part/node()),' ')
                                  else tei2html:tei2html($node/node())
                     return
                         if($node/@ref) then

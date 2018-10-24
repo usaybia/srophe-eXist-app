@@ -99,7 +99,7 @@ declare function global:odd2text($element as xs:string?, $label as xs:string?) a
  :)
 declare function global:build-sort-string($titlestring as xs:string?, $lang as xs:string?) as xs:string* {
     if($lang = 'ar') then global:ar-sort-string($titlestring)
-    else normalize-space(replace($titlestring,'^\s+|^[aA]l-|^[aA]n\s|^[oO]n\s+[aA]\s+|^[oO]n\s+|^[tT]he\s+[^\p{L}]+|^[tT]he\s+|^[aA]\s+|^''De |^[|^‘|^ʻ|^ʿ|^]|^\d*\W|^[^\p{L}]+',''))
+    else normalize-space(replace($hit,'^\s+|^[aA]l-|^[aA]n\s|^[oO]n\s+[aA]\s+|^[oO]n\s+|^[tT]he\s+[^\p{L}]+|^[tT]he\s+|^[aA]\s+|^''De\s+|^[dD]e\s+|^[dD]e''\s+|^[|^‘|^ʻ|^ʿ|^]|^\d*\W|^[^\p{L}]+',''))
 };
 
 (:~
