@@ -64,7 +64,7 @@ declare function bibls:publisher() as xs:string? {
 
 declare function bibls:date() as xs:string? {
     if($bibls:date != '') then 
-        concat("[ft:query(descendant::tei:imprint/tei:date,'",data:clean-string($bibls:date),"',data:search-options())]")
+        concat("[matches(descendant::tei:imprint/tei:date,'",$bibls:date,"',data:search-options())]")
     else ()  
 };
 

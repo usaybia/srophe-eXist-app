@@ -11,9 +11,11 @@ import module namespace templates="http://exist-db.org/xquery/templates" ;
 (: Import Srophe application modules. :)
 import module namespace config="http://syriaca.org/srophe/config" at "../config.xqm";
 import module namespace data="http://syriaca.org/srophe/data" at "data.xqm";
-import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "../content-negotiation/tei2html.xqm";
+import module namespace facet="http://expath.org/ns/facet" at "facet.xqm";
+import module namespace global="http://syriaca.org/srophe/global" at "lib/global.xqm";
 import module namespace maps="http://syriaca.org/srophe/maps" at "maps.xqm";
 import module namespace page="http://syriaca.org/srophe/page" at "paging.xqm";
+import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "../content-negotiation/tei2html.xqm";
 
 (: Namespaces :)
 declare namespace tei="http://www.tei-c.org/ns/1.0";
@@ -49,6 +51,9 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
         <div class="col-md-12 map-lg" xmlns="http://www.w3.org/1999/xhtml">
             {browse:get-map($hits)}
         </div>
+    (: Syriaca.org function :)    
+    else if($browse:view = 'type' or $browse:view = 'date' or $browse:view = 'facets') then   
+        browse:by-type($hits, $collection, $sort-options)
     else
         <div class="{if($browse:view = 'type' or $browse:view = 'date' or $browse:view = 'facets') then 'col-md-8 col-md-push-4' else 'col-md-12'}" xmlns="http://www.w3.org/1999/xhtml">
            {( if(($browse:lang = 'syr') or ($browse:lang = 'ar')) then (attribute dir {"rtl"}) else(),
@@ -57,14 +62,15 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
                          {page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options)}
                     </div>
                     {
-                    if($browse:view = 'type' or $browse:view = 'date' or $browse:view = 'facets') then ()
+                    if($browse:view = ('type','date','facets','other','ܐ-ܬ','ا-ي') ) then ()
                     else browse:browse-abc-menu()
                     }
                 </div>,
                 <h3>{(
                     if(($browse:lang = 'syr') or ($browse:lang = 'ar')) then (attribute dir {"rtl"}, attribute lang {"syr"}, attribute class {"label pull-right"}) 
                     else attribute class {"label"},
-                    if($browse:alpha-filter != '') then $browse:alpha-filter else 'A')}</h3>,
+                    if($browse:view = ('type','date','facets','other','ܐ-ܬ','ا-ي') ) then ()
+                    else if($browse:alpha-filter != '') then $browse:alpha-filter else 'A')}</h3>,
                 <div class="results {if($browse:lang = 'syr' or $browse:lang = 'ar') then 'syr-list' else 'en-list'}">
                     {if(($browse:lang = 'syr') or ($browse:lang = 'ar')) then (attribute dir {"rtl"}) else()}
                     {browse:display-hits($hits)}
@@ -80,13 +86,13 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
 declare function browse:display-hits($hits){
     for $hit in subsequence($hits, $browse:start,$browse:perpage)
     let $sort-title := 
-        if($browse:lang != 'en' and $browse:lang != 'syr') then 
-            <span class="sort-title" lang="{$browse:lang}" xml:lang="{$browse:lang}">{(if($browse:lang='ar') then attribute dir { "rtl" } else (), string($hit/@sort-title))}</span> 
+        if($browse:lang != 'en' and $browse:lang != 'syr' and $browse:lang != '') then 
+            <span class="sort-title" lang="{$browse:lang}" xml:lang="{$browse:lang}">{(if($browse:lang='ar') then attribute dir { "rtl" } else (), string($hit/@sort))}</span> 
         else () 
     let $uri := replace($hit/descendant::tei:publicationStmt/tei:idno[1],'/tei','')
     return 
         <div xmlns="http://www.w3.org/1999/xhtml" class="result">
-            {($sort-title, tei2html:summary-view($hit, $browse:lang, $uri))}
+            {($sort-title, tei2html:summary-view($hit[1], $browse:lang, $uri[1]))}
         </div>
 };
 
@@ -97,8 +103,8 @@ declare function browse:display-hits($hits){
  : @param $collection passed from html 
 :)
 declare function browse:display-map($node as node(), $model as map(*), $collection, $sort-options as xs:string*){
-let $hits := $model("browse-data")
-return browse:get-map($hits)                    
+    let $hits := $model("hits")
+    return browse:get-map($hits)                    
 };
 
 (:~ 
@@ -107,7 +113,7 @@ return browse:get-map($hits)
 declare function browse:get-map($hits as node()*){
     if($hits/descendant::tei:body/tei:listPlace/descendant::tei:geo) then 
             maps:build-map($hits[descendant::tei:geo], count($hits))
-    else if($hits//tei:relation[contains(@passive,'/place/') or contains(@active,'/place/') or contains(@mutual,'/place/')]) then
+    else if($hits/descendant::tei:relation[contains(@passive,'/place/') or contains(@active,'/place/') or contains(@mutual,'/place/')]) then
         let $related := 
                 for $r in $hits//tei:relation[contains(@passive,'/place/') or contains(@active,'/place/') or contains(@mutual,'/place/')]
                 let $title := string($r/ancestor::tei:TEI/descendant::tei:title[1])
@@ -148,7 +154,7 @@ declare function browse:get-map($hits as node()*){
                         {maps:build-map($locations,count($places))}
                     </div>
                 </div>
-             else()
+             else ()
     else ()
 };
 
@@ -163,11 +169,15 @@ declare function browse:browse-abc-menu(){
             if(($browse:lang = 'syr')) then  
                 for $letter in tokenize('ܐ ܒ ܓ ܕ ܗ ܘ ܙ ܚ ܛ ܝ ܟ ܠ ܡ ܢ ܣ ܥ ܦ ܩ ܪ ܫ ܬ ALL', ' ')
                 return 
-                    <li class="syr-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="syr"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>
+                    if($letter = 'ALL') then 
+                         <li class="syr-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="en"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>                        
+                    else <li class="syr-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="syr"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>
             else if(($browse:lang = 'ar')) then  
                 for $letter in tokenize('ALL ا ب ت ث ج ح  خ  د  ذ  ر  ز  س  ش  ص  ض  ط  ظ  ع  غ  ف  ق  ك ل م ن ه  و ي', ' ')
                 return 
-                    <li class="ar-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="ar"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>
+                    if($letter = 'ALL') then
+                         <li class="ar-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="en"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>
+                    else <li class="ar-menu {if($browse:alpha-filter = $letter) then "selected badge" else()}" lang="ar"><a href="?lang={$browse:lang}&amp;alpha-filter={$letter}{if($browse:view != '') then concat('&amp;view=',$browse:view) else()}{if(request:get-parameter('element', '') != '') then concat('&amp;element=',request:get-parameter('element', '')) else()}">{$letter}</a></li>
             else if($browse:lang = 'ru') then 
                 for $letter in tokenize('А Б В Г Д Е Ё Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я ALL',' ')
                 return 
@@ -179,4 +189,63 @@ declare function browse:browse-abc-menu(){
         }
         </ul>
     </div>
+};
+
+(: Syriaca.org specific functions :)
+declare function browse:by-type($hits, $collection, $sort-options){
+    let $facet-config := global:facet-definition-file($collection)
+    return         
+    (<div class="col-md-4" xmlns="http://www.w3.org/1999/xhtml">
+        {if($browse:view='type') then 
+            if($collection = ('geo','places')) then 
+                browse:browse-type($collection)
+            else facet:html-list-facets-as-buttons(facet:count($hits, $facet-config/descendant::facet:facet-definition[@name="Type"]))
+         else if($browse:view = 'date') then 
+            facet:html-list-facets-as-buttons(facet:count($hits, $facet-config/descendant::facet:facet-definition[@name="Century"]))
+         else facet:html-list-facets-as-buttons(facet:count($hits, $facet-config/descendant::facet:facet-definition))         
+        }</div>,
+    <div class="col-md-8" xmlns="http://www.w3.org/1999/xhtml">{
+        if($browse:view='type') then
+            if(request:get-parameter('fq', '') and contains(request:get-parameter('fq', ''), 'fq-Type:') or request:get-parameter('type', '') != '') then
+                (page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options),
+                <h3>{concat(upper-case(substring(request:get-parameter('type', ''),1,1)),substring(request:get-parameter('type', ''),2))}</h3>,
+                <div>{(        
+                    <div class="col-md-12 map-md">{browse:get-map($hits)}</div>,
+                        browse:display-hits($hits)
+                    )}</div>)
+            else <h3>Select Type</h3>
+        else if($browse:view='date') then 
+            if(request:get-parameter('fq', '') and contains(request:get-parameter('fq', ''), 'fq-Century:')) then 
+                (page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options),
+                <h3>{request:get-parameter('date', '')}</h3>,
+                <div>{browse:display-hits($hits)}</div>)
+            else <h3>Select Date</h3>  
+       else (page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options),
+            <h3>Results {concat(upper-case(substring(request:get-parameter('type', ''),1,1)),substring(request:get-parameter('type', ''),2))} ({count($hits)})</h3>,
+            <div>{(
+                <div class="col-md-12 map-md">{browse:get-map($hits)}</div>,
+                browse:display-hits($hits)
+                )}</div>)
+    }</div>)       
+};
+
+(:~
+ : Browse Type Menus
+:)
+declare function browse:browse-type($collection){  
+    <ul class="nav nav-tabs nav-stacked" xmlns="http://www.w3.org/1999/xhtml">
+        {
+            if($collection = ('places','geo')) then 
+                    for $types in collection($config:data-root || '/places/tei')//tei:place
+                    group by $place-types := $types/@type
+                    order by $place-types ascending
+                    return
+                        <li> {if(request:get-parameter('type', '') = replace(string($place-types),'#','')) then attribute class {'active'} else '' }
+                            <a href="?view=type&amp;type={$place-types}">
+                            {if(string($place-types) = '') then 'unknown' else replace(string($place-types),'#|-',' ')}  <span class="count"> ({count($types)})</span>
+                            </a> 
+                        </li>
+            else  ()
+        }
+    </ul>
 };

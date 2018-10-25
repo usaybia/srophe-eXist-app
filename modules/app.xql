@@ -652,7 +652,27 @@ return global:tei2html(<work-toc xmlns="http://www.tei-c.org/ns/1.0" >{$data}</w
  : bibl module relationships
 :)                   
 declare function app:subject-headings($node as node(), $model as map(*)){
-    rel:subject-headings($model("data")//tei:idno[@type='URI'][ends-with(.,'/tei')])
+    rel:subject-headings($model("hits")//tei:idno[@type='URI'][ends-with(.,'/tei')])
+};
+
+(:~
+ : bibl module relationships
+:)                   
+declare function app:cited($node as node(), $model as map(*)){
+    rel:cited($model("hits")//tei:idno[@type='URI'][ends-with(.,'/tei')], request:get-parameter('start', 1),request:get-parameter('perpage', 5))
+};
+
+
+(:~      
+ : Return teiHeader info to be used in citation used for Syriaca.org bibl module
+:)
+declare %templates:wrap function app:about($node as node(), $model as map(*)){
+    let $rec := $model("hits")
+    let $header := 
+        <srophe-about xmlns="http://www.tei-c.org/ns/1.0">
+            {$rec//tei:teiHeader}
+        </srophe-about>
+    return global:tei2html($header)
 };
 
 (:~  
@@ -661,7 +681,7 @@ declare function app:subject-headings($node as node(), $model as map(*)){
  : @param $paths comma separated list of xpaths for display. Passed from html page  
 :)
 declare function app:link-icons-list($node as node(), $model as map(*)){
-let $data := $model("data")//tei:body/descendant::tei:idno[not(contains(., $global:base-uri))]  
+let $data := $model("hits")//tei:body/descendant::tei:idno[not(contains(., $global:base-uri))]  
 return 
     if(not(empty($data))) then 
         <div class="panel panel-default">

@@ -17,7 +17,7 @@ xquery version "3.0";
  :)
 
 module namespace facet = "http://expath.org/ns/facet";
-
+import module namespace global="http://syriaca.org/srophe/global" at "global.xqm";
 import module namespace functx="http://www.functx.com";
 declare namespace tei = "http://www.tei-c.org/ns/1.0";
 
@@ -276,7 +276,7 @@ return
                     if($facet:fq) then concat('fq=',$facet:fq,$facet-query)
                     else concat('fq=',normalize-space($facet-query))
                 let $active := if(contains($facet:fq,concat(';fq-',string($f/@name),':',string($key/@value)))) then 'active' else ()    
-                return <a href="?{$new-fq}{facet:url-params()}" class="facet-label {$active}">{string($key/@label)} <span class="count"> ({string($key/@count)})</span></a> 
+                return <a href="?{$new-fq}{facet:url-params()}" class="facet-label btn btn-default {$active}">{string($key/@label)} <span class="count"> ({string($key/@count)})</span></a> 
                 }
             </div>
             <div class="facet-list collapse" id="{concat('show',replace(string($f/@name),' ',''))}">{
@@ -285,15 +285,53 @@ return
                 let $new-fq := 
                     if($facet:fq) then concat('fq=',$facet:fq,$facet-query)
                     else concat('fq=',$facet-query)
-                return <a href="?{$new-fq}{facet:url-params()}" class="facet-label">{string($key/@label)} <span class="count"> ({string($key/@count)})</span></a>
+                return <a href="?{$new-fq}{facet:url-params()}" class="facet-label btn btn-default">{string($key/@label)} <span class="count"> ({string($key/@count)})</span></a>
                 }
             </div>
             {if($count gt ($f/@show - 1)) then 
-                <a class="facet-label togglelink" 
+                <a class="facet-label togglelink btn btn-info" 
                 data-toggle="collapse" data-target="#{concat('show',replace(string($f/@name),' ',''))}" href="#{concat('show',replace(string($f/@name),' ',''))}" 
                 data-text-swap="Less"> More &#160;<i class="glyphicon glyphicon-circle-arrow-right"></i></a>
             else()}
     </div>
     else()
 )    
+};
+
+(: Syriaca.org specific facet functions :)
+(:~
+ : Syriaca.org specific group-by function for correctly labeling submodules.
+:)
+declare function facet:group-by-sub-module($results as item()*, $facet-definitions as element(facet:facet-definition)?) {
+    let $path := concat('$results/',$facet-definitions/facet:group-by/facet:sub-path/text())
+    let $sort := $facet-definitions/facet:order-by
+    for $f in util:eval($path)
+    group by $facet-grp := $f
+    order by 
+        if($sort/text() = 'value') then $facet-grp
+        else count($f)
+        descending        
+    return 
+        let $label := 
+            if($facet-grp = 'http://syriaca.org/authors') then 'Authors'
+            else if($facet-grp = 'http://syriaca.org/q') then 'Saints'
+            else ()
+        return 
+            <key xmlns="http://expath.org/ns/facet" count="{count($f)}" value="{$facet-grp}" label="{$label}"/>    
+};
+
+
+(: Syriaca.org specific function that uses the syiraca.org ODD file to establish labels for controlled values 
+ : Uses global:odd2text($element-name,$label)) for translation. 
+:)
+declare function facet:controlled-labels($results as item()*, $facet-definitions as element(facet:facet-definition)?) {
+    let $path := concat('$results/',$facet-definitions/facet:group-by/facet:sub-path/text())
+    let $sort := $facet-definitions/facet:order-by
+    for $f in util:eval($path)
+    group by $facet-grp := $f
+    order by 
+        if($sort/text() = 'value') then $facet-grp
+        else count($f)
+        descending
+    return <key xmlns="http://expath.org/ns/facet" count="{count($f)}" value="{$facet-grp}" label="{global:odd2text(tokenize(replace($path[1],'@|\[|\]',''),'/')[last()],string($facet-grp))}"/>    
 };
