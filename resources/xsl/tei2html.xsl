@@ -129,6 +129,13 @@
             </xsl:choose>
         </div>
     </xsl:template>
+    <!-- Named template for bibl about -->
+    <xsl:template match="t:srophe-about">
+        <div id="citation-note" class="well">
+            <xsl:call-template name="aboutEntry"/>
+        </div>
+    </xsl:template>
+    
     
     <!-- B -->
     <!-- suppress bibl in title mode -->
@@ -965,7 +972,7 @@
                     <!-- write out the placename itself, with appropriate language and directionality indicia -->
                     <span class="tei-{local-name(.)}">
                         <xsl:sequence select="local:attributes(.)"/>
-                        <xsl:apply-templates select="." mode="plain"/>
+                        <!--<xsl:apply-templates select="." mode="plain"/>--><xsl:value-of select="normalize-space(.)"/>
                     </span>
                     <xsl:sequence select="local:add-footnotes(@source,ancestor::t:*[@xml:lang][1])"/>
                 </li>

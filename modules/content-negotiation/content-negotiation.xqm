@@ -68,8 +68,7 @@ declare function cntneg:content-negotiation($data as item()*, $content-type as x
     let $flag := cntneg:determine-type-flag($type)
     return 
         if($flag = 'atom') then 
-           <message>Not an available data format.</message>
-           (: (response:set-header("Content-Type", "application/atom+xml; charset=utf-8"), feed:build-atom-feed($data,(),(),(),())):)
+            (response:set-header("Content-Type", "application/atom+xml; charset=utf-8"), feed:get-entry($data))
         else if($flag = 'geojson') then 
             (response:set-header("Content-Type", "application/json; charset=utf-8"),
             response:set-header("Access-Control-Allow-Origin", "application/json; charset=utf-8"),

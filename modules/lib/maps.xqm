@@ -29,10 +29,6 @@ declare function maps:build-leaflet-map($nodes as node()*, $total-count as xs:in
     <div id="map-data" style="margin-bottom:3em;">
         <script type="text/javascript" src="{$config:nav-base}/resources/leaflet/leaflet.js"/>
         <script type="text/javascript" src="{$config:nav-base}/resources/leaflet/leaflet.awesome-markers.min.js"/>
-        <!--
-        <script src="http://isawnyu.github.com/awld-js/lib/requirejs/require.min.js" type="text/javascript"/>
-        <script src="http://isawnyu.github.com/awld-js/awld.js?autoinit" type="text/javascript"/>
-        -->
         <div id="map"/>
         {
             if($total-count gt 0) then 
