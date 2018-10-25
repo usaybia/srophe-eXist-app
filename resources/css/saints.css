@@ -13,6 +13,7 @@ body {background-color:#666;}
 /* Main content blocks */
 .navbar {border-bottom:4px solid #861719 !important;}
 .q-navbar {border-bottom:4px solid #2F4C60 !important;}
+.q-navbar .banner-text, .bhse-navbar .banner-text{font-size:1.2em;}
 .advanced-search > a {color:#999; text-decoration:none;}
 
 /* Typography */

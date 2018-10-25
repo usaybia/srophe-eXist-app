@@ -164,7 +164,7 @@ img{ margin:0px }
 .navbar-inner .container{height: 45px !important; padding-top:.5em; margin-left:.5em;}
 .navbar-inner {border-bottom:.5em solid #456889 !important;}
 .navbar-inner .container{height: 45px !important; padding-top:.5em; margin-left:.5em;}
-.navbar-brand {margin-top: .15em; padding: 0 1em; margin-left: 0; margin-right: -2em; font-size: 1.35em;}
+.navbar-brand {margin-top: .15em; padding: 0 1em 0 0; margin-left: 0; margin-right: -2em; font-size: 1.35em;}
 .navbar-brand img {padding:0; margin:0; }
 .navbar .brand {margin-top:-.75em; margin-left:40px;padding-left:0;}
 .navbar .brand img {margin-left:1.5em;padding-left:0;}
@@ -288,6 +288,8 @@ pre {
     }
 /* TEI styles */
 .tei-event {display:block;}
+.tei-event p{ display:inline !important;}
+
 .tei-footnote-refs, .tei-footnote-tgt {
     font-size: .7em;
     line-height: 0.5em;

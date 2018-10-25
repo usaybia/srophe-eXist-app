@@ -157,8 +157,8 @@
         <span class="tei-{local-name(.)}">
             <xsl:sequence select="local:attributes(.)"/>
             <xsl:call-template name="rend"/>
+            <xsl:sequence select="local:add-footnotes(@source,.)"/>
         </span>
-        <xsl:sequence select="local:add-footnotes(@source,.)"/>
     </xsl:template>
     <xsl:template match="t:*" mode="inline plain" xml:space="preserve">
         <xsl:apply-templates/>

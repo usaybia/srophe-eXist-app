@@ -42,7 +42,7 @@ declare %templates:wrap function person:h1($node as node(), $model as map(*)){
                     $model("hits")//tei:person/descendant::tei:birth,
                     $model("hits")//tei:person/descendant::tei:death,
                     $model("hits")//tei:person/descendant::tei:floruit,
-                    $model("hits")//tei:person/descendant::tei:idno[contains(.,$config:base-uri)]
+                    $model("hits")/descendant::tei:teiHeader
                 )}
             </srophe-title>
     return global:tei2html($title-nodes)

@@ -1,9 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
     
     <!-- =================================================================== -->
     <!-- Helper Functions  -->
     <!-- =================================================================== -->
+    <xsl:variable name="odd">
+        <xsl:if test="doc-available(concat('xmldb:exist://',$app-root,'/documentation/syriaca-tei-main.odd'))">
+            <xsl:sequence select="doc(concat('xmldb:exist://',$app-root,'/documentation/syriaca-tei-main.odd'))"/>
+        </xsl:if>
+    </xsl:variable>
+    
     <!-- Add a lang attribute to HTML elements -->
     <xsl:function name="local:attributes">
         <xsl:param name="node"/>
@@ -217,7 +222,6 @@
         </xsl:choose>
     </xsl:function>
     
-    
     <!-- 
      Function to output dates in correct formats passes whole element to function, 
      function also uses trim-date to strip leading 0
@@ -354,8 +358,6 @@
     <xsl:function name="local:translate-label">
         <xsl:param name="label"/>
         <xsl:param name="count"/>
-        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$nav-base,'/documentation/syriaca-tei-main.odd'))"/>
-        <!--<xsl:variable name="odd" select="doc('http://syriaca.org/documentation/syriaca-tei-main.odd')"/>-->
         <xsl:choose>
             <xsl:when test="$odd/descendant::t:valItem[@ident=$label]/t:gloss">
                 <xsl:choose>
@@ -375,7 +377,7 @@
                 </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="concat(upper-case(substring($label,1,1)),substring($label,2))"/>
+               <xsl:value-of select="concat(upper-case(substring($label,1,1)),substring($label,2))"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
@@ -385,8 +387,6 @@
         <xsl:param name="element"/>
         <xsl:param name="label"/>
         <xsl:param name="count"/>
-        <xsl:variable name="odd" select="doc(concat('xmldb:exist://',$nav-base,'/documentation/syriaca-tei-main.odd'))"/>
-        <!--<xsl:variable name="odd" select="doc('http://syriaca.org/documentation/syriaca-tei-main.odd')"/>-->
         <xsl:variable name="element" select="$odd/descendant::t:elementSpec[@ident = name($element)]"/>
         <xsl:choose>
             <xsl:when test="$element/descendant::t:valItem[@ident=$label]/t:gloss">

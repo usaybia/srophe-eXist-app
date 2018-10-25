@@ -92,44 +92,37 @@ return
 :)
 declare %templates:wrap function place:body($node as node(), $model as map(*)){
     let $ref-id := concat($config:base-uri,'/place/',$place:id)
-    let $desc-nodes := $model("hits")//tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))]
-    let $notes-nodes := $model("hits")//tei:place/tei:note
-    let $events-nodes := $model("hits")//tei:place/tei:event
+    let $desc-nodes := $model("hits")/descendant::tei:place/tei:desc[not(starts-with(@xml:id,'abstract'))]
+    let $notes-nodes := $model("hits")/descendant::tei:place/tei:note
+    let $events-nodes := $model("hits")/descendant::tei:place/tei:event
     let $nested-loc := 
-            for $nested-loc in collection($config:data-root || "/places/tei")//tei:location[@type="nested"]/tei:*[@ref=$ref-id]
-            let $parent-name := $nested-loc//tei:placeName[1]
+            for $nested-loc in collection($config:data-root || "/places/tei")/descendant::tei:location[@type="nested"]/tei:*[@ref=$ref-id]
+            let $parent-name := $nested-loc/descendant::tei:placeName[1]
             let $place-id := substring-after($nested-loc/ancestor::*/tei:place[1]/@xml:id,'place-')
             let $place-type := $nested-loc/ancestor::*/tei:place[1]/@type
             return 
                 <nested-place id="{$place-id}" type="{$place-type}">
                     {$nested-loc/ancestor::*/tei:placeName[1]}
                 </nested-place>
-    let $confessions := place:confessions($node, $model)
+    let $confessions := 
+            if($model("hits")/descendant::tei:state[@type='confession']) then 
+                let $confessions := doc($config:app-root || "/documentation/confessions.xml")//tei:list
+                return 
+                <confessions xmlns="http://www.tei-c.org/ns/1.0">
+                   {(
+                    $confessions,
+                    for $event in $model("hits")/descendant::tei:event
+                    return $event,
+                    for $state in $model("hits")/descendant::tei:state[@type='confession']
+                    return $state)}
+                </confessions>
+            else () 
     return 
         global:tei2html(<place xmlns="http://www.tei-c.org/ns/1.0">
-            {($desc-nodes, $notes-nodes, $events-nodes)}
+            {($desc-nodes, $nested-loc, $events-nodes, $confessions, $notes-nodes)}
         </place>)
 };
 
-(:~
- : Confessions list built from refs in tei to /srophe/documentation/confessions.xml
-:)
-declare function place:confessions($node as node(), $model as map(*)){
-    let $data := $model("hits")//tei:place
-    return 
-        if($data/tei:state[@type='confession']) then 
-            let $confessions := doc($config:app-root || "/documentation/confessions.xml")//tei:list
-            return <confessions xmlns="http://www.tei-c.org/ns/1.0">
-               {(
-                $confessions,
-                for $event in $data/tei:event
-                return $event,
-                for $state in $data/tei:state[@type='confession']
-                return $state)}
-            </confessions>
-        else ()   
- };
- 
 (:~
  : Get related place names      
  : ex: <relation name="contained" active="http://syriaca.org/place/145 http://syriaca.org/place/166" passive="#place-78" source="#bib78-1" to="0363"/>

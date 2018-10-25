@@ -85,10 +85,13 @@
                 <xsl:value-of select="string(/*/@id)"/>
             </xsl:when>
             <xsl:when test="/descendant::t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)]">
-                <xsl:value-of select="replace(replace(/descendant::t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)][1],'/tei',''),'/source','')"/>
+               <xsl:value-of select="replace(replace(/descendant::t:publicationStmt/t:idno[@type='URI'][starts-with(.,$base-uri)][1],'/tei',''),'/source','')"/>
             </xsl:when>
-            <xsl:when test="/descendant::t:idno[@type='URI'][1]">
-                <xsl:value-of select="replace(replace(/descendant::t:idno[@type='URI'][1],'/tei',''),'/source','')"/>
+            <xsl:when test="/descendant::t:publicationStmt/t:idno[@type='URI']">
+                <xsl:value-of select="replace(replace(/descendant::t:publicationStmt/t:idno[@type='URI'][1],'/tei',''),'/source','')"/>
+            </xsl:when>
+            <xsl:when test="/descendant::t:idno[@type='URI'][starts-with(.,$base-uri)]">
+                <xsl:value-of select="replace(replace(/descendant::t:idno[@type='URI'][starts-with(.,$base-uri)][1],'/tei',''),'/source','')"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="concat($base-uri,'/0000')"/>
@@ -739,30 +742,6 @@
                 </xsl:if>
             </div>
         </xsl:if>
-
-        <!-- Confessions/Religious Communities -->
-        <xsl:if test="t:confessions/t:state[@type='confession'] | t:state[@type='confession'][parent::t:place]">
-            <div>
-                <h3>Known Religious Communities</h3>
-                <p class="caveat">
-                    <em>This list is not necessarily exhaustive, and the order does not represent importance or proportion of the population. Dates do not represent starting or ending dates of a group's presence, but rather when they are attested. Instead, the list only represents groups for which Syriaca.org has source(s) and dates.</em>
-                </p>
-                <xsl:choose>
-                    <xsl:when test="t:confessions/t:state[@type='confession']">
-                        <xsl:call-template name="confessions"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <ul>
-                            <xsl:for-each select="t:state[@type='confession']">
-                                <li>
-                                    <xsl:apply-templates mode="plain"/>
-                                </li>
-                            </xsl:for-each>
-                        </ul>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </div>
-        </xsl:if>
         
         <!-- State for persons? NEEDS WORK -->
         <xsl:if test="t:state">
@@ -784,25 +763,51 @@
         <!-- Events -->
         <xsl:if test="t:event[not(@type='attestation')]">
             <div id="event">
-                <h3>Event<xsl:if test="count(t:event[not(@type='attestation')]) &gt; 1">s</xsl:if>
-                </h3>
-                <span class="tei-event">
-                    <xsl:apply-templates select="t:event[not(@type='attestation')]"/>
-                </span>
+                <h3>Event<xsl:if test="count(t:event[not(@type='attestation')]) &gt; 1">s</xsl:if></h3>
+                <ul class="tei-events">
+                    <xsl:for-each select="t:event[not(@type='attestation')]">
+                        <xsl:sort select="if(exists(@notBefore)) then @notBefore else @when"/>
+                        <li><xsl:apply-templates select="."/></li>
+                    </xsl:for-each>
+                </ul>
             </div>
         </xsl:if>
         
         <!-- Events/attestation -->
         <xsl:if test="t:event[@type='attestation']">
-            <div id="event">
+            <div id="attestation">
                 <h3>Attestation<xsl:if test="count(t:event[@type='attestation']) &gt; 1">s</xsl:if></h3>
                 <ul>
                     <!-- Sorts events on dates, checks first for @notBefore and if not present, uses @when -->
                     <xsl:for-each select="t:event[@type='attestation']">
                         <xsl:sort select="if(exists(@notBefore)) then @notBefore else @when"/>
-                       <li><span class="tei-event"><xsl:apply-templates/></span></li>
+                        <li><span class="tei-event"><xsl:apply-templates select="."/></span></li>
                     </xsl:for-each>
                 </ul>
+            </div>
+        </xsl:if>
+           
+        <!-- Confessions/Religious Communities -->
+        <xsl:if test="t:confessions/t:state[@type='confession'] | t:state[@type='confession'][parent::t:place]">
+            <div>
+                <h3>Known Religious Communities</h3>
+                <p class="caveat">
+                    <em>This list is not necessarily exhaustive, and the order does not represent importance or proportion of the population. Dates do not represent starting or ending dates of a group's presence, but rather when they are attested. Instead, the list only represents groups for which Syriaca.org has source(s) and dates.</em>
+                </p>
+                <xsl:choose>
+                    <xsl:when test="t:confessions/t:state[@type='confession']">
+                        <xsl:call-template name="confessions"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <ul>
+                            <xsl:for-each select="t:state[@type='confession']">
+                                <li>
+                                    <xsl:apply-templates mode="plain"/>
+                                </li>
+                            </xsl:for-each>
+                        </ul>
+                    </xsl:otherwise>
+                </xsl:choose>
             </div>
         </xsl:if>
         
@@ -879,8 +884,8 @@
                             </xsl:choose>
                         </xsl:variable>
                         <h3>
-                            <span class="anchor" id="bibl{$label}"/>
-                            <xsl:value-of select="concat(upper-case(substring($label,1,1)),substring($label,2))"/>
+                           <span class="anchor" id="bibl{$label}"/>
+                           <xsl:value-of select="concat(upper-case(substring($label,1,1)),substring($label,2))"/>
                         </h3>
                         <ol>
                             <xsl:for-each select="current-group()[position() &lt; 9]">

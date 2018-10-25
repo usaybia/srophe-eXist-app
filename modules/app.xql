@@ -58,7 +58,6 @@ declare function app:get-work($node as node(), $model as map(*)) {
     else map {"hits" := 'Output plain HTML page'}
 };
 
-
 (:~
  : Dynamically build html title based on TEI record and/or sub-module. 
  : @param request:get-parameter('id', '') if id is present find TEI title, otherwise use title of sub-module
@@ -66,13 +65,12 @@ declare function app:get-work($node as node(), $model as map(*)) {
 declare %templates:wrap function app:record-title($node as node(), $model as map(*), $collection as xs:string?){
     if(request:get-parameter('id', '')) then
        if(contains($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/text(),' — ')) then
-            substring-before($model("data")/descendant::tei:titleStmt[1]/tei:title[1],' — ')
+            substring-before($model("hits")/descendant::tei:titleStmt[1]/tei:title[1],' — ')
        else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/text()
     else if($collection != '') then
         string(config:collection-vars($collection)/@title)
     else $config:app-title
 };  
-
 
 (:~ 
  : Add header links for alternative formats.
@@ -87,9 +85,9 @@ declare function app:metadata($node as node(), $model as map(*)) {
     <link type="text/plain" href="id.nt" rel="alternate"/>
     <link type="application/json+ld" href="id.jsonld" rel="alternate"/>
     :)
-    <meta name="DC.title " property="dc.title " content="{$model("data")/ancestor::tei:TEI/descendant::tei:title[1]/text()}"/>,
-    if($model("data")/ancestor::tei:TEI/descendant::tei:desc or $model("data")/ancestor::tei:TEI/descendant::tei:note[@type="abstract"]) then 
-        <meta name="DC.description " property="dc.description " content="{$model("data")/ancestor::tei:TEI/descendant::tei:desc[1]/text() | $model("data")/ancestor::tei:TEI/descendant::tei:note[@type="abstract"]}"/>
+    <meta name="DC.title " property="dc.title " content="{$model("hits")/ancestor::tei:TEI/descendant::tei:title[1]/text()}"/>,
+    if($model("hits")/ancestor::tei:TEI/descendant::tei:desc or $model("hits")/ancestor::tei:TEI/descendant::tei:note[@type="abstract"]) then 
+        <meta name="DC.description " property="dc.description " content="{$model("hits")/ancestor::tei:TEI/descendant::tei:desc[1]/text() | $model("hits")/ancestor::tei:TEI/descendant::tei:note[@type="abstract"]}"/>
     else (),
     <link xmlns="http://www.w3.org/1999/xhtml" type="text/html" href="{request:get-parameter('id', '')}.html" rel="alternate"/>,
     <link xmlns="http://www.w3.org/1999/xhtml" type="text/xml" href="{request:get-parameter('id', '')}/tei" rel="alternate"/>,
@@ -133,10 +131,10 @@ declare function app:display-nodes($node as node(), $model as map(*), $paths as 
 declare function app:h1($node as node(), $model as map(*)){
  global:tei2html(
  <srophe-title xmlns="http://www.tei-c.org/ns/1.0">{(
-    if($model("data")/descendant::*[@syriaca-tags='#syriaca-headword']) then
-        $model("data")/descendant::*[@syriaca-tags='#syriaca-headword']
-    else $model("data")/descendant::tei:titleStmt[1]/tei:title[1], 
-    $model("data")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
+    if($model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']) then
+        $model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']
+    else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1], 
+    $model("hits")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
     )}
  </srophe-title>)
 }; 
@@ -146,7 +144,7 @@ declare function app:h1($node as node(), $model as map(*)){
  : to replace app-link
  :)
 declare %templates:wrap function app:other-data-formats($node as node(), $model as map(*), $formats as xs:string?){
-let $id := (:replace($model("data")/descendant::tei:idno[contains(., $config:base-uri)][1],'/tei',''):)request:get-parameter('id', '')
+let $id := (:replace($model("hits")/descendant::tei:idno[contains(., $config:base-uri)][1],'/tei',''):)request:get-parameter('id', '')
 return 
     if($formats) then
         <div class="indent" style="width:100%;clear:both;margin-bottom:1em; text-align:right;">
@@ -154,7 +152,7 @@ return
                 for $f in tokenize($formats,',')
                 return 
                     if($f = 'geojson') then
-                        if($model("data")/descendant::tei:location/tei:geo) then 
+                        if($model("hits")/descendant::tei:location/tei:geo) then 
                             (<a href="{concat(replace($id,$config:base-uri,$config:nav-base),'.geojson')}" class="btn btn-default btn-xs" id="teiBtn" data-toggle="tooltip" title="Click to view the GeoJSON data for this record." >
                                  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> GeoJSON
                             </a>, '&#160;')
@@ -164,7 +162,7 @@ return
                              <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> JSON-LD
                         </a>, '&#160;') 
                     else if($f = 'kml') then
-                        if($model("data")/descendant::tei:location/tei:geo) then
+                        if($model("hits")/descendant::tei:location/tei:geo) then
                             (<a href="{concat(replace($id,$config:base-uri,$config:nav-base),'.kml')}" class="btn btn-default btn-xs" id="teiBtn" data-toggle="tooltip" title="Click to view the KML data for this record." >
                              <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> KML
                             </a>, '&#160;')
@@ -681,7 +679,7 @@ declare %templates:wrap function app:about($node as node(), $model as map(*)){
  : @param $paths comma separated list of xpaths for display. Passed from html page  
 :)
 declare function app:link-icons-list($node as node(), $model as map(*)){
-let $data := $model("hits")//tei:body/descendant::tei:idno[not(contains(., $global:base-uri))]  
+let $data := $model("hits")//tei:body/descendant::tei:idno[not(contains(., $config:base-uri))]  
 return 
     if(not(empty($data))) then 
         <div class="panel panel-default">
@@ -689,7 +687,7 @@ return
             <div class="panel-body">
                 <ul>
                     {for $l in $data
-                     return <li>{global:tei2html($l)}</li>
+                     return <li>{string($l/@type)}: {global:tei2html($l)}</li>
                     }
                 </ul>
             </div>
