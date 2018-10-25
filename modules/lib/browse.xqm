@@ -237,12 +237,18 @@ declare function browse:browse-type($collection){
         {
             if($collection = ('places','geo')) then 
                     for $types in collection($config:data-root || '/places/tei')//tei:place
-                    group by $place-types := $types/@type
+                    let $type := lower-case($types/@type)
+                    group by $place-types := $type
                     order by $place-types ascending
                     return
                         <li> {if(request:get-parameter('type', '') = replace(string($place-types),'#','')) then attribute class {'active'} else '' }
                             <a href="?view=type&amp;type={$place-types}">
-                            {if(string($place-types) = '') then 'unknown' else replace(string($place-types),'#|-',' ')}  <span class="count"> ({count($types)})</span>
+                            {if(string($place-types) = '') then 
+                                'unknown' 
+                             else
+                                let $label := replace(string($place-types),'#|-',' ')
+                                return concat(upper-case(substring($label,1,1)),substring($label,2))}
+                             <span class="count"> ({count($types)})</span>
                             </a> 
                         </li>
             else  ()
