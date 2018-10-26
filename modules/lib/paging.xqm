@@ -54,7 +54,7 @@ let $pagination-links :=
                         {
                         let $search-config := 
                             if($collection != '') then concat($config:app-root, '/', string(config:collection-vars($collection)/@app-root),'/','search-config.xml')
-                            else concat($config:app-root, '/','search-config.xml')
+                            else concat($config:app-root, '/search-config.xml')
                         return 
                             if(doc-available($search-config)) then 
                                 doc($search-config)//*:search-tips
@@ -327,6 +327,10 @@ declare function page:person-search-string() as node()*{
                     else if($persons:coll = 'authors' ) then '"A Guide to Syriac Authors"'
                     else $persons:coll
                 }&#160; </span>):)
+            else if($parameter = 'coll') then 
+                (<span class="param">Collection: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+            else if($parameter = 'persName') then 
+                (<span class="param">Person Name: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)                
             else if($parameter = 'gender') then 
                 (<span class="param">Sex or Gender: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
             else (<span class="param"> {replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    

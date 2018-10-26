@@ -286,7 +286,7 @@ return
                              return tei2html:summary-view($rec, (), $recid[1])
                          }
                             <div>
-                            <a href="{$config:data-root}/bhse/search.html?author={$recid}&amp;perpage={$count}&amp;sort=alpha" class="btn btn-info getData" style="width:100%; margin-bottom:1em;" >
+                            <a href="{$config:nav-base}/bhse/search.html?author={$recid}&amp;sort-element=title" class="btn btn-info" style="width:100%; margin-bottom:1em;" >
                               See all {count($works)} works
                              </a>
                             </div>
