@@ -1,6 +1,6 @@
 <search-config>
     <label>Advanced Search </label>
-    <desc>Search all TEI data.</desc>
+    <desc>More detailed search functions are available in each individual <a href="/index.html">publication</a>.</desc>
     <!-- Uses Lucene full text search make sure any elements used in the search-config.xml 
         are added to the collection.xconf file in your data repository. -->                            
     <input type="text" label="Keyword " name="keyword" element="." title="Search keyword anywhere" placeholder="Search..." keyboard="yes"/>

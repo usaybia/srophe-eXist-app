@@ -47,20 +47,10 @@ let $pagination-links :=
                     <h3 class="hit-count paging">Search results: </h3>
                     <p class="col-md-offset-1 hit-count">{$total-result-count} matches for {page:display-search-params($collection)} </p>
                     <p class="col-md-offset-1 hit-count note small">
-                        You may wish to expand your search by using wildcard characters to increase results. See  
-                        <a href="#" data-toggle="collapse" data-target="#searchTips">search tips</a> for more details.
+                    You may wish to expand your search by using our 
+                    <a href="search.html">advanced search functions</a> or by using wildcard characters to increase results. 
+                    See <a href="#" data-toggle="collapse" data-target="#searchTips">search tips</a> for more details.
                     </p> 
-                    <div id="searchTips" class="panel panel-default collapse">
-                        {
-                        let $search-config := 
-                            if($collection != '') then concat($config:app-root, '/', string(config:collection-vars($collection)/@app-root),'/','search-config.xml')
-                            else concat($config:app-root, '/search-config.xml')
-                        return 
-                            if(doc-available($search-config)) then 
-                                doc($search-config)//*:search-tips
-                            else ()
-                        }
-                    </div>
                  </div>
                 else ()
              else ()
@@ -116,7 +106,25 @@ let $pagination-links :=
             </div>
     </div>
     )    
-return $pagination-links
+return 
+    ($pagination-links,
+    let $search-config := 
+        if($collection != '') then concat($config:app-root, '/', string(config:collection-vars($collection)/@app-root),'/','search-config.xml')
+            else concat($config:app-root, '/search-config.xml')
+    let $config := 
+        if(doc-available($search-config)) then doc($search-config)
+        else ()                            
+    return 
+        if($config//search-tips != '') then
+            <div class="panel panel-default collapse" id="searchTips">
+                <div class="panel-body">
+                <h3 class="panel-title">Search Tips</h3>
+                {$config//search-tips}
+                </div>
+            </div>
+        else if(doc-available($config:app-root || '/searchTips.html')) then doc($config:app-root || '/searchTips.html')
+        else ()
+    )
 };
 
 (:~
@@ -264,6 +272,8 @@ declare function page:bhse-search-string(){
                 if($parameter = 'start' or $parameter = 'sort-element') then ()
                 else if($parameter = 'q') then 
                     (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
+                else if($parameter = 'coll') then 
+                    (<span class="param">Collection: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
                 else if($parameter = 'related-pers') then 
                     (<span class="param">Related Persons: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
                 else if($parameter = 'modern') then 

@@ -97,12 +97,26 @@ else
 declare function bibls:search-form() {   
 <form method="get" action="search.html" xmlns:xi="http://www.w3.org/2001/XInclude"  class="form-horizontal" role="form">
     <div class="well well-small">
-        {if(doc-available($config:nav-base || '/searchTips.html')) then
-              (<button type="button" class="btn btn-info pull-right" data-toggle="collapse" data-target="#searchTips">
-                Search Help <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                </button>, 
-                <xi:include href="{$config:nav-base}/searchTips.html"/>)
-        else ()}
+        {let $search-config := 
+                if(doc-available(concat($config:app-root, '/bibl/search-config.xml'))) then concat($config:app-root, '/bibl/search-config.xml')
+                else concat($config:app-root, '/search-config.xml')
+            let $config := 
+                if(doc-available($search-config)) then doc($search-config)
+                else ()                            
+            return 
+                if($config != '') then 
+                    (<button type="button" class="btn btn-info pull-right clearfix search-button" data-toggle="collapse" data-target="#searchTips">
+                        Search Help <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>,                       
+                    if($config//search-tips != '') then
+                    <div class="panel panel-default collapse" id="searchTips">
+                        <div class="panel-body">
+                        <h3 class="panel-title">Search Tips</h3>
+                        {$config//search-tips}
+                        </div>
+                    </div>
+                    else if(doc-available($config:app-root || '/searchTips.html')) then doc($config:app-root || '/searchTips.html')
+                    else ())
+                else ()}
         <div class="well well-small search-inner well-white">
         <!-- Keyword -->
             <div class="form-group">            

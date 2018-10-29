@@ -88,11 +88,11 @@ function search:show-hits($node as node()*, $model as map(*), $collection as xs:
                       </div>
                       <div class="col-md-9" xml:lang="en">
                         {(tei2html:summary-view($hit, (), $id[1])) }
-                        {
+                        {(:
                             if($expanded//exist:match) then 
                                 tei2html:output-kwic($expanded, $id)
                             else ()
-                        }
+                        :)()}
                       </div>
                 </div>
             </div>
@@ -136,10 +136,26 @@ declare function search:build-form($search-config) {
     return 
         <form method="get" class="form-horizontal indent" role="form">
             <h1 class="search-header">{if($config//label != '') then $config//label else 'Search'}</h1>
-            {if($config//desc != '') then 
-                <p class="indent info">{$config//desc}</p>
-            else() 
-            }
+            {let $search-config := 
+                if(doc-available($config)) then $config
+                else concat($config:app-root, '/search-config.xml')
+            let $config := 
+                if(doc-available($search-config)) then doc($search-config)
+                else ()                            
+            return 
+                if($config != '') then 
+                    (<button type="button" class="btn btn-info pull-right clearfix search-button" data-toggle="collapse" data-target="#searchTips">
+                        Search Help <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>,                       
+                    if($config//search-tips != '') then
+                    <div class="panel panel-default collapse" id="searchTips">
+                        <div class="panel-body">
+                        <h3 class="panel-title">Search Tips</h3>
+                        {$config//search-tips}
+                        </div>
+                    </div>
+                    else if(doc-available($config:app-root || '/searchTips.html')) then doc($config:app-root || '/searchTips.html')
+                    else ())
+                else ()}
             <div class="well well-small search-box">
                 <div class="row">
                     <div class="col-md-10">{
@@ -187,6 +203,26 @@ declare function search:default-search-form() {
     <form method="get" class="form-horizontal indent" role="form">
         <h1 class="search-header">Search</h1>
         <div class="well well-small search-box">
+        {let $search-config := 
+            if(doc-available(concat($config:app-root,'/','search-config.xml'))) then concat($config:app-root,'/','search-config.xml')
+            else concat($config:app-root, '/search-config.xml')
+         let $config := 
+                if(doc-available($search-config)) then doc($search-config)
+                else ()                            
+         return 
+                if($config != '') then 
+                    (<button type="button" class="btn btn-info pull-right clearfix search-button" data-toggle="collapse" data-target="#searchTips">
+                        Search Help <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>,                       
+                    if($config//search-tips != '') then
+                    <div class="panel panel-default collapse" id="searchTips">
+                        <div class="panel-body">
+                        <h3 class="panel-title">Search Tips</h3>
+                        {$config//search-tips}
+                        </div>
+                    </div>
+                    else if(doc-available($config:app-root || '/searchTips.html')) then doc($config:app-root || '/searchTips.html')
+                    else ())
+                else ()}
             <div class="row">
                 <div class="col-md-10">
                     <!-- Keyword -->
