@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <search-config>
     <label>Advanced Search </label>
     <desc>Search all TEI data.</desc>
     <!-- Uses Lucene full text search make sure any elements used in the search-config.xml 
         are added to the collection.xconf file in your data repository. -->                            
     <input type="text" label="Keyword " name="keyword" element="." title="Search keyword anywhere" placeholder="Search..." keyboard="yes"/>
-    <input type="text" label="Title" name="title" element="tei:titleStmt/tei:title" title="Search Titles" placeholder="Search Title..." keyboard="yes"/>
-    <input type="text" label="Author" name="author" element="tei:titleStmt/tei:author" keyboard="yes"/>
     <input type="text" label="Place Name" name="placeName" element="tei:place/tei:placeName" search-tip="Search Places" keyboard="yes"/>
     <input type="text" label="Person Name" name="persName" element="tei:person/tei:persName" search-tip="Search People" keyboard="yes"/>
+    <input type="text" label="Title" name="title" element="tei:titleStmt/tei:title" title="Search Titles" placeholder="Search Title..." keyboard="yes"/>
+    <input type="text" label="Syriaca.org URI:" name="idno" element="tei:idno" title="Syriaca.org URIs" placeholder="ex: http://syriaca.org/place/78"/>
     <search-tips>
         <h4>Wildcard Characters:</h4>
         <p>Given the prevalence of variant spellings in names, using Wildcard Characters may help.</p>

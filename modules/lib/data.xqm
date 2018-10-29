@@ -312,6 +312,8 @@ declare function data:dynamic-paths($search-config as xs:string?){
             if(request:get-parameter($p, '') != '') then
                 if($p = 'keyword') then
                     data:keyword-search()
+                else if($p = 'idno') then
+                    data:idno()                    
                 else if(string($config//input[@name = $p]/@element) = '.') then
                     concat("[ft:query(.//tei:body,'",data:clean-string(request:get-parameter($p, '')),"',data:search-options())]")
                 else if(string($config//input[@name = $p]/@element) != '') then
@@ -326,10 +328,10 @@ declare function data:dynamic-paths($search-config as xs:string?){
 declare function data:keyword-search(){
     if(request:get-parameter('keyword', '') != '') then 
         for $query in request:get-parameter('keyword', '') 
-        return concat("[ft:query(.,'",data:clean-string($query),"',data:search-options()) or ft:query(/ancestor::tei:TEI/descendant::tei:teiHeader,'",data:clean-string($query),"',data:search-options())]")
+        return concat("[ft:query(.,'",data:clean-string($query),"',data:search-options()) or ft:query(ancestor::tei:TEI/descendant::tei:teiHeader,'",data:clean-string($query),"',data:search-options())]")
     else if(request:get-parameter('q', '') != '') then 
         for $query in request:get-parameter('q', '') 
-        return concat("[ft:query(.,'",data:clean-string($query),"',data:search-options()) or ft:query(/ancestor::tei:TEI/descendant::tei:teiHeader,'",data:clean-string($query),"',data:search-options())]")
+        return concat("[ft:query(.,'",data:clean-string($query),"',data:search-options()) or ft:query(ancestor::tei:TEI/descendant::tei:teiHeader,'",data:clean-string($query),"',data:search-options())]")
     else ()
 };
 
@@ -467,4 +469,16 @@ declare function data:add-sort-options-bibl($hit, $sort-option as xs:string*){
             $hit/descendant::tei:body/tei:biblStruct/descendant-or-self::tei:imprint[1]/descendant-or-self::tei:pubPlace[1]
         else $hit
     else $hit
+};
+
+(:~
+ : Generic id search
+ : Searches record idnos
+:)
+declare function data:idno() as xs:string? {
+    if(request:get-parameter('idno', '') != '') then 
+        let $id := replace(request:get-parameter('idno', ''),'[^\d\s]','')
+        let $syr-id := concat('http://syriaca.org/work/',$id)
+        return concat("[descendant::tei:idno[normalize-space(.) = '",$id,"' or .= '",$syr-id,"']]")
+    else ()    
 };
