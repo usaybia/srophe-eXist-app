@@ -63,13 +63,15 @@ declare function app:get-work($node as node(), $model as map(*)) {
  : @param request:get-parameter('id', '') if id is present find TEI title, otherwise use title of sub-module
 :)
 declare %templates:wrap function app:record-title($node as node(), $model as map(*), $collection as xs:string?){
-    if(request:get-parameter('id', '')) then
-       if(contains($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/text(),' — ')) then
-            substring-before($model("hits")/descendant::tei:titleStmt[1]/tei:title[1],' — ')
-       else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/text()
-    else if($collection != '') then
-        string(config:collection-vars($collection)/@title)
-    else $config:app-title
+    let $data := $model("hits")
+    return 
+        if(request:get-parameter('id', '')) then
+           if(contains($data/descendant::tei:titleStmt[1]/tei:title[1]/text(),' — ')) then
+                substring-before($data/descendant::tei:titleStmt[1]/tei:title[1],' — ')
+           else $data/descendant::tei:titleStmt[1]/tei:title[1]/text()
+        else if($collection != '') then
+            string(config:collection-vars($collection)/@title)
+        else $config:app-title
 };  
 
 (:~ 
@@ -216,9 +218,9 @@ declare %templates:wrap function app:pageination($node as node()*, $model as map
 (:~
  : Builds list of related records based on tei:relation  
 :)                   
-declare function app:internal-relationships($node as node(), $model as map(*), $display as xs:string?, $map as xs:string?){
+declare function app:internal-relationships($node as node(), $model as map(*), $relationship-type as xs:string?, $display as xs:string?, $map as xs:string?){
     if($model("hits")//tei:relation) then 
-        rel:build-relationships($model("hits")//tei:relation,request:get-parameter('id', ''), $display, $map)
+        rel:build-relationships($model("hits")//tei:relation,request:get-parameter('id', ''), $relationship-type, $display, $map)
     else ()
 };
 
@@ -630,7 +632,7 @@ declare %templates:wrap function app:display-work($node as node(), $model as map
                     <a href="#" class="btn btn-default" data-toggle="modal" data-target="#selection" data-ref="../documentation/faq.html" id="showSection">Is this record complete?</a>
                 </div>,                
                 if($model("hits")//tei:body/child::*/tei:listRelation) then 
-                rel:build-relationships($model("hits")//tei:body/child::*/tei:listRelation, request:get-parameter('id', ''), 'list-description', 'false')
+                rel:build-relationships($model("hits")//tei:body/child::*/tei:listRelation,request:get-parameter('id', ''), (), 'list-description', 'false')
                 else (),
                 app:link-icons-list($node, $model)
                 )}  

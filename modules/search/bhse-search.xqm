@@ -172,9 +172,10 @@ declare function bhses:search-form($collection) {
                     else ())
                 else ()}
         <div class="well well-small search-inner well-white">
+        <!-- For dev server
               <div class="form-group">            
                 <label for="coll" class="col-sm-2 col-md-3  control-label">Search in Resource: </label>
-                <div class="col-sm-10 col-md-6">
+               <div class="col-sm-10 col-md-6">
                     <label class="checkbox-inline">
                         <input type="radio" name="coll" value="nhsl" aria-label="NHSL"/>
                         {
@@ -184,7 +185,7 @@ declare function bhses:search-form($collection) {
                             NHSL
                     </label>
                     <label class="checkbox-inline">
-                        <input type="radio" name="coll" value="q" aria-label="BHSE"/>
+                        <input type="radio" name="coll" value="bhse" aria-label="BHSE"/>
                         {
                             if($collection = 'bhse') then attribute checked { "checked" }
                             else ()
@@ -193,6 +194,7 @@ declare function bhses:search-form($collection) {
                     </label>
                 </div>
             </div>
+            -->
         <!-- Keyword -->
             <div class="form-group">
                 <label for="q" class="col-sm-2 col-md-3  control-label">Keyword: </label>

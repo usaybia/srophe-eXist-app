@@ -260,7 +260,7 @@ return
 declare %templates:wrap function person:relations($node as node(), $model as map(*)){
 if($model("hits")/descendant::tei:relation) then 
     let $idno := replace($model("hits")/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1]/text(),'/tei','')
-    return rel:build-relationships($model("hits")//tei:relation, $idno,'list-description', ())
+    return rel:build-relationships($model("hits")//tei:relation, $idno,(),'list-description', ())
 else ()
 };
 
@@ -283,7 +283,7 @@ return
                              for $r in subsequence($works, 1, 3)
                              let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
                              let $rec :=  data:get-document($workid)
-                             return tei2html:summary-view($rec, (), $recid[1])
+                             return tei2html:summary-view($rec, (), $workid[1])
                          }
                             <div>
                             <a href="{$config:nav-base}/bhse/search.html?author={$recid}&amp;sort-element=title" class="btn btn-info" style="width:100%; margin-bottom:1em;" >
@@ -295,8 +295,9 @@ return
                     for $r in $works
                     let $workid := replace($r/ancestor::tei:TEI/descendant::tei:idno[@type='URI'][starts-with(.,$config:base-uri)][1],'/tei','')
                     let $rec :=  data:get-document($workid)
-                    return tei2html:summary-view($rec, (), $recid[1])
+                    return tei2html:summary-view($rec, (), $workid[1])
             )}
+            <hr/>
         </div>
     else ()     
 };

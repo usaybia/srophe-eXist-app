@@ -136,14 +136,7 @@ declare function search:build-form($search-config) {
     return 
         <form method="get" class="form-horizontal indent" role="form">
             <h1 class="search-header">{if($config//label != '') then $config//label else 'Search'}</h1>
-            {let $search-config := 
-                if(doc-available($config)) then $config
-                else concat($config:app-root, '/search-config.xml')
-            let $config := 
-                if(doc-available($search-config)) then doc($search-config)
-                else ()                            
-            return 
-                if($config != '') then 
+            {if($config//search-tips != '') then 
                     (<button type="button" class="btn btn-info pull-right clearfix search-button" data-toggle="collapse" data-target="#searchTips">
                         Search Help <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>,                       
                     if($config//search-tips != '') then
@@ -153,7 +146,6 @@ declare function search:build-form($search-config) {
                         {$config//search-tips}
                         </div>
                     </div>
-                    else if(doc-available($config:app-root || '/searchTips.html')) then doc($config:app-root || '/searchTips.html')
                     else ())
                 else ()}
             <div class="well well-small search-box">

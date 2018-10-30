@@ -64,7 +64,7 @@ declare function bibls:publisher() as xs:string? {
 
 declare function bibls:date() as xs:string? {
     if($bibls:date != '') then 
-        concat("[matches(descendant::tei:imprint/tei:date,'",$bibls:date,"',data:search-options())]")
+        concat("[matches(descendant::tei:imprint/tei:date,'",$bibls:date,"')]")
     else ()  
 };
 
@@ -74,11 +74,18 @@ declare function bibls:subject() as xs:string?{
     else ()  
 };
 
+declare function bibls:bibl() as xs:string?{
+    if(request:get-parameter('bibl', '') != '') then
+        concat("collection('",$config:data-root,"')//tei:body[.//@target[. = '", request:get-parameter('bibl', '') ,"']]/ancestor::tei:TEI")
+    else ()  
+};
+
 (:~     
  : Build query string to pass to search.xqm 
 :)
 declare function bibls:query-string() as xs:string? { 
 if($bibls:subject != '') then bibls:subject()
+else if(request:get-parameter('bibl', '')) then bibls:bibl()
 else
  concat("collection('",$config:data-root,"/bibl/tei')//tei:body",
     data:keyword-search(),

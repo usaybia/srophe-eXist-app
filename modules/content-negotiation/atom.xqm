@@ -64,7 +64,7 @@ declare function feed:format-dates($date as xs:string?) as xs:string?{
  : @return As atom feed element
 :)
 declare function feed:get-entry($node as node()?) as element()?{ 
-    let $rec := root($node)//tei:TEI
+    let $rec := $node/ancestor::tei:TEI
     let $subtitle := if($rec//tei:titleStmt/tei:title[2]) then concat(': ',$rec//tei:titleStmt/tei:title[2]) else ()
     let $title := concat(string($rec//tei:titleStmt/tei:title[1]),' ',$subtitle)
     let $date := $node[1]//tei:publicationStmt[1]/tei:date[1]/text()

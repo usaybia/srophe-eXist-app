@@ -181,7 +181,7 @@ declare function page:display-search-params($collection as xs:string?){
         for  $parameter in $parameters
         return 
             if(request:get-parameter($parameter, '') != '') then
-                if($parameter = ('start','sort-element','perpage')) then ()
+                if($parameter = ('start','sort-element','perpage','sort')) then ()
                 else if($parameter = $search-config//input/@name) then
                    (<span class="param">{string($search-config//input[@name = $parameter]/@name)}: </span>,<span class="param-string">{request:get-parameter($parameter, '')}</span>) 
                 else if($parameter = 'q') then 
@@ -201,7 +201,7 @@ declare function page:place-search-string(){
     for  $parameter in $parameters
     return 
         if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            if($parameter = ('start','sort-element','perpage','sort')) then ()
             else if($parameter = ('q','keyword')) then 
                 (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
             else if($parameter = 'p') then 
@@ -252,7 +252,7 @@ declare function page:spear-search-string() as xs:string*{
     for  $parameter in $parameters
     return 
         if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            if($parameter = ('start','sort-element','perpage','sort')) then ()
             else if($parameter = 'fq') then ()
             else if($parameter = ('q','keyword')) then 
                 (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160;</span>)
@@ -269,7 +269,7 @@ declare function page:bhse-search-string(){
     for  $parameter in $parameters
     return 
             if(request:get-parameter($parameter, '') != '') then
-                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                if($parameter = ('start','sort-element','perpage','sort')) then ()
                 else if($parameter = 'q') then 
                     (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
                 else if($parameter = 'coll') then 
@@ -291,7 +291,7 @@ declare function page:bibl-search-string(){
     for  $parameter in $parameters
         return 
             if(request:get-parameter($parameter, '') != '') then
-                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                if($parameter = ('start','sort-element','perpage','sort')) then ()
                 else if($parameter = 'q') then 
                     (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
                 else if ($parameter = 'author') then 
@@ -305,7 +305,7 @@ declare function page:nhsl-search-string(){
     for  $parameter in $parameters
         return 
             if(request:get-parameter($parameter, '') != '') then
-                if($parameter = 'start' or $parameter = 'sort-element') then ()
+                if($parameter = ('start','sort-element','perpage','sort')) then ()
                 else if($parameter = 'q') then 
                     (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
                 else if($parameter = 'related-pers') then 
@@ -327,7 +327,7 @@ declare function page:person-search-string() as node()*{
     for  $parameter in $parameters
     return 
         if(request:get-parameter($parameter, '') != '') then
-            if($parameter = 'start' or $parameter = 'sort-element') then ()
+            if($parameter = ('start','sort-element','perpage','sort')) then ()
             else if($parameter = 'q') then 
                 (<span class="param">Keyword: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)
            (: else if($parameter = 'coll') then 

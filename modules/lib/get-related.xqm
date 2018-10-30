@@ -153,15 +153,19 @@ declare function rel:decode-relationship($relationship as xs:string?){
  : @param $node all relationship elements
  : @param $idno record idno
 :)
-declare function rel:build-relationships($node as item()*,$idno as xs:string?, $display as xs:string?, $map as xs:string?){ 
+declare function rel:build-relationships($node as item()*,$idno as xs:string?, $relationship-type as xs:string?, $display as xs:string?, $map as xs:string?){ 
     <div class="panel panel-default relationships" xmlns="http://www.w3.org/1999/xhtml">
         <div class="panel-heading"><h3 class="panel-title">Relationships </h3></div>
         <div class="panel-body">
         {       
             let $uris := 
                 string-join(
-                for $r in $node/descendant-or-self::tei:relation
-                return string-join(($r/@active/string(),$r/@passive/string(),$r/@mutual/string()),' '),' ')
+                if($relationship-type != '') then 
+                    for $r in $node/descendant-or-self::tei:relation[@ref = $relationship-type or @name= $relationship-type]
+                    return string-join(($r/@active/string(),$r/@passive/string(),$r/@mutual/string()),' ')
+                else 
+                    for $r in $node/descendant-or-self::tei:relation
+                    return string-join(($r/@active/string(),$r/@passive/string(),$r/@mutual/string()),' '),' ')
             let $related-map := rel:get-related($uris)
             let $related-geo := 
                 for $record in map:keys(rel:get-related($uris))
@@ -338,11 +342,14 @@ declare function rel:cited($idno, $start, $perpage){
                 { 
                      if($count gt 5) then
                         <div>
-                            <a href="#" class="btn btn-info getData" style="width:100%; margin-bottom:1em;" data-toggle="modal" data-target="#moreInfo" 
+                            <a href="{$config:nav-base}/bibl/search.html?bibl={$current-id}&amp;perpage={$count}&amp;sort=alpha" style="width:100%; margin-bottom:1em;" class="btn btn-info">See all {$count} results</a>
+                        <!--
+                            <a href="#" class="btn btn-info" style="width:100%; margin-bottom:1em;" data-toggle="modal" data-target="#moreInfo" 
                             data-ref="../search.html?bibl={$current-id}&amp;perpage={$count}&amp;sort=alpha" 
                             data-label="See all {$count} results" id="moreInfoBtn">
                               See all {$count} results
                              </a>
+                             -->
                         </div>
                      else ()
                  }
