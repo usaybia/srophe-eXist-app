@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="schemas/odd4odds.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="schemas/odd4odds.isosch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+  xml:lang="en">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Syriaca TEI Main ODD</title>
+        <author><persName ref="http://syriaca.org/documentation/editors.xml#dschwartz">Daniel L.
+            Schwartz</persName></author>
+      </titleStmt>
+      <publicationStmt>
+        <publisher>Syriaca.org: The Syriac Reference Portal</publisher>
+        <availability>
+          <licence target="http://creativecommons.org/licenses/by/3.0/">
+            <p>Distributed under a Creative Commons Attribution 3.0 Unported License.</p>
+          </licence>
+        </availability>
+      </publicationStmt>
+      <sourceDesc>
+        <p>[Information about the creation of the ODD]</p>
+      </sourceDesc>
+    </fileDesc>
+    <revisionDesc>
+      <change who="http://syriaca.org/documentation/editors.xml#dschwartz" when="2018-11-06">First
+        draft</change>
+    </revisionDesc>
+  </teiHeader>
+  <text>
+    <body>
+
+      <p/>
+
+      <schemaSpec ident="syriacaTEIMain" source="tei:current" start="TEI">
+
+        <moduleRef key="tei"/>
+        <moduleRef key="analysis"/>
+        <moduleRef key="certainty" except="certainty respons"/>
+        <moduleRef key="core"
+          except="binaryObject cit distinct email emph gb headItem headLabel index measureGrp media meeting mentioned num postBox postCode rs said soCalled sp speaker stage street teiCorpus term time"/>
+        <moduleRef key="dictionaries" include="lang entryFree"/>
+        <moduleRef key="figures" except="cell row table notatedMusic"/>
+        <moduleRef key="gaiji"/>
+        <moduleRef key="header"
+          except="abstract appInfo application biblFull cRefPattern calendar calendarDesc correction creation distributor hyphenation listChange listPrefixDef namespace normalization notesStmt prefixDef quotation refState refsDecl samplingDecl scriptNote segmentation stdVals styleDefDecl tagUsage tagsDecl typeNote rendition"/>
+        <moduleRef key="linking" except="alt altGrp join joinGrp linkGrp timeline when"/>
+        <moduleRef key="msdescription"
+          except="dim heraldry msItemStruct objectType scriptDesc secFol typeDesc"/>
+        <moduleRef key="namesdates" except="bloc listNym geogFeat geogName nym population terrain"/>
+        <moduleRef key="tagdocs"
+          except="altIdent alternate att attDef attList attRef classRef classSpec classes code constraint constraintSpec content datatype defaultVal eg egXML elementRef elementSpec equiv exemplum ident listRef macroRef macroSpec memberOf moduleRef moduleSpec remarks sequence specDesc specGrp specGrpRef specList tag val valDesc valItem valList"/>
+        <moduleRef key="textcrit"
+          except="app lacunaEnd lacunaStart lem listApp listWit rdg rdgGrp variantEncoding"/>
+        <moduleRef key="textstructure"
+          except="argument byline dateline div1 div2 div3 div4 div5 div6 div7 docDate group imprimatur trailer floatingText"/>
+        <moduleRef key="transcr"
+          except="line listTranspose metamark mod redo retrace sourceDoc space substJoin surface surfaceGrp surplus transpose undo zone"/>
+
+
+
+
+      </schemaSpec>
+
+
+    </body>
+  </text>
+</TEI>
