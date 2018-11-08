@@ -1,60 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="schemas/odd4odds.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="schemas/odd4odds.isosch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-  xml:lang="en">
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://purl.oclc.org/dsdl/schematron" xml:lang="en">
   <teiHeader>
     <fileDesc>
       <titleStmt>
-        <title>Syriaca TEI Main ODD</title>
-        <author><persName ref="http://syriaca.org/documentation/editors.xml#dschwartz">Daniel L.
-            Schwartz</persName></author>
+        <title>Syriaca Main ODD File</title>
+        <author>Daniel Schwartz</author>
       </titleStmt>
       <publicationStmt>
-        <publisher>Syriaca.org: The Syriac Reference Portal</publisher>
-        <availability>
-          <licence target="http://creativecommons.org/licenses/by/3.0/">
-            <p>Distributed under a Creative Commons Attribution 3.0 Unported License.</p>
-          </licence>
-        </availability>
+        <p>for use by whoever wants it</p>
       </publicationStmt>
+      <notesStmt>
+        <note type="ns">http://www.example.org/ns/nonTEI</note>
+      </notesStmt>
       <sourceDesc>
-        <p>[Information about the creation of the ODD]</p>
+        <p>created on Tue May 20 2014 09:06:59 GMT-0500 (CDT)</p>
       </sourceDesc>
     </fileDesc>
-    <revisionDesc>
-      <change who="http://syriaca.org/documentation/editors.xml#dschwartz" when="2018-11-06">First
-        draft</change>
-    </revisionDesc>
   </teiHeader>
   <text>
+    <front>
+      <divGen type="toc"/>
+    </front>
     <body>
-
-      <p/>
-
-      <schemaSpec ident="syriacaTEIMain" source="tei:current" start="TEI">
-
-        <moduleRef key="tei"/>
-        <moduleRef key="certainty" except="certainty respons"/>
-        <moduleRef key="core"
-          except="add addrLine address binaryObject cb cit distinct divGen email emph gb headItem headLabel index l lb lg measureGrp media meeting mentioned num postBox postCode rs said soCalled sp speaker stage street teiCorpus term time"/>
-        <moduleRef key="dictionaries" include="lang entryFree"/>
-        <moduleRef key="figures" except="cell formula notatedMusic row table"/>
-        <moduleRef key="gaiji"/>
-        <moduleRef key="header"
-          except="abstract appInfo application biblFull cRefPattern calendar calendarDesc catRef classCode correction correspAction correspContext correspDesc creation distributor geoDecl handNote hyphenation listChange listPrefixDef namespace normalization notesStmt punctuation prefixDef quotation rendition refState refsDecl samplingDecl scriptNote segmentation stdVals styleDefDecl tagUsage tagsDecl rendition xenoData"/>
-        <moduleRef key="linking" except="alt altGrp join joinGrp linkGrp timeline when"/>
-        <moduleRef key="msdescription"
-          except="dim heraldry msItemStruct objectType scriptDesc secFol typeDesc"/>
-        <!-- msdescription needs a bit more work. I did not go through and ensure every element that this customization uses is already in use in Syriaca.org data. -->
-        <moduleRef key="namesdates" except="bloc geogFeat geogName listNym nym population terrain"/>
-        <!-- namesdates needs a bit more work. I did not go through and ensure every element that this customization uses is already in use in Syriaca.org data. -->
-        <moduleRef key="tagdocs" include="gi"/>
-        <moduleRef key="textstructure" include="TEI back body div text"/>
-        <moduleRef key="transcr"
-          except="line listTranspose metamark mod redo retrace sourceDoc space substJoin surface surfaceGrp surplus transpose undo zone"/>
-        <!-- transcr needs a bit more work. I did not go through and ensure every element that this customization uses is already in use in Syriaca.org data. -->
-        
+      <p>My TEI Customization starts with modules tei, core, textstructure and header</p>
+      <schemaSpec docLang="en" ident="syriacaMainODD" prefix="tei_" xml:lang="en">
         <classSpec ident="att.global" mode="change" module="tei" type="atts">
           <attList>
             <attDef ident="syriaca-computed-start" mode="add">
@@ -63,36 +33,7 @@
                 <rng:text xmlns:rng="http://relaxng.org/ns/structure/1.0"/>
               </datatype>
             </attDef>
-            <attDef ident="syriaca-computed-end" mode="add">
-              <desc>End date</desc>
-              <datatype maxOccurs="unbounded" minOccurs="1">
-                <rng:text xmlns:rng="http://relaxng.org/ns/structure/1.0"/>
-              </datatype>
-            </attDef>
-            <attDef ident="syriaca-tags" mode="add">
-              <desc>tags usable</desc>
-              <datatype maxOccurs="unbounded" minOccurs="1">
-                <rng:text xmlns:rng="http://relaxng.org/ns/structure/1.0"/>
-              </datatype>
-              <valList mode="change" type="semi">
-                <valItem ident="#syriaca-headword">
-                  <desc>The name used by Syriaca.org for document titles, citation, and
-                    disambiguation. These names have been created according to the
-                    Syriaca.org guidelines for headwords: <ref target="http://syriaca.org/documentation/headwords.html">http://syriaca.org/documentation/headwords.html</ref>.</desc>
-                </valItem>
-                <valItem ident="#syriaca-anglicized">
-                  <desc>An anglicized version of a name created by Syriaca.org used to
-                    facilitate searching in English.</desc>
-                </valItem>
-                <valItem ident="#canonical">
-                  <desc>Indicates the content is canonical, i.e., widely agreed upon. Abbreviations of work titles are primarily in view.</desc>
-                </valItem>
-                <valItem ident="#ektobe-headword">
-                  <desc>The name used by e-Ktobe as a standardized name form.</desc>
-                </valItem>
-              </valList>
-            </attDef>
-            <attDef ident="xml:lang" mode="change"><!-- Wondering if all of these should be ingested into the Taxonomy and we use keyword URIs instead of these. -->
+            <attDef ident="xml:lang" mode="change">
               <valList mode="add" type="closed">
                 <valItem ident="ar">
                   <gloss>Arabic</gloss>
@@ -128,9 +69,8 @@
                 </valItem>
                 <valItem ident="de-x-baumstrk">
                   <gloss>German—Baumstark Romanization</gloss>
-                  <desc>Names or terms Romanized into German according to
-                    the standards adopted by Anton Baumstark's 
-                    Geschichte der syrischen Literatur.</desc>
+                  <desc>Names or terms Romanized into German according to the standards adopted by
+                    Anton Baumstark's Geschichte der syrischen Literatur.</desc>
                 </valItem>
                 <valItem ident="el">
                   <gloss>Greek—Modern</gloss>
@@ -142,18 +82,17 @@
                 </valItem>
                 <valItem ident="en-x-gedsh">
                   <gloss>English—GEDSH Romanization</gloss>
-                  <desc>Names or terms Romanized into English according to
-                    the standards adopted by the Gorgias Encyclopedic Dictionary of the Syriac
-                    Heritage</desc>
+                  <desc>Names or terms Romanized into English according to the standards adopted by
+                    the Gorgias Encyclopedic Dictionary of the Syriac Heritage</desc>
                 </valItem>
                 <valItem ident="en-x-lah">
                   <gloss>English—LAH Romanization</gloss>
-                  <desc>Names or terms Romanized into English according to
-                    the standards adopted by the Late Antique Historiography project.</desc>
+                  <desc>Names or terms Romanized into English according to the standards adopted by
+                    the Late Antique Historiography project.</desc>
                 </valItem>
                 <valItem ident="en-x-srp1">
                   <gloss>English—Syriaca.org Alternate Romanization</gloss>
-                  <desc>Names or terms Romanized into English by Syriaca.org using alternate methods 
+                  <desc>Names or terms Romanized into English by Syriaca.org using alternate methods
                     for indexing purposes.</desc>
                 </valItem>
                 <valItem ident="es">
@@ -166,13 +105,13 @@
                 </valItem>
                 <valItem ident="fr-x-bhs">
                   <gloss>French—BHS Romanization</gloss>
-                  <desc>Names or terms Romanized into French according to the
-                    standards adopted by the Bibliotheca Hagiographica Syriaca</desc>
+                  <desc>Names or terms Romanized into French according to the standards adopted by
+                    the Bibliotheca Hagiographica Syriaca</desc>
                 </valItem>
                 <valItem ident="fr-x-fiey">
                   <gloss>French—Fiey Romanization</gloss>
-                  <desc>Names or terms Romanized into French according to the
-                    standards adopted by Fiey, Saints Syriaques</desc>
+                  <desc>Names or terms Romanized into French according to the standards adopted by
+                    Fiey, Saints Syriaques</desc>
                 </valItem>
                 <valItem ident="gez">
                   <gloss>Ge'ez</gloss>
@@ -248,7 +187,8 @@
                 </valItem>
                 <valItem ident="syr-x-syrm">
                   <gloss>Syriac—Melkite script</gloss>
-                  <desc>Syriac in Melkite script. Note: This is not an ISO code but a private use code for Melkite employed by Syriaca.org until an ISO code is created</desc>
+                  <desc>Syriac in Melkite script. Note: This is not an ISO code but a private use
+                    code for Melkite employed by Syriaca.org until an ISO code is created</desc>
                 </valItem>
                 <valItem ident="sog">
                   <gloss>Sogdian</gloss>
@@ -260,14 +200,94 @@
                 </valItem>
               </valList>
               <remarks versionDate="2016-12-07">
-                <p>All elements should have an <att>xml:lang</att> value, either inherited from an ancestor element or declared explicitly. 
-                  See the <ref target="http://syriaca.org/documentation/isostandards.html">Syriaca.org documentation</ref> for more information 
-                  on the usage of particular tags. Note that <att>xml:lang</att> describes the language of the content of the node. For indicating 
-                  the language of a work or bibliographic resource, see the documentation about the <gi>textLang</gi> and <gi>lang</gi> elements.</p>
-              </remarks><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+                <p>All elements should have an <att>xml:lang</att> value, either inherited from an
+                  ancestor element or declared explicitly. See the <ref
+                    target="http://syriaca.org/documentation/isostandards.html">Syriaca.org
+                    documentation</ref> for more information on the usage of particular tags. Note
+                  that <att>xml:lang</att> describes the language of the content of the node. For
+                  indicating the language of a work or bibliographic resource, see the documentation
+                  about the <gi>textLang</gi> and <gi>lang</gi> elements.</p>
+              </remarks>
             </attDef>
           </attList>
         </classSpec>
+        <classSpec ident="att.global" mode="change" module="tei" type="atts">
+          <attList>
+            <attDef ident="syriaca-computed-end" mode="add">
+              <desc>End date</desc>
+              <datatype maxOccurs="unbounded" minOccurs="1">
+                <rng:text xmlns:rng="http://relaxng.org/ns/structure/1.0"/>
+              </datatype>
+            </attDef>
+            <attDef ident="syriaca-tags" mode="add">
+              <desc>tags usable</desc>
+              <datatype maxOccurs="unbounded" minOccurs="1">
+                <rng:text xmlns:rng="http://relaxng.org/ns/structure/1.0"/>
+              </datatype>
+              <valList mode="change" type="semi">
+                <valItem ident="#syriaca-headword">
+                  <desc>The name used by Syriaca.org for document titles, citation, and
+                    disambiguation. These names have been created according to the Syriaca.org
+                    guidelines for headwords: <ref
+                      target="http://syriaca.org/documentation/headwords.html"
+                      >http://syriaca.org/documentation/headwords.html</ref>.</desc>
+                </valItem>
+                <valItem ident="#syriaca-anglicized">
+                  <desc>An anglicized version of a name created by Syriaca.org used to facilitate
+                    searching in English.</desc>
+                </valItem>
+                <valItem ident="#canonical">
+                  <desc>Indicates the content is canonical, i.e., widely agreed upon. Abbreviations
+                    of work titles are primarily in view.</desc>
+                </valItem>
+                <valItem ident="#ektobe-headword">
+                  <desc>The name used by e-Ktobe as a standardized name form.</desc>
+                </valItem>
+              </valList>
+            </attDef>
+          </attList>
+        </classSpec>
+        <moduleRef
+          except="binaryObject cit distinct email emph gb headItem headLabel index measureGrp media meeting mentioned num postBox postCode rs said soCalled sp speaker stage street teiCorpus term time"
+          key="core"/>
+        <moduleRef key="tei"/>
+        <moduleRef
+          except="abstract appInfo application att.patternReplacement biblFull cRefPattern calendar calendarDesc correction creation distributor hyphenation listChange listPrefixDef namespace normalization notesStmt prefixDef quotation refState refsDecl samplingDecl scriptNote segmentation stdVals styleDefDecl tagUsage tagsDecl typeNote rendition"
+          key="header"/>
+        <moduleRef except="cell row table notatedMusic" key="figures"/>
+        <moduleRef key="gaiji"/>
+        <moduleRef except="alt altGrp join joinGrp linkGrp timeline when" key="linking"/>
+        <moduleRef except="dim heraldry msItemStruct objectType scriptDesc secFol typeDesc"
+          key="msdescription"/>
+        <moduleRef except="bloc listNym geogFeat geogName nym population relationGrp terrain"
+          key="namesdates"/>
+        <moduleRef except="app lacunaEnd lacunaStart lem listApp listWit rdg rdgGrp variantEncoding"
+          key="textcrit"/>
+        <moduleRef
+          except="line listTranspose metamark mod redo retrace sourceDoc space substJoin surface surfaceGrp surplus transpose undo zone"
+          key="transcr"/>
+        <moduleRef
+          except="argument byline dateline div1 div2 div3 div4 div5 div6 div7 docDate group imprimatur trailer floatingText"
+          key="textstructure"/>
+        <moduleRef
+          except="altIdent alternate att attDef attList attRef classRef classSpec classes code constraint constraintSpec content datatype defaultVal eg egXML elementRef elementSpec equiv exemplum ident listRef macroRef macroSpec memberOf moduleRef moduleSpec remarks sequence specDesc specGrp specGrpRef specList tag val valDesc valItem valList att.combinable att.deprecated att.identified att.namespaceable att.repeatable"
+          key="tagdocs"/>
+        <moduleRef except="certainty respons" key="certainty"/>
+        <moduleRef key="analysis"/>
+        <moduleRef key="dictionaries" include="lang entryFree"/>
+        <!-- If the TEI organization changes "precision" so that it can be a child of state and have notBefore notAfter attributes, this change may be removed. -->
+        <elementSpec ident="precision" module="certainty" mode="change">
+          <classes mode="replace">
+            <memberOf key="model.certLike"/>
+            <memberOf key="model.descLike" mode="add"/>
+            <memberOf key="model.global"/>
+            <memberOf key="model.global.meta"/>
+            <memberOf key="model.labelLike" mode="add"/>
+            <memberOf key="att.datable.w3c" mode="add"/>
+            <memberOf key="att.global"/>
+            <memberOf key="att.scoping"/>
+          </classes>
+        </elementSpec>
         
         <elementSpec ident="title" module="core" mode="change">
           <attList>
@@ -390,7 +410,7 @@
               </editor>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-23"><!-- This remark references the bibl element but does not control anything about the bibl element.  -->
+          <remarks versionDate="2016-11-23">
             <p>Inside the main <gi>bibl</gi> of a work entity, editors are linked to their record in
               the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
               the purpose of displaying the editor's name on the work's HTML page, the English and
@@ -400,7 +420,7 @@
           </remarks>
         </elementSpec>
         
-        <elementSpec ident="body" module="textstructure" mode="change"> <!-- I would like to look at this again. This doesn't do much and it probably needs work. -->
+        <elementSpec ident="body" module="textstructure" mode="change">
           <content>
             <alternate>
               <elementRef key="bibl"/>
@@ -426,7 +446,7 @@
               least a <att>mainLang</att> attribute indicating the primary language of the
               conceptual work using a BCP 47 code. The element should not contain any text unless
               additional explanation is needed beyond the machine-readable language codes.</p>
-          </remarks><!-- Consider making the use of a text node turn up a yellow warning. -->
+          </remarks>
         </elementSpec>
         
         <elementSpec ident="date" module="core" mode="change">
@@ -467,7 +487,7 @@
                 century</date>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2016-11-24">
             <p>Dates should include both a machine-readable version (using attributes like
               <att>when</att>, <att>notBefore</att>, <att>notAfter</att>) and a human-readable
               version as text in the element content. See <ref
@@ -490,7 +510,7 @@
               </extent>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2016-11-24">
             <p>Should contain a <gi>measure</gi> element which provides both machine-readable
               attribute values and human-readable text. For work entities, the <gi>extent</gi>
               element is recommended to give a sense of the size of the work.</p>
@@ -552,7 +572,7 @@
               </extent>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2011-11-24">
             <p>Measures should be given using both machine-readable values (in the
               <att>quantity</att> and <att>unit</att> attributes) and human-readable text (in the
               element content). See <gi>extent</gi> regarding describing the extent of a conceptual
@@ -671,10 +691,9 @@
         </elementSpec>
         
         <elementSpec ident="relation" module="namesdates" mode="change">
-          <!-- Needs to be re-written. 
-            <constraintSpec scheme="isoschematron" ident="relation-resources">
+          <constraintSpec scheme="schematron" ident="relation-resources">
             <constraint>
-              
+              <!-- Not sure whether this is working as it should in oXygen validation. -->
               <sch:rule>
                 <sch:report test="tei:*[not(@mutual) and not(@active and @passive)]">Error: The
                   relation element must contain either @mutual or both @active and @passive
@@ -682,7 +701,6 @@
               </sch:rule>
             </constraint>
           </constraintSpec>
-          -->
           <attList>
             <attDef ident="type" mode="change">
               <desc>Describes the general category of relationship, which may be used in addition to
@@ -691,10 +709,10 @@
               <valList mode="change" type="semi">
                 <valItem ident="part">
                   <desc>A relation between a work and the larger work of which it is a part. See
-                    <gi>label</gi>.</desc><!-- This is unclear. -->
+                    <gi>label</gi>.</desc>
                 </valItem>
                 <valItem ident="disambiguation">
-                  <desc>A relation that disambiguates one entity from others.</desc>
+                  <desc>A relation that disambiguates an entity from others.</desc>
                 </valItem>
                 <valItem ident="general">
                   <desc>A relation that does not belong in a more specific category.</desc>
@@ -788,7 +806,7 @@
               </valList>
             </attDef>
             <attDef ident="active" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
                 <p>This should contain either the full URI of a Syriaca.org entity (person, place,
                   work, etc.), or a hash URI (fragment identifier introduced with #) for a node
                   within the document. A full URI is preferred where one exists. When the relation
@@ -797,7 +815,7 @@
               </remarks>
             </attDef>
             <attDef ident="passive" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
                 <p>This should contain either the full URI of a Syriaca.org entity (person, place,
                   work, etc.), or a hash URI (fragment identifier introduced with #) for a node
                   within the document. A full URI is preferred where one exists. When the relation
@@ -806,7 +824,7 @@
               </remarks>
             </attDef>
             <attDef ident="mutual" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
                 <p>This should contain identifiers for two or more Syriaca.org entities or nodes,
                   either as full URIs, or as hash URIs (fragment identifiers introduced with #) in
                   the case of nodes within the document. When the relation is serialized as RDF, a
@@ -833,7 +851,7 @@
             <p>This relation links the <gi>bibl</gi> describing a translation to the <gi>bibl</gi>
               from which it was translated. Note the use of both a <att>type</att> in addition to a
               <att>ref</att> to make the relation more specific. It is also linked to the work
-              entity containing it.</p><!-- Right now, this is not required of the bibl element. It could be though. -->
+              entity containing it.</p>
           </exemplum>
           <exemplum versionDate="2016-11-24">
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
@@ -857,16 +875,15 @@
         </elementSpec>
         
         <elementSpec ident="label" module="core" mode="change">
-          <!--  Needs to be re-written
-            <constraintSpec scheme="schematron" ident="label-type-order">
+          <constraintSpec scheme="schematron" ident="label-type-order">
             <constraint>
+              <!-- Not sure whether this is working as it should in oXygen validation. -->
               <sch:rule context="tei:*[ancestor::tei:relation]">
                 <sch:report test="@type='order' and not(@subtype and @n)">Error: @subtype and @n are
                   required when relation//label/@type='order'.</sch:report>
               </sch:rule>
             </constraint>
           </constraintSpec>
-          -->
           <attList>
             <attDef ident="type" mode="change">
               <valList mode="change" type="semi">
@@ -918,12 +935,292 @@
         
         
         
-          
+        
+        <!-- ABOVE THIS COMMENT THE MATERIAL HAS BEEN INCORPORATED INTO THE NEW ODD. EVERYTHING BELOW THIS COMMENT STILL NEEDS ATTENTION. -->
+        
+        
+        <elementSpec ident="lang" module="dictionaries" mode="change"><!-- Should avoid using the desc element here. This should only be used when blowing up the TEI guidelines regarding an element. We want to avoid that. -->
+          <desc>contains the name of a language mentioned in etymological or other linguistic
+            discussion. Inside a <gi>bibl</gi> element, this refers to the language of the version
+            to which the <gi>bibl</gi> refers. The contents of <gi>lang</gi> should be a BCP-47
+            code.</desc>
+          <constraintSpec scheme="schematron" ident="lang-in-bibl">
+            <constraint>
+              <!-- Not sure whether this is working as it should in oXygen validation. -->
+              <sch:rule>
+                <sch:report test="not(ancestor::tei:bibl)">Error: The lang element is only allowed
+                  inside a bibl element.</sch:report>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <exemplum versionDate="2016-11-09">
+            <egXML xmlns="http://www.tei-c.org/ns/Examples">
+              <bibl type="lawd:Translation" xml:id="bib2501-4">
+                <lang>la</lang>
+                <title level="m" xml:lang="la">Chronicon Syriacum</title>
+                <ptr target="http://syriaca.org/bibl/2279"/>
+                <citedRange unit="vol" from="1" to="1">1</citedRange>
+              </bibl>
+            </egXML>
+          </exemplum>
+          <remarks versionDate="2016-11-09">
+            <p>Syriaca.org uses the <gi>lang</gi> element inside <gi>bibl</gi> elements for modern
+              translations and ancient versions to indicate the language of the version to which the
+                <gi>bibl</gi> refers. This is different from the <att>xml:lang</att> attribute which
+              shows the language of this element, and also different from the <gi>textLang</gi>
+              element which describes the language of the bibliographic item. (In some cases this is
+              different from the language of the version. For example, the bibliographic item may
+              point to an English translation of an ancient Armenian version.)</p>
+          </remarks>
+        </elementSpec>
+        
+        
+        <elementSpec ident="bibl" module="core" mode="change">
+          <content>
+            <alternate>
+              <!-- Model for work entity -->
+              <sequence>
+                <!-- requiring attribute doesn't seem to be working -->
+                <classRef key="att.typed" minOccurs="1" context="body/bibl"/>
+                <elementRef key="title" maxOccurs="unbounded" context="body/bibl"/>
+                <alternate minOccurs="0" maxOccurs="unbounded">
+                  <elementRef key="author" context="body/bibl"/>
+                  <elementRef key="editor" context="body/bibl"/>
+                </alternate>
+                <elementRef key="idno" maxOccurs="unbounded" context="body/bibl"/>
+                <elementRef key="textLang" minOccurs="0" context="body/bibl"/>
+                <elementRef key="date" minOccurs="0" maxOccurs="unbounded" context="body/bibl"/>
+                <elementRef key="extent" minOccurs="0" context="body/bibl"/>
+                <elementRef key="note" minOccurs="0" maxOccurs="unbounded" context="body/bibl"/>
+                <elementRef key="bibl" minOccurs="0" maxOccurs="unbounded" context="body/bibl"/>
+                <elementRef key="listRelation" minOccurs="0" context="body/bibl"/>
+              </sequence>
+              <!-- Model for citations inside work entity -->
+              <sequence>
+                <!-- requiring attribute doesn't seem to be working -->
+                <classRef key="att.typed" minOccurs="1" context="body/bibl/bibl"/>
+                <elementRef key="lang" minOccurs="0" maxOccurs="unbounded"
+                  context="body/bibl/bibl[@type='lawd:Translation']"/>
+                <elementRef key="idno" minOccurs="0" maxOccurs="unbounded"
+                  context="body/bibl/bibl[@type='syriaca:Manuscript']"/>
+                <alternate minOccurs="0" maxOccurs="unbounded">
+                  <elementRef key="author" context="body/bibl/bibl"/>
+                  <elementRef key="editor" context="body/bibl/bibl"/>
+                </alternate>
+                <elementRef key="title" minOccurs="0" maxOccurs="unbounded" context="body/bibl/bibl"/>
+                <elementRef key="ptr"
+                  context="body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation')]"/>
+                <elementRef key="textLang" minOccurs="0" context="body/bibl/bibl"/>
+                <elementRef key="date" minOccurs="0" maxOccurs="unbounded" context="body/bibl/bibl"/>
+                <elementRef key="extent" minOccurs="0" context="body/bibl/bibl"/>
+                <elementRef key="citedRange" minOccurs="0" maxOccurs="unbounded"
+                  context="body/bibl/bibl"/>
+                <elementRef key="note" minOccurs="0" maxOccurs="unbounded" context="body/bibl/bibl"/>
+                <elementRef key="bibl" minOccurs="0" maxOccurs="unbounded" context="body/bibl/bibl"/>
+                <elementRef key="listRelation" minOccurs="0" context="body/bibl/bibl"/>
+              </sequence>
+              <!-- Model for references to works in an unstructured format. 
+                            This could be locked down more so that it interferes less with the above two models. -->
+              <alternate minOccurs="0" maxOccurs="unbounded">
+                <textNode/>
+                <classRef key="model.gLike"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.highlighted"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.pPart.data"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.pPart.edit"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.segLike"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.ptrLike"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.biblPart"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"/>
+                <classRef key="model.global"
+                  context="not(body/bibl[@type='lawd:ConceptualWork']) and not(body/bibl/bibl[@type=('lawd:Edition','lawd:Translation','lawd:Citation','syriaca:Manuscript')])"
+                />
+              </alternate>
+            </alternate>
+          </content>
+          <constraintSpec scheme="schematron" ident="work-bibl">
+            <constraint>
+              <!-- Not sure whether this is working as it should in oXygen validation. -->
+              <sch:rule context="tei:*[@type='lawd:ConceptualWork']">
+                <sch:report test="not(idno)" role="nonfatal">Error: An idno is
+                  required.</sch:report>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <attList>
+            <attDef ident="type" mode="change">
+              <desc>The <att>type</att> attribute on <gi>bibl</gi> elements may be an RDF class
+                defining the type of work or item. These will typically begin with either the prefix
+                lawd: (http://lawd.info/ontology) or syriaca:</desc>
+              <valList mode="change" type="semi">
+                <valItem ident="lawd:ConceptualWork">
+                  <gloss type="sg">Work</gloss>
+                  <gloss type="pl">Works</gloss>
+                  <desc>A Conceptual Work groups together one or more Written Works which have the
+                    same intellectual source. E.g. The Iliad, as opposed to a particular manuscript
+                    witness or edition of the Iliad. See
+                    http://lawd.info/ontology/ConceptualWork.</desc>
+                </valItem>
+                <valItem ident="lawd:Edition">
+                  <gloss type="sg">Edition</gloss>
+                  <gloss type="pl">Editions</gloss>
+                  <desc>A published (whether officially or not) Written Work that relies on one or
+                    more Written Works as sources. See http://lawd.info/ontology/Edition.</desc>
+                </valItem>
+                <valItem ident="lawd:Citation">
+                  <gloss type="sg">Citation</gloss>
+                  <gloss type="pl">Citations</gloss>
+                  <desc>A Citation models a bibliographic reference as a resource. See
+                    http://lawd.info/ontology/Citation.</desc>
+                </valItem>
+                <valItem ident="syriaca:Manuscript">
+                  <gloss type="sg">Manuscript</gloss>
+                  <gloss type="pl">Manuscripts</gloss>
+                  <desc>Any text-bearing object, which usually embodies a Conceptual Work and which
+                    may be a source for an Edition or Translation.</desc>
+                </valItem>
+                <valItem ident="syriaca:PrintCatalogue">
+                  <gloss type="sg">Print Catalogue</gloss>
+                  <gloss type="pl">Print Catalogues</gloss>
+                  <desc>A Citation of a print catalogue, such as a manuscript catalogue.</desc>
+                </valItem>
+                <valItem ident="syriaca:DigitalCatalogue">
+                  <gloss type="sg">Digital Catalogue</gloss>
+                  <gloss type="pl">Digital Catalogues</gloss>
+                  <desc>A Citation of a digital catalogue, such as a manuscript catalogue.</desc>
+                </valItem>
+                <valItem ident="syriaca:ModernTranslation">
+                  <gloss type="sg">Modern Translation</gloss>
+                  <gloss type="pl">Modern Translation</gloss>
+                  <desc>A modern Written Work that translates one or more other Written Works that
+                    embody the same Conceptual Work. A subtype of
+                    http://lawd.info/ontology/Translation.</desc>
+                </valItem>
+                <valItem ident="syriaca:AncientVersion">
+                  <gloss type="sg">Ancient Version</gloss>
+                  <gloss type="pl">Ancient Versions</gloss>
+                  <desc>An ancient Written Work that translates one or more other Written Works that
+                    embody the same Conceptual Work. A subtype of
+                    http://lawd.info/ontology/Translation.</desc>
+                </valItem>
+                <valItem ident="syriaca:OriginalWithSyriacEvidence">
+                  <gloss type="sg">Original Language Edition with Syriac Evidence</gloss>
+                  <gloss type="pl">Original Language Editions with Syriac Evidence</gloss>
+                  <desc>An edition of a non-Syriac text that incorporates evidence from Syriac
+                    versions.</desc>
+                </valItem>
+                <valItem ident="syriaca:Glossary">
+                  <gloss type="sg">Glossary</gloss>
+                  <gloss type="pl">Glossaries</gloss>
+                  <desc>A bibliographic reference to a resource that provides glosses or
+                    explanations for terms. A subtype of http://lawd.info/ontology/Citation.</desc>
+                </valItem>
+                <valItem ident="syriaca:Apparatus">
+                  <gloss type="sg">Apparatus</gloss>
+                  <gloss type="pl">Apparatuses</gloss>
+                  <desc>A bibliographic reference to a resource that contains notes regarding the
+                    witnesses, versions, or reconstruction of a text. A subtype of
+                    http://lawd.info/ontology/Citation.</desc>
+                </valItem>
+                <valItem ident="syriaca:ReferenceWork">
+                  <gloss type="sg">Reference Work</gloss>
+                  <gloss type="pl">Reference Works</gloss>
+                  <desc>A bibliographic reference to a reference work. A subtype of
+                    http://lawd.info/ontology/Citation.</desc>
+                </valItem>
+                <valItem ident="syriaca:Literature">
+                  <gloss type="sg">Literature</gloss>
+                  <gloss type="pl">Literature</gloss>
+                  <desc>A bibliographic reference to general studies or secondary literature. A
+                    subtype of http://lawd.info/ontology/Citation.</desc>
+                </valItem>
+              </valList>
+            </attDef>
+            <attDef ident="ana" mode="change">
+              <desc>The <att>ana</att> attribute on <gi>bibl</gi> elements should contain one or
+                more Syriaca.org subject URIs beginning with http://syriaca.org/subject/</desc>
+            </attDef>
+          </attList>
+        </elementSpec>
+        
+        
+        
+        <elementSpec ident="author" module="core" mode="change">
+          <content>
+            <alternate minOccurs="0" maxOccurs="unbounded">
+              <elementRef key="persName"/>
+              <textNode/>
+            </alternate>
+          </content>
+          <attList>
+            <attDef ident="ref" mode="change" usage="rec">
+              <desc>Should contain the URI of the author from the <ref
+                  target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
+                no record yet exists for the author.</desc>
+            </attDef>
+            <!-- Should we import any values for @role or limit which ones can be applied to 
+                        author and which to editor? -->
+            <attDef ident="role" mode="change">
+              <desc>Specifies the connection of the author to the work, selected from
+                http://syriaca.org/documentation/author-editor-roles.xml . The attribute value
+                should contain the above URL followed by a hash (#) and the <att>xml:id</att> of the
+                role. For example, http://syriaca.org/documentation/author-editor-roles.xml#pseudo .
+                This is not required if normal authorship is assumed (rather than pseudonymous or
+                questionably attributed authorship). It is also not required if the connection is
+                unknown.</desc>
+            </attDef>
+          </attList>
+          <exemplum versionDate="2016-11-23">
+            <egXML xmlns="http://www.tei-c.org/ns/Examples">
+              <author ref="http://syriaca.org/person/239"
+                role="http://syriaca.org/documentation/author-editor-roles.xml#pseudo">
+                <persName xml:lang="en">Gregorius Bar Hebraeus</persName> — <persName xml:lang="syr"
+                  >ܓܪܝܓܘܪܝܘܣ ܒܪ ܥܒܪܝܐ</persName>
+              </author>
+            </egXML>
+          </exemplum>
+          <remarks versionDate="2016-11-23">
+            <p>Inside the main <gi>bibl</gi> of a work entity, authors are linked to their record in
+              the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
+              the purpose of displaying the author's name on the work's HTML page, the English and
+              Syriac headwords are included as <gi>persName</gi> elements separated by a dash. The
+              nature of the author's connection to a work may be further specified using the
+                <att>role</att> attribute on <gi>author</gi>.</p>
+          </remarks>
+        </elementSpec>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
       </schemaSpec>
-
-
     </body>
   </text>
 </TEI>
