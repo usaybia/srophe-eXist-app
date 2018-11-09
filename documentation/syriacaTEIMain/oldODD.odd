@@ -932,13 +932,6 @@
           </remarks>
         </elementSpec>
         
-        
-        
-        
-        
-        <!-- ABOVE THIS COMMENT THE MATERIAL HAS BEEN INCORPORATED INTO THE NEW ODD. EVERYTHING BELOW THIS COMMENT STILL NEEDS ATTENTION. -->
-        
-        
         <elementSpec ident="lang" module="dictionaries" mode="change"><!-- Should avoid using the desc element here. This should only be used when blowing up the TEI guidelines regarding an element. We want to avoid that. -->
           <desc>contains the name of a language mentioned in etymological or other linguistic
             discussion. Inside a <gi>bibl</gi> element, this refers to the language of the version
@@ -973,6 +966,57 @@
               point to an English translation of an ancient Armenian version.)</p>
           </remarks>
         </elementSpec>
+        
+        <elementSpec ident="author" module="core" mode="change">
+          <content>
+            <alternate minOccurs="0" maxOccurs="unbounded">
+              <elementRef key="persName"/>
+              <textNode/>
+            </alternate>
+          </content>
+          <attList>
+            <attDef ident="ref" mode="change" usage="rec">
+              <desc>Should contain the URI of the author from the <ref
+                target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
+                no record yet exists for the author.</desc>
+            </attDef>
+            <!-- Should we import any values for @role or limit which ones can be applied to 
+                        author and which to editor? -->
+            <attDef ident="role" mode="change">
+              <desc>Specifies the connection of the author to the work, selected from
+                http://syriaca.org/documentation/author-editor-roles.xml . The attribute value
+                should contain the above URL followed by a hash (#) and the <att>xml:id</att> of the
+                role. For example, http://syriaca.org/documentation/author-editor-roles.xml#pseudo .
+                This is not required if normal authorship is assumed (rather than pseudonymous or
+                questionably attributed authorship). It is also not required if the connection is
+                unknown.</desc>
+            </attDef>
+          </attList>
+          <exemplum versionDate="2016-11-23">
+            <egXML xmlns="http://www.tei-c.org/ns/Examples">
+              <author ref="http://syriaca.org/person/239"
+                role="http://syriaca.org/documentation/author-editor-roles.xml#pseudo">
+                <persName xml:lang="en">Gregorius Bar Hebraeus</persName> — <persName xml:lang="syr"
+                  >ܓܪܝܓܘܪܝܘܣ ܒܪ ܥܒܪܝܐ</persName>
+              </author>
+            </egXML>
+          </exemplum>
+          <remarks versionDate="2016-11-23">
+            <p>Inside the main <gi>bibl</gi> of a work entity, authors are linked to their record in
+              the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
+              the purpose of displaying the author's name on the work's HTML page, the English and
+              Syriac headwords are included as <gi>persName</gi> elements separated by a dash. The
+              nature of the author's connection to a work may be further specified using the
+              <att>role</att> attribute on <gi>author</gi>.</p>
+          </remarks>
+        </elementSpec>
+        
+        
+        
+        
+        <!-- ABOVE THIS COMMENT THE MATERIAL HAS BEEN INCORPORATED INTO THE NEW ODD. EVERYTHING BELOW THIS COMMENT STILL NEEDS ATTENTION. -->
+        
+        
         
         
         <elementSpec ident="bibl" module="core" mode="change">
@@ -1150,49 +1194,6 @@
         
         
         
-        <elementSpec ident="author" module="core" mode="change">
-          <content>
-            <alternate minOccurs="0" maxOccurs="unbounded">
-              <elementRef key="persName"/>
-              <textNode/>
-            </alternate>
-          </content>
-          <attList>
-            <attDef ident="ref" mode="change" usage="rec">
-              <desc>Should contain the URI of the author from the <ref
-                  target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
-                no record yet exists for the author.</desc>
-            </attDef>
-            <!-- Should we import any values for @role or limit which ones can be applied to 
-                        author and which to editor? -->
-            <attDef ident="role" mode="change">
-              <desc>Specifies the connection of the author to the work, selected from
-                http://syriaca.org/documentation/author-editor-roles.xml . The attribute value
-                should contain the above URL followed by a hash (#) and the <att>xml:id</att> of the
-                role. For example, http://syriaca.org/documentation/author-editor-roles.xml#pseudo .
-                This is not required if normal authorship is assumed (rather than pseudonymous or
-                questionably attributed authorship). It is also not required if the connection is
-                unknown.</desc>
-            </attDef>
-          </attList>
-          <exemplum versionDate="2016-11-23">
-            <egXML xmlns="http://www.tei-c.org/ns/Examples">
-              <author ref="http://syriaca.org/person/239"
-                role="http://syriaca.org/documentation/author-editor-roles.xml#pseudo">
-                <persName xml:lang="en">Gregorius Bar Hebraeus</persName> — <persName xml:lang="syr"
-                  >ܓܪܝܓܘܪܝܘܣ ܒܪ ܥܒܪܝܐ</persName>
-              </author>
-            </egXML>
-          </exemplum>
-          <remarks versionDate="2016-11-23">
-            <p>Inside the main <gi>bibl</gi> of a work entity, authors are linked to their record in
-              the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
-              the purpose of displaying the author's name on the work's HTML page, the English and
-              Syriac headwords are included as <gi>persName</gi> elements separated by a dash. The
-              nature of the author's connection to a work may be further specified using the
-                <att>role</att> attribute on <gi>author</gi>.</p>
-          </remarks>
-        </elementSpec>
         
         
         
