@@ -100,7 +100,7 @@ else if(request:get-parameter('query', '')) then
         else
             (response:set-header("Access-Control-Allow-Origin", "*"),
             response:set-header("Access-Control-Allow-Methods", "GET, POST"),
-            response:set-header("Content-Type", "text/xml"),
+            response:set-header("Content-Type", "application/sparql-results+xml"),
             $results)  
 else if(not(empty(request:get-data()))) then
     let $results := sparql:query(request:get-data())
@@ -113,6 +113,6 @@ else if(not(empty(request:get-data()))) then
         else
             (response:set-header("Access-Control-Allow-Origin", "*"),
             response:set-header("Access-Control-Allow-Methods", "GET, POST"),
-            response:set-header("Content-Type", "text/xml"),
+            response:set-header("Content-Type", "application/sparql-results+xml"),
             $results)                   
 else <message>No query data submitted</message>
