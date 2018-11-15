@@ -972,7 +972,7 @@
                         author and which to editor? -->
             <attDef ident="role" mode="change"><!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
               <desc>Specifies the connection of the author to the work, selected from
-                http://syriaca.org/documentation/author-editor-roles.xml . The attribute value
+                https://github.com/srophe/srophe-eXist-app/blob/master/documentation/author-editor-roles.xml. The attribute value
                 should contain the above URL followed by a hash (#) and the <att>xml:id</att> of the
                 role. For example, http://syriaca.org/documentation/author-editor-roles.xml#pseudo .
                 This is not required if normal authorship is assumed (rather than pseudonymous or
