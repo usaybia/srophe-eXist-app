@@ -1020,6 +1020,10 @@
         
         
         <elementSpec ident="bibl" module="core" mode="change">
+          <!-- 
+            The children of bibl in modules outside of works and bibl are only "author," "title," "ptrTarget," and "citedRange". 
+            The material below is for bibl elements in works and bibl only.
+          -->
           <content>
             <alternate>
               <!-- Model for work entity -->
