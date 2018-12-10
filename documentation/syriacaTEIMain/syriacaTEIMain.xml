@@ -29,7 +29,7 @@
   </teiHeader>
   <text>
     <body>
-      
+
       <!-- 
         
         I plan to write the ODD with general rules for elements and then use separate <constraintSpec> elements with schematron to create specific requirements for individual modules.
@@ -37,7 +37,7 @@
         Look into using sch:let elements to constrain schematron rule to each module in a simply/repeatable way.
         
       -->
-      
+
       <p/>
 
       <schemaSpec ident="syriacaTEIMain" source="tei:current" start="TEI">
@@ -62,7 +62,7 @@
         <moduleRef key="transcr"
           except="line listTranspose metamark mod redo retrace sourceDoc space substJoin surface surfaceGrp surplus transpose undo zone"/>
         <!-- transcr needs a bit more work. I did not go through and ensure every element that this customization uses is already in use in Syriaca.org data. -->
-        
+
         <classSpec ident="att.global" mode="change" module="tei" type="atts">
           <attList>
             <attDef ident="syriaca-computed-start" mode="add">
@@ -85,22 +85,26 @@
               <valList mode="change" type="semi">
                 <valItem ident="#syriaca-headword">
                   <desc>The name used by Syriaca.org for document titles, citation, and
-                    disambiguation. These names have been created according to the
-                    Syriaca.org guidelines for headwords: <ref target="http://syriaca.org/documentation/headwords.html">http://syriaca.org/documentation/headwords.html</ref>.</desc>
+                    disambiguation. These names have been created according to the Syriaca.org
+                    guidelines for headwords: <ref
+                      target="http://syriaca.org/documentation/headwords.html"
+                      >http://syriaca.org/documentation/headwords.html</ref>.</desc>
                 </valItem>
                 <valItem ident="#syriaca-anglicized">
-                  <desc>An anglicized version of a name created by Syriaca.org used to
-                    facilitate searching in English.</desc>
+                  <desc>An anglicized version of a name created by Syriaca.org used to facilitate
+                    searching in English.</desc>
                 </valItem>
                 <valItem ident="#canonical">
-                  <desc>Indicates the content is canonical, i.e., widely agreed upon. Abbreviations of work titles are primarily in view.</desc>
+                  <desc>Indicates the content is canonical, i.e., widely agreed upon. Abbreviations
+                    of work titles are primarily in view.</desc>
                 </valItem>
                 <valItem ident="#ektobe-headword">
                   <desc>The name used by e-Ktobe as a standardized name form.</desc>
                 </valItem>
               </valList>
             </attDef>
-            <attDef ident="xml:lang" mode="change"><!-- Wondering if all of these should be ingested into the Taxonomy and we use keyword URIs instead of these. -->
+            <attDef ident="xml:lang" mode="change">
+              <!-- Wondering if all of these should be ingested into the Taxonomy and we use keyword URIs instead of these. -->
               <valList mode="add" type="closed">
                 <valItem ident="ar">
                   <gloss>Arabic</gloss>
@@ -136,9 +140,8 @@
                 </valItem>
                 <valItem ident="de-x-baumstrk">
                   <gloss>German—Baumstark Romanization</gloss>
-                  <desc>Names or terms Romanized into German according to
-                    the standards adopted by Anton Baumstark's 
-                    Geschichte der syrischen Literatur.</desc>
+                  <desc>Names or terms Romanized into German according to the standards adopted by
+                    Anton Baumstark's Geschichte der syrischen Literatur.</desc>
                 </valItem>
                 <valItem ident="el">
                   <gloss>Greek—Modern</gloss>
@@ -150,18 +153,17 @@
                 </valItem>
                 <valItem ident="en-x-gedsh">
                   <gloss>English—GEDSH Romanization</gloss>
-                  <desc>Names or terms Romanized into English according to
-                    the standards adopted by the Gorgias Encyclopedic Dictionary of the Syriac
-                    Heritage</desc>
+                  <desc>Names or terms Romanized into English according to the standards adopted by
+                    the Gorgias Encyclopedic Dictionary of the Syriac Heritage</desc>
                 </valItem>
                 <valItem ident="en-x-lah">
                   <gloss>English—LAH Romanization</gloss>
-                  <desc>Names or terms Romanized into English according to
-                    the standards adopted by the Late Antique Historiography project.</desc>
+                  <desc>Names or terms Romanized into English according to the standards adopted by
+                    the Late Antique Historiography project.</desc>
                 </valItem>
                 <valItem ident="en-x-srp1">
                   <gloss>English—Syriaca.org Alternate Romanization</gloss>
-                  <desc>Names or terms Romanized into English by Syriaca.org using alternate methods 
+                  <desc>Names or terms Romanized into English by Syriaca.org using alternate methods
                     for indexing purposes.</desc>
                 </valItem>
                 <valItem ident="es">
@@ -174,13 +176,13 @@
                 </valItem>
                 <valItem ident="fr-x-bhs">
                   <gloss>French—BHS Romanization</gloss>
-                  <desc>Names or terms Romanized into French according to the
-                    standards adopted by the Bibliotheca Hagiographica Syriaca</desc>
+                  <desc>Names or terms Romanized into French according to the standards adopted by
+                    the Bibliotheca Hagiographica Syriaca</desc>
                 </valItem>
                 <valItem ident="fr-x-fiey">
                   <gloss>French—Fiey Romanization</gloss>
-                  <desc>Names or terms Romanized into French according to the
-                    standards adopted by Fiey, Saints Syriaques</desc>
+                  <desc>Names or terms Romanized into French according to the standards adopted by
+                    Fiey, Saints Syriaques</desc>
                 </valItem>
                 <valItem ident="gez">
                   <gloss>Ge'ez</gloss>
@@ -256,7 +258,8 @@
                 </valItem>
                 <valItem ident="syr-x-syrm">
                   <gloss>Syriac—Melkite script</gloss>
-                  <desc>Syriac in Melkite script. Note: This is not an ISO code but a private use code for Melkite employed by Syriaca.org until an ISO code is created</desc>
+                  <desc>Syriac in Melkite script. Note: This is not an ISO code but a private use
+                    code for Melkite employed by Syriaca.org until an ISO code is created</desc>
                 </valItem>
                 <valItem ident="sog">
                   <gloss>Sogdian</gloss>
@@ -268,14 +271,91 @@
                 </valItem>
               </valList>
               <remarks versionDate="2016-12-07">
-                <p>All elements should have an <att>xml:lang</att> value, either inherited from an ancestor element or declared explicitly. 
-                  See the <ref target="http://syriaca.org/documentation/isostandards.html">Syriaca.org documentation</ref> for more information 
-                  on the usage of particular tags. Note that <att>xml:lang</att> describes the language of the content of the node. For indicating 
-                  the language of a work or bibliographic resource, see the documentation about the <gi>textLang</gi> and <gi>lang</gi> elements.</p>
-              </remarks><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+                <p>All elements should have an <att>xml:lang</att> value, either inherited from an
+                  ancestor element or declared explicitly. See the <ref
+                    target="http://syriaca.org/documentation/isostandards.html">Syriaca.org
+                    documentation</ref> for more information on the usage of particular tags. Note
+                  that <att>xml:lang</att> describes the language of the content of the node. For
+                  indicating the language of a work or bibliographic resource, see the documentation
+                  about the <gi>textLang</gi> and <gi>lang</gi> elements.</p>
+              </remarks>
+              <!-- We need to figure out the use of "should" here. Do we require it or not? -->
             </attDef>
           </attList>
         </classSpec>
+
+        <elementSpec ident="teiHeader" module="header" mode="change">
+          <content>
+            <sequence preserveOrder="true">
+              <elementRef key="fileDesc"/>
+              <elementRef key="encodingDesc"/>
+              <elementRef key="profileDesc"/>
+              <elementRef key="revisionDesc"/>
+            </sequence>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="fileDesc" module="header" mode="change">
+          <content>
+            <sequence preserveOrder="true">
+              <elementRef key="titleStmt"/>
+              <elementRef key="editionStmt"/>
+              <elementRef key="publicationStmt"/>
+              <elementRef key="sourceDesc"/>
+            </sequence>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="titleStmt" module="header" mode="change">
+          <content>
+            <elementRef key="title" minOccurs="1" maxOccurs="unbounded"/>
+            <elementRef key="sponsor" maxOccurs="unbounded"/>
+            <elementRef key="funder" maxOccurs="unbounded"/>
+            <elementRef key="principal" minOccurs="1" maxOccurs="unbounded"/>
+            <elementRef key="editor" minOccurs="1" maxOccurs="unbounded"/>
+            <elementRef key="respStmt" minOccurs="1" maxOccurs="unbounded"/>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="editionStmt" module="header" mode="change">
+          <content>
+            <elementRef key="edition" minOccurs="1" maxOccurs="1"/>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="publicationStmt" module="header" mode="change">
+          <content>
+            <sequence preserveOrder="true">
+              <elementRef key="authority" minOccurs="1"/>
+              <elementRef key="idno" minOccurs="1"/>
+              <elementRef key="availability" minOccurs="1"/>
+              <elementRef key="date" minOccurs="1"/>
+            </sequence>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="sourceDesc" module="header" mode="change">
+          <content>
+            <elementRef key="p" minOccurs="1" maxOccurs="1"/>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="encodingDesc" module="header" mode="change">
+          <content>
+            <sequence preserveOrder="true">
+              <elementRef key="editorialDecl" minOccurs="1" maxOccurs="1"/>
+              <elementRef key="classDecl" minOccurs="1" maxOccurs="1"/>
+            </sequence>
+          </content>
+        </elementSpec>
+        
+        <elementSpec ident="revisionDesc" module="header" mode="change">
+          <content>
+            <elementRef key="change"/>
+          </content>
+        </elementSpec>
+        
+        
         
         <elementSpec ident="title" module="core" mode="change">
           <attList>
@@ -318,7 +398,7 @@
             </egXML>
           </exemplum>
         </elementSpec>
-        
+
         <elementSpec ident="idno" module="header" mode="change">
           <attList>
             <attDef ident="type" mode="change">
@@ -366,7 +446,7 @@
             </attDef>
           </attList>
         </elementSpec>
-        
+
         <elementSpec ident="editor" module="core" mode="change">
           <content>
             <alternate minOccurs="0" maxOccurs="unbounded">
@@ -377,7 +457,7 @@
           <attList>
             <attDef ident="ref" mode="change" usage="rec">
               <desc>Should contain the URI of the editor from the <ref
-                target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
+                  target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
                 no record yet exists for the editor.</desc>
             </attDef>
             <attDef ident="role" mode="change" usage="rec">
@@ -398,17 +478,19 @@
               </editor>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-23"><!-- This remark references the bibl element but does not control anything about the bibl element.  -->
+          <remarks versionDate="2016-11-23">
+            <!-- This remark references the bibl element but does not control anything about the bibl element.  -->
             <p>Inside the main <gi>bibl</gi> of a work entity, editors are linked to their record in
               the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
               the purpose of displaying the editor's name on the work's HTML page, the English and
               Syriac headwords are included as <gi>persName</gi> elements separated by a dash. The
               nature of the editor's connection to a work may be further specified using the
-              <att>role</att> attribute on <gi>editor</gi>.</p>
+                <att>role</att> attribute on <gi>editor</gi>.</p>
           </remarks>
         </elementSpec>
-        
-        <elementSpec ident="body" module="textstructure" mode="change"> <!-- I would like to look at this again. This doesn't do much and it probably needs work. -->
+
+        <elementSpec ident="body" module="textstructure" mode="change">
+          <!-- I would like to look at this again. This doesn't do much and it probably needs work. -->
           <content>
             <alternate>
               <elementRef key="bibl"/>
@@ -418,7 +500,7 @@
             </alternate>
           </content>
         </elementSpec>
-        
+
         <elementSpec ident="textLang" module="core" mode="change">
           <attList>
             <attDef ident="mainLang" mode="change" usage="req"/>
@@ -434,9 +516,10 @@
               least a <att>mainLang</att> attribute indicating the primary language of the
               conceptual work using a BCP 47 code. The element should not contain any text unless
               additional explanation is needed beyond the machine-readable language codes.</p>
-          </remarks><!-- Consider making the use of a text node turn up a yellow warning. -->
+          </remarks>
+          <!-- Consider making the use of a text node turn up a yellow warning. -->
         </elementSpec>
-        
+
         <elementSpec ident="date" module="core" mode="change">
           <attList>
             <attDef ident="type" mode="change" usage="rec">
@@ -457,15 +540,15 @@
             <attDef ident="notBefore" mode="change">
               <remarks versionDate="2016-11-24">
                 <p>Provides a terminus post quem. Use this when the exact date is not known. See
-                  <ref target="http://syriaca.org/exist/apps/srophe/documentation/dates.html">the
+                    <ref target="http://syriaca.org/exist/apps/srophe/documentation/dates.html">the
                     Syriaca.org documentation</ref> for editorial conventions regarding dates.</p>
               </remarks>
             </attDef>
             <attDef ident="notAfter" mode="change">
               <remarks versionDate="2016-11-24">
                 <p>Provides a terminus ad quem. Use this when the exact date is not known. See <ref
-                  target="http://syriaca.org/exist/apps/srophe/documentation/dates.html">the
-                  Syriaca.org documentation</ref> for editorial conventions regarding dates.</p>
+                    target="http://syriaca.org/exist/apps/srophe/documentation/dates.html">the
+                    Syriaca.org documentation</ref> for editorial conventions regarding dates.</p>
               </remarks>
             </attDef>
           </attList>
@@ -475,15 +558,16 @@
                 century</date>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2016-11-24">
+            <!-- We need to figure out the use of "should" here. Do we require it or not? -->
             <p>Dates should include both a machine-readable version (using attributes like
-              <att>when</att>, <att>notBefore</att>, <att>notAfter</att>) and a human-readable
+                <att>when</att>, <att>notBefore</att>, <att>notAfter</att>) and a human-readable
               version as text in the element content. See <ref
                 target="http://syriaca.org/exist/apps/srophe/documentation/dates.html">the
                 Syriaca.org documentation</ref> for editorial conventions regarding dates.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="extent" module="header" mode="change">
           <content>
             <elementRef key="measure" maxOccurs="unbounded"/>
@@ -498,13 +582,14 @@
               </extent>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2016-11-24">
+            <!-- We need to figure out the use of "should" here. Do we require it or not? -->
             <p>Should contain a <gi>measure</gi> element which provides both machine-readable
               attribute values and human-readable text. For work entities, the <gi>extent</gi>
               element is recommended to give a sense of the size of the work.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="measure" module="core" mode="change">
           <attList>
             <attDef ident="quantity" mode="change" usage="req"/>
@@ -560,14 +645,15 @@
               </extent>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-24"><!-- We need to figure out the use of "should" here. Do we require it or not? -->
+          <remarks versionDate="2016-11-24">
+            <!-- We need to figure out the use of "should" here. Do we require it or not? -->
             <p>Measures should be given using both machine-readable values (in the
-              <att>quantity</att> and <att>unit</att> attributes) and human-readable text (in the
+                <att>quantity</att> and <att>unit</att> attributes) and human-readable text (in the
               element content). See <gi>extent</gi> regarding describing the extent of a conceptual
               work.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="note" module="core" mode="change">
           <attList>
             <!-- It would be great if we could change note/@type to required, but there are many notes in existing records that would need to be 
@@ -611,7 +697,7 @@
                 </valItem>
                 <valItem ident="filiation">
                   <desc>A note concerning the textual relations between works. (Consider whether a
-                    <gi>relation</gi> could be used instead.)</desc>
+                      <gi>relation</gi> could be used instead.)</desc>
                 </valItem>
                 <valItem ident="incerta">
                   <desc>A note describing uncertain data in the record.</desc>
@@ -640,15 +726,15 @@
           <exemplum versionDate="2016-11-24">
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
               <note type="abstract" xml:lang="en" source="#bib2501-8 #bib2501-14">The first part of
-                <persName ref="http://syriaca.org/person/239">Bar Hebraeus</persName>' <bibl>
+                  <persName ref="http://syriaca.org/person/239">Bar Hebraeus</persName>' <bibl>
                   <title>Chronicle</title>
                   <ptr target="http://syriaca.org/work/2500"/>
                 </bibl>; an account of secular history from the time of <persName
                   ref="http://syriaca.org/person/1560">Adam</persName> until <persName
-                    ref="http://syriaca.org/person/239">Bar Hebraeus</persName>' own time (the 13th
+                  ref="http://syriaca.org/person/239">Bar Hebraeus</persName>' own time (the 13th
                 century). </note>
               <note type="disambiguation">This work should be distinguished from the Arabic
-                <bibl>History of the Dynasties</bibl>, which reflects a similar structure but has
+                  <bibl>History of the Dynasties</bibl>, which reflects a similar structure but has
                 significant differences, including some additions that may be from Islamic
                 sources.</note>
               <note type="content" source="#bib2501-8 #bib2501-14">Through the 12th century, this
@@ -658,7 +744,7 @@
                   ref="http://syriaca.org/person/239">Bar Hebraeus</persName>' own lifetime.</note>
               <note type="scope">Secular world history from Creation through the 13th century A.D.
                 Part of a larger work which also contains <bibl>an ecclesiastical history<ptr
-                  target="http:/syriaca.org/work/2502"/></bibl>.</note>
+                    target="http:/syriaca.org/work/2502"/></bibl>.</note>
               <note xml:lang="syr" type="incipit" source="#bib2501-2">
                 <quote>ܐܠܗܐ ܥܕܪ ܠܡܚܝܠܘܬܝ. ܡܒܪܟ ܐܢܬ ܗܘ ܡܪܝܐ ܘܡܪܐ ܕܟܠ ܫܘܪܝܐ ܘܫܪܝܐ: ܐܢܬ ܗܘ ܩܕܡܝܐ ܘܐܢܬ
                   ܗܘ ܐܚܪܝܐ. ܘܠܘܬܟ ܡܬܛܝܒܐ ܟܠ ܡܪܕܝܬܐ:</quote>
@@ -673,11 +759,11 @@
           <remarks versionDate="2011-11-24">
             <p>Notes are used for various kinds of text. In entity records, Syriaca.org typically
               uses notes as containers for sentence-length to paragraph-length text. The
-              <att>type</att> attribute is required and determines how the note is displayed on
+                <att>type</att> attribute is required and determines how the note is displayed on
               the page.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="relation" module="namesdates" mode="change">
           <!-- Needs to be re-written. 
             <constraintSpec scheme="isoschematron" ident="relation-resources">
@@ -694,12 +780,13 @@
           <attList>
             <attDef ident="type" mode="change">
               <desc>Describes the general category of relationship, which may be used in addition to
-                <att>ref</att> to determine how the relation should be displayed in the
+                  <att>ref</att> to determine how the relation should be displayed in the
                 interface.</desc>
               <valList mode="change" type="semi">
                 <valItem ident="part">
                   <desc>A relation between a work and the larger work of which it is a part. See
-                    <gi>label</gi>.</desc><!-- This is unclear. -->
+                      <gi>label</gi>.</desc>
+                  <!-- This is unclear. -->
                 </valItem>
                 <valItem ident="disambiguation">
                   <desc>A relation that disambiguates one entity from others.</desc>
@@ -728,7 +815,7 @@
                 <valItem ident="dct:source">
                   <gloss>is derived from</gloss>
                   <desc>A related resource from which the described resource is derived (<ref
-                    target="http://purl.org/dc/terms/source"
+                      target="http://purl.org/dc/terms/source"
                     >http://purl.org/dc/terms/source</ref>).</desc>
                 </valItem>
                 <valItem ident="lawd:embodies">
@@ -759,8 +846,8 @@
                     using a "composite URI". SKOS definition: <quote>skos:broadMatch is used to
                       state a hierarchical mapping link between two conceptual resources in
                       different concept schemes.</quote> (<ref
-                        target="https://www.w3.org/2009/08/skos-reference/skos.rdf#broadMatch"
-                        >https://www.w3.org/2009/08/skos-reference/skos.rdf#broadMatch</ref>).</desc>
+                      target="https://www.w3.org/2009/08/skos-reference/skos.rdf#broadMatch"
+                      >https://www.w3.org/2009/08/skos-reference/skos.rdf#broadMatch</ref>).</desc>
                 </valItem>
                 <valItem ident="syriaca:hasRelationToPlace">
                   <gloss>has relation to place</gloss>
@@ -796,7 +883,8 @@
               </valList>
             </attDef>
             <attDef ident="active" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
+                <!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
                 <p>This should contain either the full URI of a Syriaca.org entity (person, place,
                   work, etc.), or a hash URI (fragment identifier introduced with #) for a node
                   within the document. A full URI is preferred where one exists. When the relation
@@ -805,7 +893,8 @@
               </remarks>
             </attDef>
             <attDef ident="passive" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
+                <!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
                 <p>This should contain either the full URI of a Syriaca.org entity (person, place,
                   work, etc.), or a hash URI (fragment identifier introduced with #) for a node
                   within the document. A full URI is preferred where one exists. When the relation
@@ -814,7 +903,8 @@
               </remarks>
             </attDef>
             <attDef ident="mutual" mode="change">
-              <remarks versionDate="2016-11-24"><!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
+              <remarks versionDate="2016-11-24">
+                <!-- Look into the use of # here. I would prefer we require a Syriaca.org URI. -->
                 <p>This should contain identifiers for two or more Syriaca.org entities or nodes,
                   either as full URIs, or as hash URIs (fragment identifiers introduced with #) in
                   the case of nodes within the document. When the relation is serialized as RDF, a
@@ -840,8 +930,9 @@
             </egXML>
             <p>This relation links the <gi>bibl</gi> describing a translation to the <gi>bibl</gi>
               from which it was translated. Note the use of both a <att>type</att> in addition to a
-              <att>ref</att> to make the relation more specific. It is also linked to the work
-              entity containing it.</p><!-- Right now, this is not required of the bibl element. It could be though. -->
+                <att>ref</att> to make the relation more specific. It is also linked to the work
+              entity containing it.</p>
+            <!-- Right now, this is not required of the bibl element. It could be though. -->
           </exemplum>
           <exemplum versionDate="2016-11-24">
             <egXML xmlns="http://www.tei-c.org/ns/Examples">
@@ -856,14 +947,14 @@
           <remarks versionDate="2016-11-24">
             <p><gi>relation</gi> is used to link Syriaca.org entities to each other, when possible
               in a semantically robust, RDF-friendly way. The values of <att>active</att>,
-              <att>ref</att>, and <att>passive</att> should be construable as RDF triples. For
+                <att>ref</att>, and <att>passive</att> should be construable as RDF triples. For
               this reason, <att>ref</att> is required, as is either <att>active</att> and
-              <att>passive</att>, or <att>mutual</att>. The <gi>relation</gi> may also contain
+                <att>passive</att>, or <att>mutual</att>. The <gi>relation</gi> may also contain
               text inside a <gi>desc</gi> if such must be visualized on the record, but this text
               should be standardized to the extent possible.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="label" module="core" mode="change">
           <!--  Needs to be re-written
             <constraintSpec scheme="schematron" ident="label-type-order">
@@ -881,7 +972,8 @@
                 <valItem ident="order">
                   <desc>Indicates that the label is used to designate the order of the parent item
                     within a larger sequence, for example, as part of a larger work. If this type is
-                    used, a <att>subtype</att> and <att>n</att> are also required.</desc><!-- Schema should require this. -->
+                    used, a <att>subtype</att> and <att>n</att> are also required.</desc>
+                  <!-- Schema should require this. -->
                 </valItem>
               </valList>
             </attDef>
@@ -894,13 +986,15 @@
               </valList>
               <remarks versionDate="2016-11-24">
                 <p>If used with @type="order", the <att>subtype</att> should reflect the kind of
-                  thing being ordered.</p><!-- Schema should require this. -->
+                  thing being ordered.</p>
+                <!-- Schema should require this. -->
               </remarks>
             </attDef>
             <attDef ident="n" mode="change">
               <remarks versionDate="2016-11-24">
                 <p>If used with @type="order", <att>n</att> should contain the numeric value of the
-                  order of the parent item within a larger sequence.</p><!-- Schema should require this. -->
+                  order of the parent item within a larger sequence.</p>
+                <!-- Schema should require this. -->
               </remarks>
             </attDef>
           </attList>
@@ -916,13 +1010,14 @@
           </exemplum>
           <remarks versionDate="2016-11-24">
             <p>When used in a <gi>desc</gi> within a <gi>relation</gi> having @ref="dct:isPartOf",
-              <gi>label</gi> can be used to used to designate the order of the parent item within
+                <gi>label</gi> can be used to used to designate the order of the parent item within
               a larger sequence. In this case, <att>type</att>, <att>subtype</att>, and <att>n</att>
               are all required and the text content of <gi>label</gi> should contain a
-              human-readable description (e.g., "part 1").</p><!-- Schema should require this. -->
+              human-readable description (e.g., "part 1").</p>
+            <!-- Schema should require this. -->
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="lang" module="dictionaries" mode="change">
           <!-- Needs to be re-written
             <constraintSpec scheme="schematron" ident="lang-in-bibl">
@@ -943,18 +1038,19 @@
               </bibl>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-09"><!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
+          <remarks versionDate="2016-11-09">
+            <!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
             <p>Syriaca.org uses the <gi>lang</gi> element inside <gi>bibl</gi> elements for modern
               translations and ancient versions to indicate the language of the version to which the
-              <gi>bibl</gi> refers. In this context, contents of <gi>lang</gi> should be a BCP-47
-              code. This is different from the <att>xml:lang</att> attribute which
-              shows the language of this element, and also different from the <gi>textLang</gi>
-              element which describes the language of the bibliographic item. (In some cases this is
-              different from the language of the version. For example, the bibliographic item may
-              point to an English translation of an ancient Armenian version.)</p>
+                <gi>bibl</gi> refers. In this context, contents of <gi>lang</gi> should be a BCP-47
+              code. This is different from the <att>xml:lang</att> attribute which shows the
+              language of this element, and also different from the <gi>textLang</gi> element which
+              describes the language of the bibliographic item. (In some cases this is different
+              from the language of the version. For example, the bibliographic item may point to an
+              English translation of an ancient Armenian version.)</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="author" module="core" mode="change">
           <content>
             <alternate minOccurs="0" maxOccurs="unbounded">
@@ -965,19 +1061,20 @@
           <attList>
             <attDef ident="ref" mode="change" usage="rec">
               <desc>Should contain the URI of the author from the <ref
-                target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
+                  target="http://syriaca.org/persons">Syriac Biographical Dictionary</ref>, unless
                 no record yet exists for the author.</desc>
             </attDef>
             <!-- Should we import any values for @role or limit which ones can be applied to 
                         author and which to editor? -->
-            <attDef ident="role" mode="change"><!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
+            <attDef ident="role" mode="change">
+              <!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
               <desc>Specifies the connection of the author to the work, selected from
-                https://github.com/srophe/srophe-eXist-app/blob/master/documentation/author-editor-roles.xml. The attribute value
-                should contain the above URL followed by a hash (#) and the <att>xml:id</att> of the
-                role. For example, http://syriaca.org/documentation/author-editor-roles.xml#pseudo .
-                This is not required if normal authorship is assumed (rather than pseudonymous or
-                questionably attributed authorship). It is also not required if the connection is
-                unknown.</desc>
+                https://github.com/srophe/srophe-eXist-app/blob/master/documentation/author-editor-roles.xml.
+                The attribute value should contain the above URL followed by a hash (#) and the
+                  <att>xml:id</att> of the role. For example,
+                http://syriaca.org/documentation/author-editor-roles.xml#pseudo . This is not
+                required if normal authorship is assumed (rather than pseudonymous or questionably
+                attributed authorship). It is also not required if the connection is unknown.</desc>
             </attDef>
           </attList>
           <exemplum versionDate="2016-11-23">
@@ -989,16 +1086,17 @@
               </author>
             </egXML>
           </exemplum>
-          <remarks versionDate="2016-11-23"><!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
+          <remarks versionDate="2016-11-23">
+            <!-- A lot of what is described here is not required by the schema. Some of it should be required. -->
             <p>Inside the main <gi>bibl</gi> of a work entity, authors are linked to their record in
               the Syriac Biographical Dictionary using a URI in the <att>ref</att> attribute. For
               the purpose of displaying the author's name on the work's HTML page, the English and
               Syriac headwords are included as <gi>persName</gi> elements separated by a dash. The
               nature of the author's connection to a work may be further specified using the
-              <att>role</att> attribute on <gi>author</gi>.</p>
+                <att>role</att> attribute on <gi>author</gi>.</p>
           </remarks>
         </elementSpec>
-        
+
         <elementSpec ident="bibl" module="core" mode="change">
           <!-- 
             The old ODD makes extensive use of the context which is no longer supported in TEI/TEI ODD. 
@@ -1100,7 +1198,7 @@
             </attDef>
           </attList>
         </elementSpec>
-          
+
 
 
       </schemaSpec>
