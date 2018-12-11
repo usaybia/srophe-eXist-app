@@ -355,7 +355,65 @@
           </content>
         </elementSpec>
         
+        <elementSpec ident="text" module="textstructure" mode="change">
+          <content>
+            <elementRef key="body" minOccurs="1" maxOccurs="1"/>
+          </content>
+        </elementSpec>
         
+        <elementSpec ident="body" module="textstructure" mode="change">
+          <content>
+            <elementRef key="bibl" minOccurs="0" maxOccurs="1"/>
+            <elementRef key="biblStruct" minOccurs="0" maxOccurs="1"/>
+            <elementRef key="listPerson" minOccurs="0" maxOccurs="1"/>
+            <elementRef key="listPlace" minOccurs="0" maxOccurs="1"/>
+          </content>
+          <constraintSpec ident="body-in-work-record" scheme="isoschematron"><!-- TEST this rule! -->
+            <constraint>
+              <sch:rule context="tei:body[ancestor::tei:teiHeader//publicationStmt/idno/contains(http://syriaca.org/work)">
+                <sch:assert test="bibl">The <att>body</att> element of a Syriaca.org work record must contain a <att>bibl</att> element.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <constraintSpec ident="body-in-bibl-record" scheme="isoschematron"><!-- TEST this rule! -->
+            <constraint>
+              <sch:rule context="tei:body[ancestor::tei:teiHeader//publicationStmt/idno/contains(http://syriaca.org/bibl)">
+                <sch:assert test="biblStruct">The <att>body</att> element of a Syriaca.org bibliography record must contain a <att>biblStruct</att> element.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <constraintSpec ident="body-in-person-record" scheme="isoschematron"><!-- TEST this rule! -->
+            <constraint>
+              <sch:rule context="tei:body[ancestor::tei:teiHeader//publicationStmt/idno/contains(http://syriaca.org/person)">
+                <sch:assert test="listPerson">The <att>body</att> element of a Syriaca.org person record must contain a <att>listPerson</att> element.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <constraintSpec ident="body-in-place-record" scheme="isoschematron"><!-- TEST this rule! -->
+            <constraint>
+              <sch:rule context="tei:body[ancestor::tei:teiHeader//publicationStmt/idno/contains(http://syriaca.org/place)">
+                <sch:assert test="listPlace">The <att>body</att> element of a Syriaca.org place record must contain a <att>listPlace</att> element.</sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+          <remarks>
+            <p>The body of Syriaca.org TEI records are specific to the type of data. The <att>body</att> element of a work 
+              record must contain a <att>bibl</att> element, the <att>body</att> element of a bibliography record must contain a 
+              <att>bibl</att> element, <att>body</att> element of a person record must contain a <att>listPerson</att> element,
+              and the <att>body</att> element of a place record must contain a <att>listPlace</att> element.
+            </p>
+          </remarks>
+        </elementSpec>
+        
+        <elementSpec ident="place" module="namesdates" mode="change">
+          <constraintSpec ident="place-in-place-record" scheme="isoschematron"><!-- Not sure this is right. Not sure I can do the zero or more in the documentation. -->
+            <constraint>
+              <sch:rule context="body/listPlace/place">
+                <sch:assert test=""></sch:assert>
+              </sch:rule>
+            </constraint>
+          </constraintSpec>
+        </elementSpec>
         
         <elementSpec ident="title" module="core" mode="change">
           <attList>
@@ -487,18 +545,6 @@
               nature of the editor's connection to a work may be further specified using the
                 <att>role</att> attribute on <gi>editor</gi>.</p>
           </remarks>
-        </elementSpec>
-
-        <elementSpec ident="body" module="textstructure" mode="change">
-          <!-- I would like to look at this again. This doesn't do much and it probably needs work. -->
-          <content>
-            <alternate>
-              <elementRef key="bibl"/>
-              <elementRef key="biblStruct"/>
-              <elementRef key="listPerson"/>
-              <elementRef key="listPlace"/>
-            </alternate>
-          </content>
         </elementSpec>
 
         <elementSpec ident="textLang" module="core" mode="change">
