@@ -89,7 +89,7 @@ declare function browse:display-hits($hits){
         if($browse:lang != 'en' and $browse:lang != 'syr' and $browse:lang != '') then 
             <span class="sort-title" lang="{$browse:lang}" xml:lang="{$browse:lang}">{(if($browse:lang='ar') then attribute dir { "rtl" } else (), string($hit/@sort))}</span> 
         else () 
-    let $uri := replace($hit/descendant::tei:publicationStmt/tei:idno[1],'/tei','')
+    let $uri := string($hit/@id)
     return 
         <div xmlns="http://www.w3.org/1999/xhtml" class="result">
             {($sort-title, tei2html:summary-view($hit[1], $browse:lang, $uri[1]))}

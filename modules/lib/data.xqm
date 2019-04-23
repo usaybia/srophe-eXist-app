@@ -53,22 +53,13 @@ declare function data:get-document() {
 };
 
 declare function data:get-document($id as xs:string?) {
-        if($id != '') then
-            if(contains($id,'/spear/')) then
-                for $rec in collection($config:data-root)//tei:div[@uri = $id]
-                return <tei:TEI xmlns="http://www.tei-c.org/ns/1.0">{$rec}</tei:TEI>   
-            else if(contains($id,'/manuscript/')) then
-                for $rec in collection($config:data-root)//tei:idno[@type='URI'][. = $id]
-                return 
-                    if($rec/ancestor::tei:msPart) then
-                       <tei:TEI xmlns="http://www.tei-c.org/ns/1.0">{$rec/ancestor::tei:msPart}</tei:TEI>
-                    else $rec/ancestor::tei:TEI
-            else collection($config:data-root)//tei:TEI[.//tei:idno[@type='URI'][. = concat($id,'/tei')]][1]
-        else if(request:get-parameter('doc', '') != '') then 
-            if(starts-with(request:get-parameter('doc', ''),$config:data-root)) then 
-                doc(xmldb:encode-uri(request:get-parameter('doc', '') || '.xml'))
-            else doc(xmldb:encode-uri($config:data-root || "/" || request:get-parameter('doc', '') || '.xml'))
-        else () 
+    if(starts-with($id,'http')) then
+        if($config:document-id) then 
+            collection($config:data-root)//tei:idno[. = $id]/ancestor::tei:TEI
+        else collection($config:data-root)/id($id)/ancestor::tei:TEI
+    else if(starts-with($id,$config:data-root)) then 
+            doc(xmldb:encode-uri($id || '.xml'))
+        else doc(xmldb:encode-uri($config:data-root || "/" || $id || '.xml'))
 };
 
 (:~
@@ -81,7 +72,7 @@ declare function data:element($element as xs:string?) as xs:string?{
     if(request:get-parameter('element', '') != '') then 
         request:get-parameter('element', '') 
     else if($element) then $element        
-    else "tei:titleStmt/tei:title[@level='a']"  
+    else "tei:titleStmt/tei:title"  
 };
 
 (:~
@@ -139,72 +130,79 @@ declare function data:get-records($collection as xs:string*, $element as xs:stri
         (: Syriaca.org specific browse functions :)
         if($collection = ('places','geo') and request:get-parameter('view', '') = 'type') then  
             for $hit in $hits
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
             let $title := global:build-sort-string($root/descendant::tei:titleStmt/tei:title[1],'')
-            let $id := $root/descendant::tei:publicationStmt/tei:idno[1]
+            let $id := document-uri($root)
             group by $facet-grp := $id
             order by $title[1] collation 'http://www.w3.org/2013/collation/UCA'
             where $root/descendant::tei:place[contains(@type, request:get-parameter('type', ''))]
-            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}">{$root}</browse>
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>
         (: Bibl browse :)
         else if($collection = 'bibl' and not(request:get-parameter('view', ''))) then
             for $hit in $hits[matches(.,'\p{IsBasicLatin}|\p{IsLatin-1Supplement}|\p{IsLatinExtended-A}|\p{IsLatinExtended-B}','i')]
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
+            let $id := document-uri($root)
             where $hit[matches(substring(global:build-sort-string(.,''),1,1),global:get-alpha-filter(),'i')]
             order by global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'') collation 'http://www.w3.org/2013/collation/UCA'
-            return $root
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>
         else if(request:get-parameter('view', '') = 'A-Z') then 
             for $hit in $hits[matches(.,'\p{IsBasicLatin}|\p{IsLatin-1Supplement}|\p{IsLatinExtended-A}|\p{IsLatinExtended-B}','i')]
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
             let $sort := global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'')
+            let $id := document-uri($root)
             where $hit[matches(substring(global:build-sort-string($root,''),1,1),global:get-alpha-filter(),'i')]
             order by $sort collation 'http://www.w3.org/2013/collation/UCA'
-            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}">{$root}</browse>
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>
         else if(request:get-parameter('view', '') = 'ܐ-ܬ') then
             for $hit in $hits[matches(.,'\p{IsSyriac}','i')]
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
+            let $id := document-uri($root)
             order by global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'') collation 'http://www.w3.org/2013/collation/UCA'
-            return $root                            
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>                          
         else if(request:get-parameter('view', '') = 'ا-ي') then
             for $hit in $hits[matches(.,'\p{IsArabic}','i')]
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
+            let $id := document-uri($root)
             order by global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'ar') collation 'http://www.w3.org/2013/collation/UCA'
-            return $root 
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse> 
         else if(request:get-parameter('view', '') = 'other') then
             for $hit in $hits[not(matches(substring(global:build-sort-string(.,''),1,1),'\p{IsSyriac}|\p{IsArabic}|\p{IsBasicLatin}|\p{IsLatin-1Supplement}|\p{IsLatinExtended-A}|\p{IsLatinExtended-B}|\p{IsLatinExtendedAdditional}','i'))]
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
+            let $id := document-uri($root)
             order by global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'') collation 'http://www.w3.org/2013/collation/UCA'
-            return $root         
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>
         else if(request:get-parameter('view', '') = 'all') then
             for $hit in $hits
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
+            let $id := document-uri($root)
             order by global:build-sort-string(data:add-sort-options-bibl($root, request:get-parameter('sort-element', '')),'') collation 'http://www.w3.org/2013/collation/UCA'
-            return $root             
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>             
         (: Generic :)             
         else if(request:get-parameter('view', '') = 'map') then 
             for $hit in $hits
-            let $root := $hit/ancestor-or-self::tei:TEI
-            let $id := $root/descendant::tei:publicationStmt/tei:idno[1]
+            let $root := root($hit)
+            let $id := document-uri($root)          
             group by $facet-grp := $id
             (:where $root[1]//tei:geo:)
-            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort[1]}">{$root[1]}</browse>  
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>  
         else if(request:get-parameter('alpha-filter', '') = ('ALL','all')) then 
             for $hit in $hits
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
             let $sort := global:build-sort-string($hit,'')
-            let $id := $root/descendant::tei:publicationStmt/tei:idno[1]
+            let $id := document-uri($root)         
             group by $facet-grp := $id
             order by $sort[1] collation 'http://www.w3.org/2013/collation/UCA'
-            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort[1]}">{$root[1]}</browse>              
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>              
         else 
             for $hit in $hits
-            let $root := $hit/ancestor-or-self::tei:TEI
+            let $root := root($hit)
             let $sort := global:build-sort-string($hit,'')
-            (:let $id := $root/descendant::tei:publicationStmt/tei:idno[1]
-              group by $facet-grp := $id:)
+            (:let $id := if($root/descendant::tei:publicationStmt/tei:idno[@type='URI'][1]) then $root/descendant::tei:publicationStmt/tei:idno[@type='URI'][1] else document-uri($root):)
+            let $id := document-uri($root)            
+            group by $facet-grp := $id
             order by $sort collation 'http://www.w3.org/2013/collation/UCA'
             where matches($sort,global:get-alpha-filter())
-            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}">{$root}</browse>            
+            return <browse xmlns="http://www.tei-c.org/ns/1.0" sort="{$sort}" id="{$id[1]}">{$root}</browse>            
 };
 
 (:~
@@ -517,4 +515,99 @@ declare function data:idno() as xs:string? {
         :)
         concat("[descendant::tei:idno[normalize-space(.) = '",request:get-parameter('idno', ''),"']]")
     else ()    
+};
+
+(: Functions to enable paging, for long text base documents :)
+(: Chunks milestones together to allow 'paging'. See: https://wiki.tei-c.org/index.php/Milestone-chunk.xquery:)
+declare function data:get-common-ancestor($element as element(), 
+    $start-node as node(), 
+    $end-node as node()) as element()
+{
+    let $element :=
+        ($element//*[. is $start-node]/ancestor::* intersect $element//*[. is $end-node]/ancestor::*)[last()]
+    return
+        $element
+};
+
+declare function data:get-fragment(
+    $node as node()*,
+    $start-node as element(),
+    $end-node as element(),
+    $include-start-and-end-nodes as xs:boolean,
+    $empty-ancestor-elements-to-include as xs:string+
+) as node()*
+{
+    typeswitch ($node)
+    case element() return
+        if ($node is $start-node or $node is $end-node)
+        then
+            if ($include-start-and-end-nodes)
+            then $node
+            else ()
+        else
+            if (some $node in $node/descendant::* satisfies ($node is $start-node or $node is $end-node))
+            then
+                element {node-name($node)}
+                {
+                if ($node/@xml:base)
+                then attribute{'xml:base'}{$node/@xml:base}
+                else 
+                    if ($node/ancestor::*/@xml:base)
+                    then attribute{'xml:base'}{$node/ancestor::*/@xml:base[1]}
+                    else (),
+                if ($node/@xml:space)
+                then attribute{'xml:space'}{$node/@xml:space}
+                else
+                    if ($node/ancestor::*/@xml:space)
+                    then attribute{'xml:space'}{$node/ancestor::*/@xml:space[1]}
+                    else (),
+                if ($node/@xml:lang)
+                then attribute{'xml:lang'}{$node/@xml:lang}
+                else
+                    if ($node/ancestor::*/@xml:lang)
+                    then attribute{'xml:lang'}{$node/ancestor::*/@xml:lang[1]}
+                    else ()
+                ,
+                (:carry over the nearest of preceding empty elements that have significance for the fragment; though amy element could be included here, the idea is to allow empty elements such as handShift to be carried over:)
+                for $empty-ancestor-element-to-include in $empty-ancestor-elements-to-include
+                return
+                    $node/preceding::*[local-name(.) = $empty-ancestor-element-to-include][1]
+                ,
+                (:recurse:)
+                for $node in $node/node()
+                return data:get-fragment($node, $start-node, $end-node, $include-start-and-end-nodes, $empty-ancestor-elements-to-include) }
+        else
+        (:if an element follows the start-node or precedes the end-note, carry it over:)
+        if ($node >> $start-node and $node << $end-node)
+        then $node
+        else ()
+    default return
+        (:if a text, comment or PI node follows the start-node or precedes the end-node, carry it over:)
+        if ($node >> $start-node and $node << $end-node)
+        then $node
+        else ()
+};
+
+declare function data:get-fragment-from-doc(
+    $node as node()*,
+    $start-node as element(),
+    $end-node as element(),
+    $wrap-in-first-common-ancestor-only as xs:boolean,
+    $include-start-and-end-nodes as xs:boolean,
+    $empty-ancestor-elements-to-include as xs:string*
+) as node()*
+{
+    if ($node instance of element())
+    then
+        let $node :=
+            if ($wrap-in-first-common-ancestor-only)
+            then data:get-common-ancestor($node, $start-node, $end-node)
+            else $node
+            return
+                data:get-fragment($node, $start-node, $end-node, $include-start-and-end-nodes, $empty-ancestor-elements-to-include)
+    else 
+        if ($node instance of document-node())
+        then data:get-fragment-from-doc($node/element(), $start-node, $end-node, $wrap-in-first-common-ancestor-only, $include-start-and-end-nodes, $empty-ancestor-elements-to-include)
+        else ()
+        
 };

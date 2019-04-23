@@ -103,7 +103,7 @@
                         <xsl:value-of select="$config//*:collection[@name=$collection]/@title"/>
                     </xsl:when>
                     <xsl:when test="$config//*:collection[@title=$collection]">
-                        <xsl:value-of select="$config//*:collection[@title=$collection]/@title"></xsl:value-of>
+                        <xsl:value-of select="$config//*:collection[@title=$collection]/@title"/>
                     </xsl:when>
                     <xsl:otherwise><xsl:value-of select="$repository-title"/></xsl:otherwise>
                 </xsl:choose>
@@ -168,8 +168,7 @@
             <xsl:call-template name="aboutEntry"/>
         </div>
     </xsl:template>
-    
-    
+       
     <!-- B -->
     <!-- suppress bibl in title mode -->
     <xsl:template match="t:bibl" mode="title"/>
@@ -327,6 +326,24 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    <xsl:template match="t:body">
+        <bdi>
+            <div class="body">
+                <xsl:sequence select="local:attributes(.)"/>
+                <div class="section" style="display:block;">
+                    <xsl:apply-templates/>
+                </div>
+                <xsl:if test="//t:note[@place='foot']">
+                    <div class="footnotes" lang="en">
+                        <h2>Footnotes</h2>
+                        <bdi>
+                            <xsl:apply-templates select="//t:note[@place='foot']" mode="footnote"/>
+                        </bdi>
+                    </div>    
+                </xsl:if>
+            </div>
+        </bdi>
+    </xsl:template>
     
     <!-- C -->
     <xsl:template name="citationInfo">
@@ -359,6 +376,98 @@
                 <a class="togglelink pull-right btn-link" data-toggle="collapse" data-target="#showcit" data-text-swap="Hide citation">Show full citation information...</a>
             </div>
         </div>
+    </xsl:template>
+    
+    <!-- D -->
+    <xsl:template match="t:div | t:div1 | t:div2 | t:div3 | t:div4 | t:div5">
+        <xsl:param name="parentID"/>
+        <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
+        <div class="{concat('tei-',name(.))}{if(@unit) then concat(' tei-',@unit) else ()} {if(@type) then concat(' tei-',@type) else ()}">
+            <xsl:choose>
+                <xsl:when test="child::t:head">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('Head-',$currentid)"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$currentid"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:choose>
+                <xsl:when test="@lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="@lang"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="ancestor-or-self::*[@xml:lang][1]/@xml:lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+                    </xsl:attribute>                    
+                </xsl:when>
+                <xsl:when test="@type='title' or @type='ab'">
+                    <xsl:choose>
+                        <xsl:when test="@xml:lang">
+                            <xsl:attribute name="lang">
+                                <xsl:value-of select="@lang"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:when test="child::*[1]/@xml:lang">
+                            <xsl:copy-of select="child::*[1]/@xml:lang"/>
+                            <xsl:attribute name="lang">
+                                <xsl:value-of select="child::*[1]/@xml:lang"/>    
+                            </xsl:attribute>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
+            <xsl:if test="@n">
+                <xsl:choose>
+                    <xsl:when test="child::t:head">
+                        <span id="{$currentid}">
+                            <xsl:if test="@n != child::t:head/text()">
+                                <xsl:attribute name="class">text-number</xsl:attribute>
+                                <xsl:value-of select="@n"/>
+                            </xsl:if>
+                        </span>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <span class="text-number badge">
+                            <xsl:value-of select="@n"/>
+                        </span>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
+            <xsl:apply-templates>
+                <xsl:with-param name="parentID" select="$currentid"/>
+            </xsl:apply-templates>
+        </div>
+    </xsl:template>
+    
+    <!-- H -->
+    <xsl:template match="t:head">
+        <xsl:choose>
+            <xsl:when test="parent::t:div1">
+                <h2 class="tei-head {if(parent::*[1]/@type) then concat(' tei-',parent::*[1]/@type) else ()}">
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates/>
+                </h2>
+            </xsl:when>
+            <xsl:when test="parent::t:div2 or parent::t:div[@type='preface']">
+                <h3 class="tei-head {if(parent::*[1]/@type) then concat(' tei-',parent::*[1]/@type) else ()}">
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates/>
+                </h3>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class="{concat('tei-',name(parent::*[1]))} {if(parent::*[1]/@type) then concat(' tei-',parent::*[1]/@type) else ()} tei-head">
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
     <!-- L -->
@@ -516,6 +625,105 @@
                 </div>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    <!-- M -->
+    <xsl:template match="t:milestone | t:ab | t:l | t:lg | t:pb | t:cb | t:lb">
+        <xsl:param name="parentID"/>
+        <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
+        <span class="{concat('tei-',name(.))}                           {if(@unit) then concat(' tei-',@unit) else ()}                           {if(@type) then concat(' tei-',@type) else ()}                          {if(self::t:l) then 'display' else ()}">
+            <!-- {if(self::t:l) then concat(name(.),'-display') else ()} -->
+            <xsl:choose>
+                <xsl:when test="child::t:head">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('Head-',$currentid)"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$currentid"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:choose>
+                <xsl:when test="@lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="@lang"/>
+                    </xsl:attribute>                    
+                </xsl:when>
+                <xsl:when test="ancestor-or-self::*[@xml:lang][1]/@xml:lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+                    </xsl:attribute>                    
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
+            <xsl:if test="@n">
+                <xsl:choose>
+                    <xsl:when test="child::t:head">
+                        <span id="{$currentid}"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text> </xsl:text>
+                        <span class="text-number badge {if(self::t:l) then 'display' else ()}">
+                            <xsl:if test="self::t:pb">pb. </xsl:if> <xsl:value-of select="@n"/>
+                        </span>
+                        <xsl:text> </xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
+            <xsl:apply-templates>
+                <xsl:with-param name="parentID" select="$currentid"/>
+            </xsl:apply-templates>
+        </span>
+    </xsl:template>
+    
+    <!-- P -->
+    <xsl:template match="t:p">
+        <xsl:param name="parentID"/>
+        <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
+        <p class="{concat('tei-',name(.))}{if(@unit) then concat(' tei-',@unit) else ()} text-display">
+            <xsl:choose>
+                <xsl:when test="child::t:head">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('Head-',$currentid)"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$currentid"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:choose>
+                <xsl:when test="@lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="@lang"/>
+                    </xsl:attribute> 
+                </xsl:when>
+                <xsl:when test="ancestor-or-self::*[@xml:lang][1]/@xml:lang">
+                    <xsl:attribute name="lang">
+                        <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+                    </xsl:attribute>                    
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
+            <xsl:if test="@n">
+                <xsl:choose>
+                    <xsl:when test="child::t:head">
+                        <span id="{$currentid}"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <span class="text-number badge">
+                            <xsl:value-of select="@n"/>
+                        </span>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
+            <xsl:apply-templates>
+                <xsl:with-param name="parentID" select="$currentid"/>
+            </xsl:apply-templates>
+        </p>
     </xsl:template>
     
     <!-- P -->

@@ -177,8 +177,8 @@ declare function tei2html:idno-title-display($id){
 declare function tei2html:summary-view($nodes as node()*, $lang as xs:string?, $id as xs:string?) as item()* {
   let $id := if($id) then $id else replace($nodes/descendant-or-self::tei:idno[starts-with(.,$config:base-uri)][1],'/tei','')
   return 
-      if(contains($id,'/person/')) then tei2html:summary-view-persons($nodes,$id)
-      else if(contains($id,'/place/')) then tei2html:summary-view-places($nodes,$id)
+      if(contains($id,'/person/') or contains($id,'/persons/')) then tei2html:summary-view-persons($nodes,$id)
+      else if(contains($id,'/place/') or contains($id,'/places/')) then tei2html:summary-view-places($nodes,$id)
       else if(contains($id,'/keyword/')) then tei2html:summary-view-keyword($nodes, $id)
       else if(contains($id,'/bibl/')) then tei2html:summary-view-bibl($nodes, $id)
       else tei2html:summary-view-generic($nodes,$id)   
@@ -207,9 +207,10 @@ declare function tei2html:summary-view-persons($nodes as node()*, $id as xs:stri
         if($death != '') then if($birth = '' or empty($birth)) then ('d. ',$death) else  $death else (),
         if($floruit != '') then if($birth != '' or $death != '') then (', ',$floruit) else $floruit else ()
         )                    
+    let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')
     return 
         <div class="short-rec-view">
-            <a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}" dir="ltr">{(tei2html:tei2html($title),if($syr-title != '') then (' - ', $syr-title) else())}</a>
+            <a href="{$uri}" dir="ltr">{(tei2html:tei2html($title),if($syr-title != '') then (' - ', $syr-title) else())}</a>
             <button type="button" class="btn btn-sm btn-default copy-sm clipboard"  
                 data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." 
                 data-clipboard-action="copy" data-clipboard-text="{normalize-space($title[1])} - {normalize-space($id[1])}">
@@ -251,7 +252,7 @@ declare function tei2html:summary-view-persons($nodes as node()*, $id as xs:stri
 (: Special short view template for Places :)
 declare function tei2html:summary-view-places($nodes as node()*, $id as xs:string?) as item()* {
     let $title := if($nodes/descendant-or-self::*[@syriaca-tags='#syriaca-headword'][@xml:lang='en']) then 
-                    $nodes/descendant-or-self::*[@syriaca-tags='#syriaca-headword'][@xml:lang='en'][1]
+                    $nodes/descendant-or-self::*[@syriaca-tags='#syriaca-headword'][@xml:lang='en'][1]/text()
                   else $nodes/descendant-or-self::tei:title[1]/text()
     let $syr-title := 
                 if($nodes/descendant::*[contains(@syriaca-tags,'#syriaca-headword')][matches(@xml:lang,'^syr')][1]) then
@@ -261,9 +262,14 @@ declare function tei2html:summary-view-places($nodes as node()*, $id as xs:strin
                 else () 
     let $series := for $a in distinct-values($nodes/descendant::tei:seriesStmt/tei:biblScope/tei:title)
                    return tei2html:translate-series($a)                
+    let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')
     return 
         <div class="short-rec-view">
-                        <a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}" dir="ltr">{(tei2html:tei2html($title),if($nodes/descendant::tei:place/@type) then concat(' (',string($nodes/descendant::tei:place/@type),') ') else (),if($syr-title != '') then (' - ', $syr-title) else())}</a>
+            <a href="{$uri}" dir="ltr">
+            {(tei2html:tei2html($title),
+            if($nodes/descendant::tei:place/@type) then 
+            concat(' (',string($nodes/descendant::tei:place[1]/@type),') ') 
+            else (),if($syr-title != '') then (' - ', $syr-title) else())}</a>
             <button type="button" class="btn btn-sm btn-default copy-sm clipboard"  
                 data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." 
                 data-clipboard-action="copy" data-clipboard-text="{normalize-space($title[1])} - {normalize-space($id[1])}">
@@ -294,7 +300,7 @@ declare function tei2html:summary-view-places($nodes as node()*, $id as xs:strin
             else()}
             {
             if($id != '') then 
-            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}">{replace($id,'/tei','')}</a></span>
+            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{$uri}">{$uri}</a></span>
             else()
             }
         </div>   
@@ -304,10 +310,11 @@ declare function tei2html:summary-view-places($nodes as node()*, $id as xs:strin
 declare function tei2html:summary-view-keyword($nodes as node()*, $id as xs:string?) as item()* {
     let $title := if($nodes/descendant-or-self::tei:term[@syriaca-tags='#syriaca-headword'][@xml:lang='en']) then 
                     $nodes/descendant-or-self::tei:term[@syriaca-tags='#syriaca-headword'][@xml:lang='en'][1]/text()
-                  else $nodes/descendant-or-self::tei:term[1]/text()                  
+                  else $nodes/descendant-or-self::tei:term[1]/text()
+    let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')                  
     return 
         <div class="short-rec-view">
-            <a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}" dir="ltr">{$title}</a>
+            <a href="{$uri}" dir="ltr">{$title}</a>
             <button type="button" class="btn btn-sm btn-default copy-sm clipboard"  
                 data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." 
                 data-clipboard-action="copy" data-clipboard-text="{normalize-space($title)} - {normalize-space($id)}">
@@ -328,7 +335,7 @@ declare function tei2html:summary-view-keyword($nodes as node()*, $id as xs:stri
             else()}
             {
             if($id != '') then 
-            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}">{replace($id,'/tei','')}</a></span>
+            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{$uri}">{$uri}</a></span>
             else()
             }
         </div>   
@@ -341,9 +348,10 @@ declare function tei2html:summary-view-generic($nodes as node()*, $id as xs:stri
                   else $nodes/descendant-or-self::tei:title[1]/text()
     let $series := for $a in distinct-values($nodes/descendant::tei:seriesStmt/tei:biblScope/tei:title)
                    return tei2html:translate-series($a)
+    let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')                    
     return 
         <div class="short-rec-view">
-            <a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}" dir="ltr">{$title}</a>
+            <a href="{$uri}" dir="ltr">{$title} </a>
             <button type="button" class="btn btn-sm btn-default copy-sm clipboard"  
                 data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." 
                 data-clipboard-action="copy" data-clipboard-text="{normalize-space($title[1])} - {normalize-space($id[1])}">
@@ -366,7 +374,7 @@ declare function tei2html:summary-view-generic($nodes as node()*, $id as xs:stri
             else()}
             {
             if($id != '') then 
-            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}">{replace($id,'/tei','')}</a></span>
+            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{$uri}">{$uri}</a></span>
             else()
             }
         </div>   
@@ -378,9 +386,10 @@ declare function tei2html:summary-view-bibl($nodes as node()*, $id as xs:string?
                   else $nodes/descendant-or-self::tei:title[1]/text()
     let $series := for $a in distinct-values($nodes/descendant::tei:seriesStmt/tei:biblScope/tei:title)
                    return tei2html:translate-series($a)
+    let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')
     return 
         <div class="short-rec-view">
-            <a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}" dir="ltr">{$title}</a>
+            <a href="{$uri}" dir="ltr">{$title}</a>
             <button type="button" class="btn btn-sm btn-default copy-sm clipboard"  
                 data-toggle="tooltip" title="Copies record title &amp; URI to clipboard." 
                 data-clipboard-action="copy" data-clipboard-text="{normalize-space($title[1])} - {normalize-space($id[1])}">
@@ -392,7 +401,7 @@ declare function tei2html:summary-view-bibl($nodes as node()*, $id as xs:string?
             }</span>
             {
             if($id != '') then 
-            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{replace(replace($id,$config:base-uri,$config:nav-base),'/tei','')}">{replace($id,'/tei','')}</a></span>
+            <span class="results-list-desc uri"><span class="srp-label">URI: </span><a href="{$uri}">{$uri}</a></span>
             else()
             }
         </div>
@@ -420,7 +429,8 @@ declare function tei2html:summary-view-spear($nodes as node()*, $id as xs:string
             if($death != '') then if($birth = '' or empty($birth)) then ('d. ',$death) else  $death else (),
             if($floruit != '') then if($birth != '' or $death != '') then (', ',$floruit) else $floruit else ()
             )                    
-    return                    
+   let $uri := replace(concat($config:nav-base,replace($id, $config:data-root,'')),'.xml','')
+   return                    
     <div class="short-rec-view">
         <a href="aggregate.html?id={$id}" dir="ltr">{(tei2html:tei2html($title),if($nodes/descendant::tei:place/@type) then concat(' (',string($nodes/descendant::tei:place/@type),') ') else (),if($syr-title != '') then (' - ', $syr-title) else())}</a>
         {if($ana != '') then <span class="results-list-desc type" dir="ltr" lang="en">{('(', $ana, if($dates != '') then (', ', $dates) else (),')')}</span>  else()}
@@ -448,7 +458,7 @@ declare function tei2html:summary-view-spear($nodes as node()*, $id as xs:string
                         else $blurb
                     }</span>
             else()}
-        <span class="results-list-desc uri"><span class="srp-label">For additional information, see: </span><a href="{replace($id,$config:base-uri,$config:nav-base)}">{$id}</a></span>
+        <span class="results-list-desc uri"><span class="srp-label">For additional information, see: </span><a href="{$uri}">{$uri}</a></span>
     </div>        
 };
 
