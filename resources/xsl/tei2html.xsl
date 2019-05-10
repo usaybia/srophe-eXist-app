@@ -341,6 +341,14 @@
                         </bdi>
                     </div>    
                 </xsl:if>
+                <xsl:if test="//t:div[@type='factoid']">
+                    <div class="factoids" lang="en">
+                        <h2>Factoids</h2>
+                        <bdi>
+                            <xsl:apply-templates select="//t:div[@type='factoid']" mode="footnote"/>
+                        </bdi>
+                    </div>    
+                </xsl:if>
             </div>
         </bdi>
     </xsl:template>
@@ -379,10 +387,12 @@
     </xsl:template>
     
     <!-- D -->
+    <xsl:template match="t:div[@type='factoid']"/>
     <xsl:template match="t:div | t:div1 | t:div2 | t:div3 | t:div4 | t:div5">
         <xsl:param name="parentID"/>
-        <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
-        <div class="{concat('tei-',name(.))}{if(@unit) then concat(' tei-',@unit) else ()} {if(@type) then concat(' tei-',@type) else ()}">
+        <xsl:variable name="currentid" select="if($parentID != '') then $parentID else if(@n != '') then concat('id','.',@n) else ()"/>
+        <div class="{normalize-space(concat(concat('tei-',name(.)),if(@unit) then concat(' tei-',@unit) else (),if(@type) then concat(' tei-',@type) else (), if(child::t:anchor) then ' highlight' else ()))}">
+        <!-- <param name="key" value="replace(@xml:id, '^s\.(.*)$', 't.$1')"/> attribute name  highlight-key  -->
             <xsl:choose>
                 <xsl:when test="child::t:head">
                     <xsl:attribute name="id">
@@ -423,6 +433,23 @@
                 </xsl:when>
                 <xsl:otherwise/>
             </xsl:choose>
+            <xsl:if test="child::t:anchor">
+                <xsl:attribute name="data-highlight">
+                    <xsl:value-of select="child::t:anchor/@xml:id"/>
+                </xsl:attribute>
+                <xsl:if test="child::t:anchor/@corresp">
+                    <xsl:variable name="corresp">
+                        <xsl:choose>
+                            <xsl:when test="contains(child::t:anchor/@corresp,'#')"><xsl:value-of select="substring-after(child::t:anchor/@corresp,'#')"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="child::t:anchor/@corresp"/></xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:attribute name="data-corresp">
+                        <xsl:value-of select="$corresp"/>
+                    </xsl:attribute> 
+                </xsl:if>
+            </xsl:if>
+            
             <xsl:if test="@n">
                 <xsl:choose>
                     <xsl:when test="child::t:head">
@@ -631,7 +658,7 @@
     <xsl:template match="t:milestone | t:ab | t:l | t:lg | t:pb | t:cb | t:lb">
         <xsl:param name="parentID"/>
         <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
-        <span class="{concat('tei-',name(.))}                           {if(@unit) then concat(' tei-',@unit) else ()}                           {if(@type) then concat(' tei-',@type) else ()}                          {if(self::t:l) then 'display' else ()}">
+        <span class="{normalize-space(concat(concat('tei-',name(.)),if(@unit) then concat(' tei-',@unit) else (),if(@type) then concat(' tei-',@type) else (),if(self::t:l) then ' display' else ()))}">
             <!-- {if(self::t:l) then concat(name(.),'-display') else ()} -->
             <xsl:choose>
                 <xsl:when test="child::t:head">
@@ -682,7 +709,7 @@
     <xsl:template match="t:p">
         <xsl:param name="parentID"/>
         <xsl:variable name="currentid" select="concat(if($parentID != '') then $parentID else 'id','.',@n)"/>
-        <p class="{concat('tei-',name(.))}{if(@unit) then concat(' tei-',@unit) else ()} text-display">
+        <p class="{normalize-space(concat(concat('tei-',name(.)),if(@unit) then concat(' tei-',@unit) else (),' text-display'))} ">
             <xsl:choose>
                 <xsl:when test="child::t:head">
                     <xsl:attribute name="id">

@@ -7,14 +7,29 @@
                 <a class="btn btn-default" href="#">Coming soon</a>    
             </div>
         </div>
-        <div class="row-flex">
-            <div class="col-flex bg-dark text-center overflow-hidden"> 
+        <div class="search-bar bg-green" data-template="app:fix-links">
+            <form class="inline-form" role="search" action="$nav-base/search.html" method="get">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control keyboard" placeholder="search" name="keyword" id="keywordNav"/>
+                    <div class="input-group-btn">
+                        <span data-template="app:keyboard-select-menu" data-template-input-id="keywordNav"/>
+                        <button class="btn btn-default search-btn" type="submit" data-toggle="tooltip" title="Search">
+                            <span class="glyphicon glyphicon-search"/>
+                        </button>
+                        
+                        <!-- <a class="btn btn-link" href="$nav-base/search.html">Advanced Search</a>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="flex-row">
+            <div class="flex-col bg-dark text-center overflow-hidden"> 
                 <div class="my-3 py-3">
                     <h2 class="display-5">Project Goal</h2>
                     <p class="lead">To examine the social encounters of Christian, Muslim, and Jewish scholars during the Greco-Arabic translation movement in the Abbasid Near East (750–1258).</p>
                 </div>
             </div>
-            <div class="col-flex bg-light text-center overflow-hidden">
+            <div class="flex-col bg-light text-center overflow-hidden">
                 <div class="my-3 p-3">
                     <h2 class="display-5">Researchers &amp; Host</h2>
                     
@@ -29,8 +44,8 @@
                 </div>
             </div>
         </div>    
-        <div class="row-flex">
-            <div class="col-flex bg-light text-center overflow-hidden">
+        <div class="flex-row">
+            <div class="flex-col bg-light text-center overflow-hidden">
                 <div class="container-fluid">
                     <h2>Objectives</h2>
                     <div class="row">
@@ -55,7 +70,7 @@
                     </div>
                 </div> 
             </div>
-            <div class="col-flex bg-green text-center overflow-hidden">
+            <div class="flex-col bg-green text-center overflow-hidden">
                 <h2 class="display-5">Research Questions</h2>
                 <div class="row border-bottom" style="padding-bottom: 10px;">
                     <div class="col-sm-3 overall"/>

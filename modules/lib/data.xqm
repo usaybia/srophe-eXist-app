@@ -521,9 +521,9 @@ declare function data:idno() as xs:string? {
 (: Chunks milestones together to allow 'paging'. See: https://wiki.tei-c.org/index.php/Milestone-chunk.xquery:)
 declare function data:get-common-ancestor($element as element(), 
     $start-node as node(), 
-    $end-node as node()) as element()
+    $end-node as node()?) as element()
 {
-    let $element :=
+    let $element :=    
         ($element//*[. is $start-node]/ancestor::* intersect $element//*[. is $end-node]/ancestor::*)[last()]
     return
         $element
@@ -532,7 +532,7 @@ declare function data:get-common-ancestor($element as element(),
 declare function data:get-fragment(
     $node as node()*,
     $start-node as element(),
-    $end-node as element(),
+    $end-node as element()?,
     $include-start-and-end-nodes as xs:boolean,
     $empty-ancestor-elements-to-include as xs:string+
 ) as node()*
@@ -552,21 +552,17 @@ declare function data:get-fragment(
                 if ($node/@xml:base)
                 then attribute{'xml:base'}{$node/@xml:base}
                 else 
-                    if ($node/ancestor::*/@xml:base)
-                    then attribute{'xml:base'}{$node/ancestor::*/@xml:base[1]}
+                    if ($node/ancestor::*/@xml:base) then attribute{'xml:base'}{$node/ancestor::*/@xml:base[1]}
                     else (),
                 if ($node/@xml:space)
                 then attribute{'xml:space'}{$node/@xml:space}
                 else
-                    if ($node/ancestor::*/@xml:space)
-                    then attribute{'xml:space'}{$node/ancestor::*/@xml:space[1]}
+                    if ($node/ancestor::*/@xml:space) then attribute{'xml:space'}{$node/ancestor::*/@xml:space[1]}
                     else (),
-                if ($node/@xml:lang)
-                then attribute{'xml:lang'}{$node/@xml:lang}
-                else
-                    if ($node/ancestor::*/@xml:lang)
-                    then attribute{'xml:lang'}{$node/ancestor::*/@xml:lang[1]}
-                    else ()
+                if ($node/@xml:lang) then attribute{'xml:lang'}{$node/@xml:lang}
+                else if ($node/ancestor::*/@xml:lang) then 
+                    attribute{'xml:lang'}{$node/ancestor::*[@xml:lang][1]/@xml:lang}
+                else ()
                 ,
                 (:carry over the nearest of preceding empty elements that have significance for the fragment; though amy element could be included here, the idea is to allow empty elements such as handShift to be carried over:)
                 for $empty-ancestor-element-to-include in $empty-ancestor-elements-to-include
@@ -591,7 +587,7 @@ declare function data:get-fragment(
 declare function data:get-fragment-from-doc(
     $node as node()*,
     $start-node as element(),
-    $end-node as element(),
+    $end-node as element()?,
     $wrap-in-first-common-ancestor-only as xs:boolean,
     $include-start-and-end-nodes as xs:boolean,
     $empty-ancestor-elements-to-include as xs:string*
