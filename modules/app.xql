@@ -23,6 +23,7 @@ import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "conten
 (: Namespaces :)
 declare namespace http="http://expath.org/ns/http-client";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
+declare namespace tan="tag:textalign.net,2015:ns";
 declare namespace html="http://www.w3.org/1999/xhtml";
 
 (: Global Variables:)
@@ -131,16 +132,23 @@ declare function app:display-nodes($node as node(), $model as map(*), $paths as 
  : Used by templating module, not needed if full record is being displayed 
 :)
 declare function app:h1($node as node(), $model as map(*)){
- global:tei2html(
- <srophe-title xmlns="http://www.tei-c.org/ns/1.0">{(
-    if($model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']) then
-        $model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']
-    else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1], 
-    $model("hits")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
-    )}
- </srophe-title>)
+ <h1 class="title">{(
+ if($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/@xml:lang) then attribute lang { $model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/@xml:lang }
+ else if($model("hits")/ancestor::tei:TEI/@xml:lang) then attribute lang { $model("hits")/ancestor::tei:TEI/@xml:lang }
+ else (),
+ tei2html:tei2html($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]))}</h1>
 }; 
-  
+(:
+declare function app:h1($node as node(), $model as map(*)){
+    let $title := tei2html:tei2html($model("hits")/descendant::tei:titleStmt/tei:title[1])
+    let $author := tei2html:tei2html($model("hits")/descendant::tei:titleStmt/tei:author[not(@role='anonymous')])
+    return 
+        <div class="title">
+            <h1>{(if($author != '') then ($author, ': ') else (), $title)}</h1>
+        </div>
+};
+:)
+
 (:~ 
  : Data formats and sharing
  : to replace app-link
@@ -698,6 +706,7 @@ return
     else ()
 }; 
 
+(: Test image-map functions with IU-sample-alignment.xml:)
 declare function app:page-view($node as node(), $model as map(*)){
 <div class="row">
     {
@@ -744,26 +753,18 @@ declare function app:page-view($node as node(), $model as map(*)){
 (:~
  : TOC for Syriac Corpus records. 
 :)  
-declare function app:display-left-menu($node as node(), $model as map(*)){
+declare function app:toc($node as node(), $model as map(*)){
 let $toc := app:toc($model("hits")/descendant::tei:body/child::*)
-return 
-    if($toc != '' or $model("hits")/descendant::tei:body/descendant::*[@n]) then 
-        <div class="toc" xmlns="http://www.w3.org/1999/xhtml">
-            {(
-            app:toggle-text-display($node,$model),
-            if($toc != '') then 
-                <div class="panel panel-default">
-                  <div class="panel-heading"><a href="#" data-toggle="collapse" data-target="#showToc">Table of Contents  </a>
-                  <!--<a href="#" data-toggle="collapse" data-target="#showToc"><span id="tocIcon" class="glyphicon glyphicon-collapse-up"/></a>-->
-                  </div>
-                  <div class="panel-body collapse in" id="showToc">
-                      {app:toc($model("hits")/descendant::tei:body/child::*)}
-                  </div>
-                </div>  
-            else ()
-            )}
-        </div>        
-    else ()
+return  
+    <div class="panel toc-slide" id="menu">
+		<header class="panel-header">
+			<a href="#menu" class="menu-link btn btn-green btn-rounded pull-right" data-toggle="tooltip" title="Table of Contents"> x </a>
+			<h2>Contents</h2>
+		</header>
+		<div class="panel-container">
+			{$toc}
+	   </div>
+    </div>	  
 }; 
 
 (:~
@@ -775,7 +776,25 @@ return
         typeswitch($node)
             case text() return normalize-space($node)
             case element(tei:div) return 
-                app:toc($node/node())
+                if($node/@type='ch') then
+                    if($node/tei:head) then 
+                        app:toc($node/node())
+                    else if($node/@n) then
+                        <span class="toc-item">
+                            <a href="#{string($node/@n)}" class="toc-item">{string($node/@n)}</a>
+                            {app:toc($node/node())}
+                        </span>
+                    else app:toc($node/node())
+                else if($node/@type='bio') then
+                    if($node/tei:head) then 
+                        app:toc($node/node())
+                    else if($node/@n) then
+                        <span class="toc-item">
+                            <a href="#{string($node/@n)}" class="toc-item">{string($node/@n)}</a>
+                            {app:toc($node/node())}
+                        </span>
+                    else app:toc($node/node())                    
+                else app:toc($node/node())
             case element(tei:div1) return 
                 app:toc($node/node())
             case element(tei:div2) return 
@@ -792,7 +811,9 @@ return
                     else ()
                 return 
                     if($id != '') then 
-                        (<a href="#{$id}" class="toc-item">{string-join($node/descendant-or-self::text(),' ')}</a>, ' ')
+                        <span class="toc-item">
+                            <a href="#{$id}" class="toc-item" bdi="bdi">{string($node/@n)} {string-join($node/descendant-or-self::text(),' ')}</a> 
+                        </span>
                     else ()
             default return ()          
 };
@@ -896,3 +917,127 @@ if($model("hits")/descendant::tei:body/descendant::*[@n][not(@type='section') an
         </div>
 else ()
 }; 
+
+(: paging function :)
+(: Note: There may be a problem if there are multiple types of pb elements (refereing to different editions. how to know which to use to page? ):)
+(: Need to make paging more robust so we can page on differnt attibutes and elements :)
+(:~
+ : Display manuscript texts
+ : Allow mulit column view and paging of texts
+ : @param $node 
+ : @param $model
+ : @param $milestone - how to 'chunk' text. Accepted values page, chapter, milestone
+ : @param $type - Text type. Accepted values: source, translation
+ : @param $col - column number. Not used yet, maybe unnecessary. 
+:)
+declare function app:display-page-text($node as node(), $model as map(*), $milestone as xs:string?, $type as xs:string?, $col as xs:string?){
+let $source := 
+    if(empty($type)) then $model("hits")
+    else if($type = 'translation') then  
+        doc($config:data-root || '/texts/iu-sample-kopf-en-tan.xml')
+    else ()     
+return 
+    if($source) then
+        <div class="flex-col">
+            <div class="tei-teiHeader sourceInfo"><h4>Source</h4>{global:tei2html($source/descendant::tei:sourceDesc)}</div>
+            {
+            if($milestone != '') then 
+                global:tei2html(app:get-by-milestone($source, $milestone))
+            else global:tei2html($source//tei:text)
+            }
+        </div>
+    else ()
+};
+
+declare function app:get-by-milestone($node as node(), $milestone as xs:string?){
+    let $page := string(request:get-parameter('page', ''))
+    let $pageNo := concat('#',$page)
+    let $start :=
+                    if($page != '') then
+                        if($node/descendant::tei:surface) then 
+                            replace($node/descendant::tei:surface[@start = $pageNo]/@start,'#','')
+                        else replace($node/descendant::tei:pb[@xml:id = $page]/@xml:id,'#','')
+                    else ()
+    let $end := 
+                    if($node/descendant::tei:surface) then 
+                        replace(string($node/descendant::tei:surface[@start = $pageNo]/following::tei:surface[1]/@start),'#','')
+                    else replace(string($node/descendant::tei:pb[@xml:id = $page]/following::tei:pb[@xml:id][1]/@xml:id),'#','')        
+    let $ms1 := if($start != '' and $node/descendant::tei:pb[@xml:id = $start]) then 
+                    $node/descendant::tei:pb[@xml:id = $start]
+                else $node/descendant::tei:pb[1]
+    let $ms2 := if($end != '' and $node/descendant::tei:pb[@xml:id = $end]) then
+                    $node/descendant::tei:pb[@xml:id = $end] 
+                else if($start != '' and $node/descendant::tei:pb[@xml:id = $start]) then 
+                    $node/descendant::tei:pb[@xml:id = $start]/following::tei:pb[1]   
+                else ($node//descendant::tei:pb)[last()]
+    return data:get-fragment-from-doc($node, $ms1, $ms2, true(), true(),'')
+};
+
+(: page images :)
+(:app:display-page-image:)
+(:NOTE:  will need to know how all the parts are linked so we can call the different views, and what will be the main entry point? the text alighement? something else? What should show up in the search etc? :)
+declare function app:display-page-image($node as node(), $model as map(*)){
+if($model("hits")//tei:facsimile) then
+    <div class="flex-col">
+        { 
+        let $page := string(request:get-parameter('page', ''))
+        let $pageNo := concat('#',$page)
+        let $current-page :=
+            if($page != '') then $model("hits")/descendant::tei:surface[@start = $pageNo]
+            else ()
+        let $image := string($current-page/tei:graphic/@url)
+        let $src := if(starts-with($image,'https://') or starts-with($image,'http://')) then $image  
+                    else if(matches($image,'^\.\./img/')) then 
+                        concat($config:get-config//repo:page-images-root,replace($image,'../img/',''))
+                    else concat($config:get-config//repo:page-images-root,$image) 
+        return if($image != '') then <img src="{$src}" class="page-image" width="100%" /> else ()                  
+       }
+    </div>
+else ()
+};
+
+(: paging  app:display-alt-text :)
+declare function app:display-translation($node as node(), $model as map(*)){
+let $text := $model("hits")
+let $docURI := document-uri(root($text))
+let $refs := string($text//tei:title[1]/@ref)
+let $additionalVersion := 
+    for $r in collection($config:data-root)//tei:title[@ref = $refs]
+    where document-uri(root($r)) != $docURI
+    return $r
+(: Hard coded for now :)
+(: maybe use these : <anchor xml:id="kopf6" corresp="iu-sample-mueller-ar-tan.xml#mueller6"/> :)
+(: have an expandable top to column with teiHeader info:)
+let $translation :=  doc($config:data-root || '/texts/iu-sample-kopf-en-tan.xml')   
+return
+    <div class="flex-col">
+        {global:tei2html($translation//tei:text)}
+    </div>
+(:
+    if(count($additionalVersion) gt 1) then
+        <div class="flex-col">Transcript</div>
+    else ()
+:)    
+};
+
+declare function app:next-page($node as node(), $model as map(*)){
+let $page := string(request:get-parameter('page', ''))
+let $pageNo := concat('#',$page)
+let $current-page :=
+    if($page != '') then
+        if($model("hits")/descendant::tei:surface) then 
+            $model("hits")/descendant::tei:surface[@start = $pageNo]
+        else $model("hits")/descendant::tei:pb[@xml:id = $page]
+    else $model("hits")/descendant::tei:pb[1]
+let $next-id := 
+                if($model("hits")/descendant::tei:surface) then 
+                    $current-page/following::tei:surface[1]/@start
+                else $current-page/descendant::tei:pb[@xml:id = request:get-parameter('page', '')[1]]/following::tei:pb[1]    
+let $prev-id := 
+                if($model("hits")/descendant::tei:surface) then 
+                    $current-page/preceding::tei:surface[1]/@start
+                else $current-page/descendant::tei:pb[@xml:id = $page[1]]/preceding::tei:pb[1]  
+let $next := if($next-id != '') then <a href="{request:get-uri()}?page={replace($next-id,'#','')}">next page</a> else 'no  next' 
+let $prev := if($prev-id != '') then <a href="{request:get-uri()}?page={replace($prev-id,'#','')}">prev page</a> else 'no prev'
+return <span> {$prev} | {$next}</span>
+};

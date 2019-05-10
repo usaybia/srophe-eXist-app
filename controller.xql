@@ -142,14 +142,20 @@ else if(
         let $id := if($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)]) then
                         concat($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)][1]/@record-URI-pattern,$id)
                    else $exist:path
-        let $html-path := if($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)]) then 
+        let $html-path := if(request:get-parameter('view', '') = 'translation') then 
+                            if($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)]) then 
+                                concat($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)][1]/@app-root,'translation.html')
+                            else if($config:get-config//repo:collection[@app-root =  $record-uri-root]) then
+                                concat($config:get-config//repo:collection[@app-root =  $record-uri-root][1]/@app-root,'translation.html')
+                            else '/translation.html'    
+                          else if($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)]) then 
                             concat($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)][1]/@app-root,'record.html')
                           else if($config:get-config//repo:collection[@app-root =  $record-uri-root]) then
                             concat($config:get-config//repo:collection[@app-root =  $record-uri-root][1]/@app-root,'record.html')                            
                           else '/record.html'   
         let $format := fn:tokenize($exist:resource, '\.')[fn:last()]
         return 
-        (:<div>HTML page for id: {$id} root: {$record-uri-root} HTML: {$html-path}</div>:)
+(:        <div>HTML page for id: {$id} root: {$record-uri-root} HTML: {$html-path}</div>:)
            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
                 <forward url="{$exist:controller}{$html-path}"></forward>
                 <view>
@@ -161,7 +167,7 @@ else if(
                     <forward url="{$exist:controller}/error-page.html" method="get"/>
                     <forward url="{$exist:controller}/modules/view.xql"/>
                 </error-handler>
-            </dispatch>    
+            </dispatch>
 else if (ends-with($exist:resource, ".html")) then
     (: the html page is run through view.xql to expand templates :)
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">

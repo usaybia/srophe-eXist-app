@@ -74,6 +74,24 @@ dd {
 }
 
 /* F */
+
+.flex-row {
+    display: flex;
+    /*
+     * display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: stretch;
+     * 
+     */
+}
+
+.flex-col {
+  flex: 1; /* additionally, equal width */
+  height: auto;
+  margin:1em;
+}
+
 footer {border-top:4px solid #456889;}
 footer .poweredby { float: right; margin: 33px 10px 0 0;}
 footer .poweredby img { width: 120px; }
@@ -253,7 +271,7 @@ pre {
 	}
 
 /* R */
-.record {padding-top: 2em; margin:4em;}
+/*.record {padding-top: 2em; margin:4em;}*/
 .results {margin-top:4em;}
 .result {border-bottom:1px dotted #eee; padding-top:.5em; padding-bottom: 1em;}
 .results-list-desc {display:block;}
