@@ -20,7 +20,7 @@
         <!-- eXist data app root for TEI application.  -->
         <data-root>usaybia-data</data-root>
         <!-- Base URI for identifiers in app data -->
-        <base_uri>http://syriaca.org</base_uri>
+        <base_uri>https://usaybia.net</base_uri>
         <!-- 
             Path to ODD file. Can be used in XSLT or XQuery transformations for controlled values. 
             Path to ODD file from app-root, or as an absolute path. 
@@ -64,7 +64,7 @@
                 app-root="folder name in app" 
                 data-root="folder name in data"/>-->
             <collection name="places" title="The Syriac Gazetteer" app-root="/places/" data-root="places" record-URI-pattern="http://syriaca.org/place/"/>
-            <collection name="sbd" title="The Syriac Biographical Dictionary" series="The Syriac Biographical Dictionary" app-root="/persons/" data-root="persons" record-URI-pattern="http://syriaca.org/person/"/>
+            <collection name="sbd" title="Persons" app-root="/persons/" data-root="persons" record-URI-pattern="https://usaybia.net/person/"/>
             <collection name="nhsl" title="New Handbook of Syriac Literature" collection-URI="http://syriaca.org/nhsl" series="New Handbook of Syriac Literature" app-root="/nhsl/" data-root="works" record-URI-pattern="http://syriaca.org/work/"/>
             <collection name="bibl" title="Syriaca.org Works Cited" app-root="/bibl/" data-root="bibl" record-URI-pattern=""/>
             <collection name="subjects" title="A Taxonomy of Syriac Studies" app-root="/taxonomy/" data-root="subjects" record-URI-pattern="http://syriaca.org/keyword/"/>
