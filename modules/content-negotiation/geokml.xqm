@@ -1,13 +1,13 @@
 xquery version "3.0";
 
-module namespace geokml="http://syriaca.org/srophe/geokml";
+module namespace geokml="http://srophe.org/srophe/geokml";
 (:~
  : Module returns coordinates as geoJSON
  : Formats include geoJSON 
  : @author Winona Salesky <wsalesky@gmail.com>
  : @authored 2014-06-25
 :)
-
+declare namespace srophe="https://srophe.app";
 declare namespace tei = "http://www.tei-c.org/ns/1.0";
 
 (:~
@@ -37,7 +37,7 @@ declare function geokml:kml($nodes as node()*){
 declare function geokml:kml-element($node as node()*) as element()*{
 let $id := if($node//tei:idno[@type='URI']) then $node//tei:idno[@type='URI'][1]
            else $node//tei:idno[1]
-let $title := if($node/descendant::*[@syriaca-tags="#syriaca-headword"]) then $node/descendant::*[@syriaca-tags="#syriaca-headword"][1] 
+let $title := if($node/descendant::*[@srophe:tags="#syriaca-headword"]) then $node/descendant::*[@srophe:tags="#syriaca-headword"][1] 
               else $node//tei:title[1]
 let $desc := if($node/descendant::tei:desc[1]/tei:quote) then 
                 concat('"',$node/descendant::tei:desc[1]/tei:quote,'"')

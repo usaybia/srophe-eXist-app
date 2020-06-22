@@ -106,6 +106,34 @@
         </li>
     </xsl:template>
 
+    <xsl:template match="t:bibl" mode="footnote-inline">
+        <xsl:param name="footnote-number">-1</xsl:param>
+        <xsl:variable name="thisnum">
+            <!-- Isolates footnote number in @xml:id-->
+            <xsl:choose>
+                <xsl:when test="$footnote-number='-1'">
+                    <xsl:value-of select="substring-after(@xml:id, '-')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$footnote-number"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <!-- When ptr is available, use full bibl record (indicated by ptr) -->
+            <span class="anchor" id="{@xml:id}"/>
+            <!-- Display footnote number -->
+            <span class="tei-footnote-tgt">
+                <xsl:value-of select="$thisnum"/>
+            </span>
+            <xsl:text> </xsl:text>
+            <span class="tei-footnote-content">
+                <xsl:if test="t:author">
+                    <xsl:value-of select="t:author"/>, 
+                </xsl:if>
+                <em><xsl:value-of select="t:title"/></em>
+                <!--<xsl:call-template name="footnote"/>-->
+            </span>
+    </xsl:template>
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
      generate a Chicago style footnote for the matched bibl entry; if it contains a 
      pointer, try to look up the master bibliography file and use that
@@ -174,13 +202,13 @@
         <span class="footnote-content">
             <xsl:choose>
                 <xsl:when test="descendant::t:ptr[@target and starts-with(@target, '#')]">
-                    <xsl:variable name="target" select="substring-after(descendant::t:ptr/@target,'#')"/>
+                    <xsl:variable name="target" select="substring-after(descendant::t:ptr[1]/@target,'#')"/>
                     <xsl:for-each select="descendant::t:bibl[@xml:id = $target]">
                         <xsl:choose>
                             <xsl:when test="descendant::t:ptr[@target and starts-with(@target, concat($base-uri,'/bibl/'))]">
                                 <!-- Find file path for bibliographic record -->
                                 <xsl:variable name="biblfilepath">
-                                    <xsl:value-of select="concat('xmldb:exist://',$data-root,'/bibl/tei/',substring-after(t:ptr/@target, concat($base-uri,'/bibl/')),'.xml')"/>
+                                    <xsl:value-of select="concat('xmldb:exist://',$data-root,'/bibl/tei/',substring-after(t:ptr[1]/@target, concat($base-uri,'/bibl/')),'.xml')"/>
                                 </xsl:variable>
                                 <xsl:choose>
                                     <xsl:when test="doc-available($biblfilepath)">
@@ -233,7 +261,7 @@
                 </xsl:when>
                 <xsl:when test="descendant::t:ptr[@target and starts-with(@target, concat($base-uri,'/bibl/'))]">
                     <xsl:variable name="biblfilepath">
-                        <xsl:value-of select="concat('xmldb:exist://',$data-root,'/bibl/tei/',substring-after(t:ptr/@target, concat($base-uri,'/bibl/')),'.xml')"/>
+                        <xsl:value-of select="concat('xmldb:exist://',$data-root,'/bibl/tei/',substring-after(t:ptr[1]/@target, concat($base-uri,'/bibl/')),'.xml')"/>
                     </xsl:variable>
                     <xsl:choose>
                         <xsl:when test="doc-available($biblfilepath)">
@@ -1136,6 +1164,7 @@
                         </xsl:when>
                     </xsl:choose>
                 </xsl:attribute>
+                <xsl:sequence select="local:attributes(.)"/>
                 <xsl:for-each select="./node()">
                     <xsl:apply-templates select="."/>
                 </xsl:for-each>
@@ -1179,6 +1208,9 @@
                 <xsl:when test="starts-with($ref,'https://archive.org')">
                     <xsl:text>Link to Archive.org Bibliographic record</xsl:text>
                 </xsl:when>
+                <xsl:when test="starts-with($ref,'https://gedsh.bethmardutho.org')">
+                    <xsl:text>Link to e-GEDSH entry</xsl:text>
+                </xsl:when>
                 <xsl:otherwise>
                     <xsl:text>External link to bibliographic record</xsl:text>
                 </xsl:otherwise>
@@ -1211,6 +1243,9 @@
             <xsl:when test="contains($ref,'archive.org')">
                 <img src="{$nav-base}/resources/images/ialogo.jpg" alt="Link to Archive.org Bibliographic record" height="18px"/>
             </xsl:when>
+            <xsl:when test="contains($ref,'gedsh.bethmardutho.org')">
+                <img src="{$nav-base}/resources/images/e-gedsh.png" alt="Link to e-GEDSH entry" height="18px"/>
+            </xsl:when>
             <xsl:otherwise>
                 <span class="glyphicon glyphicon-book"/>
             </xsl:otherwise>
@@ -1233,7 +1268,7 @@
             <xsl:choose>
                 <xsl:when test="@type='URI'">
                     <a href="{text()}">
-                        <xsl:value-of select="text()"/>  <xsl:call-template name="ref-icons">
+                        <xsl:value-of select="text()"/>  <xsl:call-template name="ref-icons">
                             <xsl:with-param name="ref" select="text()"/>
                         </xsl:call-template>
                     </a>
@@ -1255,7 +1290,7 @@
                     <xsl:otherwise>
                         <xsl:value-of select="@target"/>
                     </xsl:otherwise>
-                </xsl:choose>  <xsl:call-template name="ref-icons">
+                </xsl:choose>  <xsl:call-template name="ref-icons">
                     <xsl:with-param name="ref" select="text()"/>
                 </xsl:call-template>
             </a>

@@ -3,14 +3,15 @@
  :)
 xquery version "3.0";
 
-module namespace place="http://syriaca.org/srophe/place";
-import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
-import module namespace global="http://syriaca.org/srophe/global" at "lib/global.xqm";
-import module namespace app="http://syriaca.org/srophe/templates" at "app.xql";
-import module namespace maps="http://syriaca.org/srophe/maps" at "lib/maps.xqm";
+module namespace place="http://srophe.org/srophe/place";
+import module namespace config="http://srophe.org/srophe/config" at "config.xqm";
+import module namespace global="http://srophe.org/srophe/global" at "lib/global.xqm";
+import module namespace app="http://srophe.org/srophe/templates" at "app.xql";
+import module namespace maps="http://srophe.org/srophe/maps" at "lib/maps.xqm";
 
 import module namespace templates="http://exist-db.org/xquery/templates" ;
 
+declare namespace srophe="https://srophe.app";
 declare namespace http="http://expath.org/ns/http-client";
 declare namespace xslt="http://exist-db.org/xquery/transform";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
@@ -30,7 +31,7 @@ declare %templates:wrap function place:h1($node as node(), $model as map(*)){
     let $title := $model("hits")//tei:place
     let $title-nodes := 
             <srophe-title xmlns="http://www.tei-c.org/ns/1.0">
-                {($title//tei:placeName[@syriaca-tags='#syriaca-headword'],$title/descendant::tei:idno, $title/descendant::tei:location)}
+                {($title//tei:placeName[@srophe:tags='#syriaca-headword'],$title/descendant::tei:idno, $title/descendant::tei:location)}
             </srophe-title>
     return global:tei2html($title-nodes)
 };
@@ -58,6 +59,8 @@ declare function place:type-details($data, $type){
             <ul>
             {
                 for $location in $data//tei:location
+                let $sort := if($location[@subtype = 'preferred']) then 0 else 1
+                order by $sort
                 return global:tei2html($location)
             }
             </ul>
@@ -150,7 +153,7 @@ declare function place:related-places($node as node(), $model as map(*)){
                                         return
                                              attribute {name($att)} {$att},                      
                                     for $get-related in collection($config:data-root || "/places/tei")/id($place-id)
-                                    return $get-related/tei:placeName[@syriaca-tags='#syriaca-headword'][@xml:lang='en'])
+                                    return $get-related/tei:placeName[@srophe:tags='#syriaca-headword'][@xml:lang='en'])
                                 }
                                 </relation>
                             
@@ -168,7 +171,7 @@ declare function place:related-places($node as node(), $model as map(*)){
                                     return
                                          attribute {name($att)} {$att},                      
                                 for $get-related in collection($config:data-root || "/places/tei")/id($place-id)
-                                return $get-related/tei:placeName[@syriaca-tags='#syriaca-headword'][@xml:lang='en'])
+                                return $get-related/tei:placeName[@srophe:tags='#syriaca-headword'][@xml:lang='en'])
                             }
                             </relation>
                     let $mutual := 
@@ -189,7 +192,7 @@ declare function place:related-places($node as node(), $model as map(*)){
                                             for $get-related in collection($config:data-root || "/places/tei")/id($place-id)
                                             let $type := string($get-related/@type)
                                             return 
-                                                (attribute type {$type}, $get-related/tei:placeName[@syriaca-tags='#syriaca-headword'][@xml:lang='en']))
+                                                (attribute type {$type}, $get-related/tei:placeName[@srophe:tags='#syriaca-headword'][@xml:lang='en']))
                                             }
                                             </mutual>
                                     }
