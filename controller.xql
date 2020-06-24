@@ -166,12 +166,14 @@ else if(
                           else '/record.html'   
         let $format := fn:tokenize($exist:resource, '\.')[fn:last()]
         return 
-(:        <div>HTML page for id: {$id} root: {$record-uri-root} HTML: {$html-path}</div>:)
            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
                 <forward url="{$exist:controller}{$html-path}"></forward>
                 <view>
                     <forward url="{$exist:controller}/modules/view.xql">
-                       <add-parameter name="doc" value="{$id}"/>
+                        {if($config:get-config//repo:document-ids = 'document-url') then
+                            <add-parameter name="doc" value="{$id}"/>
+                         else <add-parameter name="id" value="{$id}"/> 
+                         }
                     </forward>
                 </view>
                 <error-handler>

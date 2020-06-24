@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude"
-    data-template="templates:surround" data-template-with="templates/bibl.html"
-    data-template-at="content">
-    <xi:include href="banner.html"/>
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
+    <div class="banner-bibl">
+    <span class="img-credit">
+        <label>Photo Credit:</label> ©2016 Michelle Bukowski 
+        <button class="btn btn-link white-link" data-toggle="collapse" data-target="#img-rights">
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"/>
+        </button>
+        <div id="img-rights" class="collapse">
+            Licensed under a Creative Commons Attribution 4.0 International License.
+        </div>
+    </span>
+</div>
     <div class="banner hide-search">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
@@ -68,7 +76,11 @@
                             <img src="../resources/images/PU-standard.png" alt="Princeton University" height="60px"/>
                         </a>
                     </li>
-                    <li><a href="http://www.marquette.edu/"><img src="../resources/images/MU-Logo.jpg" alt="Marquette University" /></a></li>
+                    <li>
+                        <a href="http://www.marquette.edu/">
+                            <img src="../resources/images/MU-Logo.jpg" alt="Marquette University"/>
+                        </a>
+                    </li>
                     <li>
                         <a href="http://www.bollandistes.org/online-resources.php?pg=bollandistdatabases">
                             <img src="../resources/images/bollandiste.png" alt="Société des Bollandistes" width="50%" style="padding-left:1em;"/>
@@ -81,9 +93,9 @@
             <h2>Example entries</h2>
             <ul>
                 <li>
-                    <a href="http://syriaca.org/bibl/1396"
-                    >P. Peeters, "Le martyrologe de Rabban Ṣalība," <em>Analecta
-                        Bollandiana</em> vol. 27 (1908), 129-200.</a></li>
+                    <a href="http://syriaca.org/bibl/1396">P. Peeters, "Le martyrologe de Rabban Ṣalība," <em>Analecta
+                        Bollandiana</em> vol. 27 (1908), 129-200.</a>
+                </li>
                 <li>
                     <a href="http://syriaca.org/bibl/214">S. P. Brock, "Evagrius of Pontus," in Sebastian P. Brock et al. (eds.), <em>The Gorgias Encyclopedic Dictionary of the Syriac Heritage</em> (Piscataway, NJ: Gorgias Press, 2011), 156.</a>
                 </li>

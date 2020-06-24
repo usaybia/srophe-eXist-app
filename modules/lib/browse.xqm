@@ -56,7 +56,6 @@ declare function browse:get-all($node as node(), $model as map(*), $collection a
 declare function browse:show-hits($node as node(), $model as map(*), $collection, $sort-options as xs:string*, $facets as xs:string?){
   let $hits := $model("hits")
   return 
-    (
     if($browse:view = 'map') then 
         <div class="col-md-12 map-lg" xmlns="http://www.w3.org/1999/xhtml">
             {browse:get-map($hits)}
@@ -87,7 +86,6 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
                 </div>
             )}
         </div>
-    )
 };
 
 (:

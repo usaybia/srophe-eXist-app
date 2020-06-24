@@ -246,24 +246,12 @@ declare function sf:facet-controlled-labels($element as item()*, $facet-definiti
     return util:eval(concat('$element/',$xpath))
 };
 
-declare function sf:field-uri($element as item()*, $facet-definition as item(), $name as xs:string){
+declare function sf:facet-persNameLang($element as item()*, $facet-definition as item(), $name as xs:string){
     let $langCode := $element/descendant::tei:person/tei:persName/@xml:lang
-    return (:global:odd2text():)''    
+    return sf:odd2text('xmls:lang', $langCode)    
 };
 
-(:persNameLang:)
-(: Display, output functions 
-request:get-parameter-names()[starts-with(., 'facet-')]
-request:get-parameter('start', 1) 
-
-TODO labels for: 
-series := 
-            if($facet-grp = 'http://syriaca.org/authors') then 'Authors'
-            else if($facet-grp = 'http://syriaca.org/q') then 'Saints'
-            else ()
-anything with a uri
-language 
-:)
+(: Display, output functions :)
 declare function sf:display($result as item()*, $facet-definition as item()*) {
     for $facet in $facet-definition/descendant-or-self::facet:facet-definition
     let $name := string($facet/@name)
@@ -370,4 +358,28 @@ declare function sf:type($value as item()*, $type as xs:string?) as item()*{
 (: Syriaca.org strip non sort characters :)
 declare function sf:build-sort-string($titlestring as xs:string?) as xs:string* {
     replace(normalize-space($titlestring),'^\s+|^[‘|ʻ|ʿ|ʾ]|^[tT]he\s+[^\p{L}]+|^[dD]e\s+|^[dD]e-|^[oO]n\s+[aA]\s+|^[oO]n\s+|^[aA]l-|^[aA]n\s|^[aA]\s+|^\d*\W|^[^\p{L}]','')
+};
+
+declare function sf:odd2text($element as xs:string?, $label as xs:string?) as xs:string* {
+    let $odd-path := $config:get-config//repo:odd/text()
+    let $odd-file := 
+                    if($odd-path != '') then
+                        if(starts-with($odd-path,'http')) then 
+                            hc:send-request(<hc:request href="{xs:anyURI($odd-path)}" method="get"/>)[2]
+                        else doc($config:app-root || $odd-path)
+                    else ()
+    return 
+        if($odd-path != '') then
+            let $odd := $odd-file
+            return 
+                try {
+                    if($odd/descendant::*[@ident = $element][1]/descendant::tei:valItem[@ident=$label][1]/tei:gloss[1]/text()) then 
+                        $odd/descendant::*[@ident = $element][1]/descendant::tei:valItem[@ident=$label][1]/tei:gloss[1]/text()
+                    else if($odd/descendant::tei:valItem[@ident=$label][1]/tei:gloss[1]/text()) then 
+                        $odd/descendant::tei:valItem[@ident=$label][1]/tei:gloss[1]/text()
+                    else ()    
+                } catch * {
+                    <error>Caught error {$err:code}: {$err:description}</error>
+                }  
+         else ()
 };
