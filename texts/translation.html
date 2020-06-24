@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
+    <div data-template="app:fix-links" class="record">
+        <main class="main-content-block translation">
+            <div data-template="app:h1"/>
+            <div class="toolbar flex-row toolbar">
+                <div class="flex-col">
+                    View: 
+                    <a href="#menu" class="menu-link" data-toggle="tooltip" title="Table of Contents">
+                        <i class="glyphicon glyphicon-th-list" title="View Table of Contents"/>
+                    </a> |
+                    <i class="fas fa-columns" data-toggle="tooltip" title="Add additional views"/> | 
+                    <!--<i class="glyphicon glyphicon-info-sign" title="View Tei Header Information"></i>-->                    
+                    | factoids
+                </div>
+                <div class="flex-col">
+                   <!--Need to chunk by chapter maybe: <div data-template="app:next-page"/> -->
+                </div>
+                <div class="flex-col">
+                    <div data-template="app:other-data-formats" data-template-formats="print,tei,rdf,text"/>
+                </div>
+            </div>
+            <div class="flex-row">  
+                <div data-template="app:display-page-text"/>
+                <div data-template="app:display-page-text" data-template-type="translation"/>
+            </div>
+        </main>
+        <div data-template="app:toc"/>
+        <script src="$nav-base/resources/js/bigSlide.min.js"/>
+        <script>
+            $(document).ready(function() {
+                //Add table of contents - move to main js or have a rec-view.js that
+                $('.menu-link').bigSlide({
+                    menuWidth:'25em',
+                    speed:'450'
+                });
+                $("div.highlight").hover(function () {
+                    divID = $(this).data("highlight");
+                    corresp = $(this).data("corresp");
+                    console.log(divID)
+                    $(this).addClass("text-highlight");
+                    $('div[data-corresp = ' +  divID + ']').addClass("text-highlight");
+                    $('div[data-highlight = ' +  corresp + ']').addClass("text-highlight");
+                    //if (divID) {
+                    //  block of code to be executed if the condition is true
+                    //}
+                 },function () {
+                    $(this).removeClass("text-highlight");
+                    $('div[data-corresp = ' +  divID + ']').removeClass("text-highlight");
+                    $('div[data-highlight = ' +  corresp + ']').removeClass("text-highlight");
+                 });
+                /*
+                $(".data-highlight").hover(function () {
+                        $(this).addClass("text-highlight");
+                    },function () {
+                        $(this).removeClass("text-highlight");
+                    }
+                );
+                */
+            });
+        </script>
+    </div>
+    <!-- Modal email form-->
+    <div data-template="app:contact-form"/>
+    <!-- Floating footnotes/factoids display -->
+    <div id="footnoteDisplay" class="footnote">
+        <div class="content"/>  
+    </div>
+    
+</div>
