@@ -1,6 +1,6 @@
 xquery version "3.0";
 
-import module namespace config="http://syriaca.org/srophe/config" at "modules/config.xqm";
+import module namespace config="http://srophe.org/srophe/config" at "modules/config.xqm";
 
 declare variable $exist:path external;
 declare variable $exist:resource external;
@@ -59,12 +59,17 @@ declare function local:content-negotiation($exist:path, $exist:resource){
                        else if(request:get-parameter('format', '') != '') then request:get-parameter('format', '')                            
                        else fn:tokenize($exist:resource, '\.')[fn:last()]
         return 
-            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">        
-                <forward url="{$exist:controller}/modules/content-negotiation/content-negotiation.xql">
-                    <add-parameter name="id" value="{$id}"/>
-                    <add-parameter name="format" value="{$format}"/>
-                </forward>
-            </dispatch>
+            if($config:get-config//repo:collection[ends-with(@record-URI-pattern, $record-uri-root)]) then 
+                <dispatch xmlns="http://exist.sourceforge.net/NS/exist">        
+                    <forward url="{$exist:controller}/modules/content-negotiation/content-negotiation.xql">
+                        <add-parameter name="id" value="{$id}"/>
+                        <add-parameter name="format" value="{$format}"/>
+                    </forward>
+                </dispatch>
+            else 
+                <dispatch xmlns="http://exist.sourceforge.net/NS/exist">        
+                    <forward url="{$exist:root}/{$exist:path}"/>
+                </dispatch>
 };
 (:
 <div>
@@ -88,7 +93,13 @@ else if ($exist:path eq "/") then
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
         <redirect url="index.html"/>
     </dispatch>
-
+    
+else if($exist:resource = 'editors.xml') then
+    (: forward editors.xml to editors.html :)
+    <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+        <redirect url="{concat($config:nav-base,'/documentation/editors.html')}"/>
+    </dispatch>
+    
 (: Passes any api requests to correct endpoint:)    
 else if (contains($exist:path,'/api/')) then
   if (ends-with($exist:path,"/")) then
@@ -155,12 +166,14 @@ else if(
                           else '/record.html'   
         let $format := fn:tokenize($exist:resource, '\.')[fn:last()]
         return 
-(:        <div>HTML page for id: {$id} root: {$record-uri-root} HTML: {$html-path}</div>:)
            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
                 <forward url="{$exist:controller}{$html-path}"></forward>
                 <view>
                     <forward url="{$exist:controller}/modules/view.xql">
-                       <add-parameter name="doc" value="{$id}"/>
+                        {if($config:get-config//repo:document-ids = 'document-url') then
+                            <add-parameter name="doc" value="{$id}"/>
+                         else <add-parameter name="id" value="{$id}"/> 
+                         }
                     </forward>
                 </view>
                 <error-handler>

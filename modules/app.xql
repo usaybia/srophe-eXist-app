@@ -4,23 +4,24 @@ xquery version "3.1";
  : Output TEI to HTML via eXist-db templating system. 
  : Add your own custom modules at the end of the file. 
 :)
-module namespace app="http://syriaca.org/srophe/templates";
+module namespace app="http://srophe.org/srophe/templates";
 
 (:eXist templating module:)
 import module namespace templates="http://exist-db.org/xquery/templates" ;
 
 (: Import Srophe application modules. :)
-import module namespace config="http://syriaca.org/srophe/config" at "config.xqm";
-import module namespace data="http://syriaca.org/srophe/data" at "lib/data.xqm";
+import module namespace config="http://srophe.org/srophe/config" at "config.xqm";
+import module namespace data="http://srophe.org/srophe/data" at "lib/data.xqm";
 import module namespace facet="http://expath.org/ns/facet" at "lib/facet.xqm";
-import module namespace global="http://syriaca.org/srophe/global" at "lib/global.xqm";
-import module namespace maps="http://syriaca.org/srophe/maps" at "lib/maps.xqm";
-import module namespace page="http://syriaca.org/srophe/page" at "lib/paging.xqm";
-import module namespace rel="http://syriaca.org/srophe/related" at "lib/get-related.xqm";
-import module namespace teiDocs="http://syriaca.org/srophe/teiDocs" at "teiDocs/teiDocs.xqm";
-import module namespace tei2html="http://syriaca.org/srophe/tei2html" at "content-negotiation/tei2html.xqm";
+import module namespace global="http://srophe.org/srophe/global" at "lib/global.xqm";
+import module namespace maps="http://srophe.org/srophe/maps" at "lib/maps.xqm";
+import module namespace page="http://srophe.org/srophe/page" at "lib/paging.xqm";
+import module namespace rel="http://srophe.org/srophe/related" at "lib/get-related.xqm";
+import module namespace teiDocs="http://srophe.org/srophe/teiDocs" at "teiDocs/teiDocs.xqm";
+import module namespace tei2html="http://srophe.org/srophe/tei2html" at "content-negotiation/tei2html.xqm";
 
 (: Namespaces :)
+declare namespace srophe="https://srophe.app";
 declare namespace http="http://expath.org/ns/http-client";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace tan="tag:textalign.net,2015:ns";
@@ -55,8 +56,8 @@ declare function app:get-work($node as node(), $model as map(*)) {
                 ('No record found. ',xmldb:encode-uri($config:data-root || "/" || request:get-parameter('doc', '') || '.xml'))
                 (: Debugging ('No record found. ',xmldb:encode-uri($config:data-root || "/" || request:get-parameter('doc', '') || '.xml')):)
                (:response:redirect-to(xs:anyURI(concat($config:nav-base, '/404.html'))):)
-            else map {"hits" := $rec }
-    else map {"hits" := 'Output plain HTML page'}
+            else map {"hits" : $rec }
+    else map {"hits" : 'Output plain HTML page'}
 };
 
 (:~
@@ -132,11 +133,14 @@ declare function app:display-nodes($node as node(), $model as map(*), $paths as 
  : Used by templating module, not needed if full record is being displayed 
 :)
 declare function app:h1($node as node(), $model as map(*)){
- <h1 class="title">{(
- if($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/@xml:lang) then attribute lang { $model("hits")/descendant::tei:titleStmt[1]/tei:title[1]/@xml:lang }
- else if($model("hits")/ancestor::tei:TEI/@xml:lang) then attribute lang { $model("hits")/ancestor::tei:TEI/@xml:lang }
- else (),
- tei2html:tei2html($model("hits")/descendant::tei:titleStmt[1]/tei:title[1]))}</h1>
+ global:tei2html(
+ <srophe-title xmlns="http://www.tei-c.org/ns/1.0">{(
+    if($model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']) then
+        $model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']
+    else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1], 
+    $model("hits")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
+    )}
+ </srophe-title>)
 }; 
 (:
 declare function app:h1($node as node(), $model as map(*)){
@@ -368,7 +372,7 @@ declare function app:get-wiki($node as node(), $model as map(*), $wiki-uri as xs
             concat($wiki-uri, request:get-parameter('wiki-page', ''))
         else $wiki-uri
     let $wiki-data := app:wiki-rest-request($uri)
-    return map {"hits" := $wiki-data}
+    return map {"hits" : $wiki-data}
 };
 
 (:~
@@ -389,13 +393,29 @@ declare function app:wiki-page-title($node, $model){
     let $content := $model("hits")//html:div[@id='wiki-body']
     return $content/descendant::html:h1[1]
 };
-
 (:~
  : Pulls github wiki content.  
 :)
 declare function app:wiki-page-content($node, $model){
     let $wiki-data := $model("hits")
-    return $wiki-data//html:div[@id='wiki-body'] 
+    return 
+        app:wiki-data($wiki-data//html:div[@id='wiki-body']) 
+};
+
+(:~
+ : Typeswitch to processes wiki anchors links for use with Syriaca.org documentation pages. 
+ : @param $wiki pulls content from specified wiki or wiki page. 
+:)
+declare function app:wiki-data($nodes as node()*) {
+    for $node in $nodes
+    return 
+        typeswitch($node)
+            case element() return
+                element { node-name($node) } {
+                    if($node/@id) then attribute id { replace($node/@id,'user-content-','') } else (),
+                    $node/@*[name()!='id'], app:wiki-data($node/node())
+                }
+            default return $node               
 };
 
 (:~

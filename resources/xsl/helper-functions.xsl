@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
     
     <!-- =================================================================== -->
-    <!-- Helper Functions  -->
+    <!-- Helper Functions   -->
     <!-- =================================================================== -->
     <xsl:variable name="odd">
         <xsl:if test="doc-available(concat('xmldb:exist://',$app-root,'/documentation/syriaca-tei-main.odd'))">
@@ -500,12 +501,15 @@
                 </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:call-template name="ref"/>
+                <xsl:call-template name="ref"/> 
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     <xsl:template name="ref">
         <xsl:choose>
+            <xsl:when test="parent::t:ref or parent::t:ptr">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:when test="@ref">
                 <a href="{@ref}">
                     <xsl:apply-templates/>
