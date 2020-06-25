@@ -233,7 +233,7 @@ button.btn-dark:focus {
 
 .overflow-hidden { overflow: hidden; }
 
-p a {
+p a, li a {
     color:rgb(48,177,0)
 }
 
