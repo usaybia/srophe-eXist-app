@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <facets xmlns="http://expath.org/ns/facet">
-    <!-- A simple facet for browsing by Syriaca.org series -->
+    <!--<!-\- A simple facet for browsing by Syriaca.org series -\->
     <facet-definition name="Series">
         <group-by>
             <sub-path>descendant::tei:seriesStmt/tei:title</sub-path>
@@ -8,7 +8,7 @@
         <max-values show="10">60</max-values>
         <order-by direction="ascending">value</order-by>
     </facet-definition>
-    <!-- A simple facet for browsing by Syriaca.org place names (filtering on English) -->
+    <!-\- A simple facet for browsing by Syriaca.org place names (filtering on English) -\->
     <facet-definition name="Places">
         <group-by>
             <sub-path>descendant::tei:placeName[@xml:lang='en']</sub-path>
@@ -16,7 +16,7 @@
         <max-values show="10">60</max-values>
         <order-by direction="descending">count</order-by>
     </facet-definition>
-    <!-- A simple facet for browsing by Syriaca.org person names (filtering on English) -->
+    <!-\- A simple facet for browsing by Syriaca.org person names (filtering on English) -\->
     <facet-definition name="Persons">
         <group-by>
             <sub-path>descendant::tei:persName[@xml:lang='en']</sub-path>
@@ -31,7 +31,7 @@
         <max-values show="5">40</max-values>
         <order-by direction="ascending">count</order-by>
     </facet-definition>
-    <!-- Range example filters on Syriaca.org dates -->
+    <!-\- Range example filters on Syriaca.org dates -\->
     <facet-definition name="Century">
         <range type="xs:year">
             <bucket lt="0001" name="BC dates" order="22"/>
@@ -62,5 +62,5 @@
         </group-by>
         <max-values show="5">40</max-values>
         <order-by direction="descending">order</order-by>
-    </facet-definition>
+    </facet-definition>-->
 </facets>
