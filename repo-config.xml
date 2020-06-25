@@ -4,7 +4,7 @@
         Application configuration file for the Usaybia.net application. 
     -->
     <config>
-        <!-- Application title -->
+        <!-- Application title --> 
         <title>Usaybia.net</title>
         <!-- App description -->
         <description>Communities of Knowledge: Interreligious Networks of Scholars in Ibn Abi Usaybiʿa’s History of the Physicians</description>
