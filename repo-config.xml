@@ -14,8 +14,8 @@
         <logo/>
         <!-- Web Site URL -->
         <url>https://usaybia.net/</url>
-        <!-- Root of app for building dynamic links. Default is eXist app root  -->
-        <nav-base>/exist/apps/usaybia</nav-base>
+        <!-- Root of app for building dynamic links. Default is eXist app root -->
+        <nav-base>usaybia</nav-base>
         <!-- eXist app root for app deployment-->
         <app-root>usaybia</app-root>
         <!-- eXist data app root for TEI application.  -->
