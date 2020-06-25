@@ -172,6 +172,7 @@ button.btn-dark:focus {
 
 .home .col-flex { margin:.5em; padding:2em;}
 .overall {background:url('../images/overall.svg') center no-repeat;min-height:75px;}
+.allgemein {background:url('../images/allgemein.svg') center no-repeat;min-height:75px;}
 .vs {background:url('../images/vs.svg') center no-repeat; min-height:75px;}
 
 /*
