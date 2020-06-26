@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <facets xmlns="http://expath.org/ns/facet">
-    <facet-definition name="cccupation" label="Occupation">
+    <facet-definition name="occupation" label="Occupation">
         <group-by>
             <sub-path>descendant::tei:state[@type="occupation"]/@role</sub-path>
         </group-by>
