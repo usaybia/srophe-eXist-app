@@ -147,6 +147,10 @@ else if(
        			<forward url="{$exist:controller}/modules/view.xql"/>
        		</error-handler>
         </dispatch>
+    else if($exist:resource = '') then 
+        <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+            <redirect url="index.html"/>
+        </dispatch>
     else 
         let $id := replace(xmldb:decode($exist:resource), "^(.*)\..*$", "$1")
         let $record-uri-root := replace($exist:path,$exist:resource,'')
