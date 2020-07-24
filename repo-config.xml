@@ -77,7 +77,7 @@
             <collection name="persons" title="Persons" series="" app-root="/persons/" data-root="persons" record-URI-pattern="https://usaybia.net/person/"/>
             <collection name="texts" title="Texts" series="" app-root="/text/" data-root="texts" record-URI-pattern="https://usaybia.net/text/"/>
             <collection name="places" title="Places" series="" app-root="/places/" data-root="places" record-URI-pattern="https://usaybia.net/place/"/>
-            <collection name="bibl" title="Bibliography" series="" app-root="/bibl/" data-root="places" record-URI-pattern="https://usaybia.net/bibl/"/>
+            <collection name="bibl" title="Bibliography" series="" app-root="/bibl/" data-root="bibl" record-URI-pattern="https://usaybia.net/bibl/"/>
         </collections>
     </config>
 </meta>
