@@ -42,7 +42,7 @@
         <xsl:apply-templates select="../descendant::t:title[@level='m'][1]" mode="footnote"/>
         
         <!-- version statement -->
-        <xsl:text>version </xsl:text>
+        <xsl:text> version </xsl:text>
         <xsl:value-of select="../t:editionStmt/t:edition[1]/@n"/>
         <xsl:text>,</xsl:text>
         
