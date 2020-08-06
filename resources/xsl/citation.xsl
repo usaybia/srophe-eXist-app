@@ -29,7 +29,7 @@
     <xsl:template match="t:titleStmt" mode="cite-foot">
         <!-- creator(s) of the entry -->
         <!-- Process editors/authors using local function in helper-functions.xsl local:emit-responsible-persons -->
-        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'footnote',1)"/>
+        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'footnote',20)"/>
         <xsl:text>, </xsl:text>
         
         <!-- title of the entry -->
@@ -43,7 +43,7 @@
         
         <!-- version statement -->
         <xsl:text>version </xsl:text>
-        <xsl:value-of select="../t:editionStmt/t:edition[1]/@t:n"/>
+        <xsl:value-of select="../t:editionStmt/t:edition[1]/@n"/>
         <xsl:text>,</xsl:text>
         
         <!-- publication date statement -->
@@ -110,7 +110,7 @@
         <xsl:text>, 2019-.</xsl:text>
         <!-- version statement -->
         <xsl:text> Version </xsl:text>
-        <xsl:value-of select="../t:editionStmt/t:edition[1]/@t:n"/>
+        <xsl:value-of select="../t:editionStmt/t:edition[1]/@n"/>
         <xsl:text>.</xsl:text>
         <!-- publication date statement -->
         <xsl:text> Entry published </xsl:text>
