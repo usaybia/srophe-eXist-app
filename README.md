@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3975609.svg)](https://doi.org/10.5281/zenodo.3975609)
+
 Usaybia.net
 =======
 Application data for [Usaybia.net](https://usaybia.net): Communities of Knowledge: Interreligious Networks of Scholars in Ibn Abi Usaybia’s History of the Physicians / Wissensgemeinschaften: interreligiöse Gelehrtennetzwerke in Ibn Abi Usaybiʿa’s Geschichte der Ärzte.
