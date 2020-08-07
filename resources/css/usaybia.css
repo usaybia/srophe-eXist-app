@@ -85,7 +85,7 @@ footer {border:none; }
 }
 
 .search-bar {
-    background-color: rgb(248,249,250, .95);
+    background-color: rgb(248,249,250, .98);
     position:fixed;
     right: 50;
     left: 50;
@@ -93,6 +93,7 @@ footer {border:none; }
     height:50px;
     border:none;
     text-align:center;
+    z-index: 250;
 /*    border-bottom:1px solid #87B59C;*/
 }
 

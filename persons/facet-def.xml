@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <facets xmlns="http://expath.org/ns/facet">
     <facet-definition name="occupation" label="Occupation">
         <group-by>
             <sub-path>descendant::tei:state[@type="occupation"]/@role</sub-path>
         </group-by>
         <max-values show="5">40</max-values>
-        <order-by direction="ascending">count</order-by>
+        <order-by direction="descending">count</order-by>
     </facet-definition>
 <!--    
     <facet-definition name="sex" label="Sex or Gender">

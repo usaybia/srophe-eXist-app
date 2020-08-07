@@ -44,7 +44,7 @@ declare function browse:get-all($node as node(), $model as map(*), $collection a
             else ()
     let $hits := 
         if($browse:view = 'facets' or $browse:view = 'date' or ($browse:view = 'type' and $collection != ('geo','places'))) then 
-            collection($config:data-root || $collectionPath)//tei:body[ft:query(., (),sf:facet-query())] 
+            collection($config:data-root || $collectionPath)//tei:body[ft:query(., (),sf:facet-query())]/ancestor::tei:TEI 
         else data:get-records($collection, $element)
     return map{"hits" : $hits }
 };
@@ -82,7 +82,7 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
                     else if($browse:alpha-filter != '') then $browse:alpha-filter else 'A')}</h3>,
                 <div class="results {if($browse:lang = 'syr' or $browse:lang = 'ar') then 'syr-list' else 'en-list'}">
                     {if(($browse:lang = 'syr') or ($browse:lang = 'ar')) then (attribute dir {"rtl"}) else()}
-                    {browse:display-hits($hits)}
+                    {browse:display-hits($hits, $collection)}
                 </div>
             )}
         </div>
@@ -91,13 +91,21 @@ declare function browse:show-hits($node as node(), $model as map(*), $collection
 (:
  : Page through browse results
 :)
-declare function browse:display-hits($hits){
+declare function browse:display-hits($hits,$collection){
     for $hit in subsequence($hits, $browse:start,$browse:perpage)
     let $sort-title := 
         if($browse:lang != 'en' and $browse:lang != 'syr' and $browse:lang != '') then 
-            <span class="sort-title" lang="{$browse:lang}" xml:lang="{$browse:lang}">{(if($browse:lang='ar') then attribute dir { "rtl" } else (), string($hit/@sort))}</span> 
+            <span class="sort-title" lang="{$browse:lang}" xml:lang="{$browse:lang}">
+            {(if($browse:lang='ar') then attribute dir { "rtl" } else (), 
+                if($collection = 'places') then 
+                    tei2html:tei2html($hit//tei:placeName[@xml:lang = $browse:lang][matches(global:build-sort-string(., $browse:lang),global:get-alpha-filter())])
+                else if($collection = 'persons' or $collection = 'sbd' or $collection = 'q' ) then
+                    tei2html:tei2html($hit//tei:persName[@xml:lang = $browse:lang][matches(global:build-sort-string(., $browse:lang),global:get-alpha-filter())])
+                else tei2html:tei2html($hit//tei:title[@xml:lang = $browse:lang][matches(global:build-sort-string(., $browse:lang),global:get-alpha-filter())])
+                )}
+            </span> 
         else () 
-    let $uri := string($hit/@id)
+    let $uri := replace($hit/descendant::tei:publicationStmt/tei:idno[1],'/tei','')
     return 
         <div xmlns="http://www.w3.org/1999/xhtml" class="result">
             {($sort-title, tei2html:summary-view($hit[1], $browse:lang, $uri[1]))}
@@ -223,18 +231,18 @@ declare function browse:by-type($hits, $collection, $sort-options){
                 <h3>{concat(upper-case(substring(request:get-parameter('type', ''),1,1)),substring(request:get-parameter('type', ''),2))}</h3>,
                 <div>{(        
                     <div class="col-md-12 map-md">{browse:get-map($hits)}</div>,
-                        browse:display-hits($hits)
+                        browse:display-hits($hits,$collection)
                     )}</div>)
             
         else if($browse:view='date') then  
                 (page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options),
                 <h3>{request:get-parameter('date', '')}</h3>,
-                <div>{browse:display-hits($hits)}</div>)
+                <div>{browse:display-hits($hits,$collection)}</div>)
        else (page:pages($hits, $collection, $browse:start, $browse:perpage,'', $sort-options),
             <h3>Results {concat(upper-case(substring(request:get-parameter('type', ''),1,1)),substring(request:get-parameter('type', ''),2))} ({count($hits)})</h3>,
             <div>{(
                 <div class="col-md-12 map-md">{browse:get-map($hits)}</div>,
-                browse:display-hits($hits)
+                browse:display-hits($hits,$collection)
                 )}</div>)
     }</div>)       
 };

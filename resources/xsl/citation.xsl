@@ -29,7 +29,7 @@
     <xsl:template match="t:titleStmt" mode="cite-foot">
         <!-- creator(s) of the entry -->
         <!-- Process editors/authors using local function in helper-functions.xsl local:emit-responsible-persons -->
-        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'footnote',1)"/>
+        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'footnote',20)"/>
         <xsl:text>, </xsl:text>
         
         <!-- title of the entry -->
@@ -40,6 +40,11 @@
         <!-- monographic title -->
         <xsl:text> in </xsl:text>
         <xsl:apply-templates select="../descendant::t:title[@level='m'][1]" mode="footnote"/>
+        
+        <!-- version statement -->
+        <xsl:text> version </xsl:text>
+        <xsl:value-of select="../t:editionStmt/t:edition[1]/@n"/>
+        <xsl:text>,</xsl:text>
         
         <!-- publication date statement -->
         <xsl:text> last modified </xsl:text>
@@ -68,7 +73,7 @@
     <xsl:template match="t:titleStmt" mode="cite-biblist">
         <!-- creator(s) of the entry -->
         <!-- Process editors/authors using local function in helper-functions.xsl local:emit-responsible-persons -->
-        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'biblist',1)"/>
+        <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='creator'],'biblist',20)"/>
         <xsl:text>, </xsl:text>
         
         <!-- title of the entry -->
@@ -97,10 +102,16 @@
             <!-- general editors -->
             <xsl:text>, edited by </xsl:text>
             <!-- Process editors/authors using local function in helper-functions.xsl local:emit-responsible-persons -->
-            <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='general'],'footnote',1)"/>
+            <xsl:sequence select="local:emit-responsible-persons(t:editor[@role='general'],'footnote',20)"/>
             <xsl:text>.</xsl:text>
         </xsl:for-each>
-        <xsl:text> Syriaca.org, 2016-.</xsl:text>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="../t:publicationStmt/t:authority[1]"/>
+        <xsl:text>, 2019-.</xsl:text>
+        <!-- version statement -->
+        <xsl:text> Version </xsl:text>
+        <xsl:value-of select="../t:editionStmt/t:edition[1]/@n"/>
+        <xsl:text>.</xsl:text>
         <!-- publication date statement -->
         <xsl:text> Entry published </xsl:text>
         <xsl:for-each select="../t:publicationStmt/t:date[1]">

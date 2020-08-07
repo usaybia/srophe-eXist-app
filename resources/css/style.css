@@ -166,6 +166,7 @@ img{ margin:0px }
 }
 
 /* M */
+.mainContentArea {padding-top:75px;}
 .map-lg #map {height:500px !important;}
 .map-md #map {height:300px !important;}
 .map-sm #map {height:250px !important;}
