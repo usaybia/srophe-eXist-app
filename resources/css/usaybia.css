@@ -267,13 +267,16 @@ h1, h2 {
   background-color: white;
   background-position: 50%; 
   background-size: cover;
-  height: 34%;
+  min-height: 34%;
   padding-right: 15px;
   padding-left: 15px;
 }
+.forum-item-title-1 {
+  width: 10em; 
+  padding-top: 10px;
+}
 .forum-item-title-3 {
-  width: 29%; 
-  min-width: 140px;
+  width: 20em; 
   padding-top: 10px;
 }
 .forum-item-title-line-1 {
