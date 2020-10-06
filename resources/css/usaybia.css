@@ -254,32 +254,34 @@ h1, h2 {
 }
 .forum-program h2 {
   margin-top: 0;
+  margin-bottom: 0;
   padding: 5px;
-}
-.forum-time-left {
- padding-left: 5px;
 }
 .forum-column {
  padding: 0px;
+}
+
+.forum-column > div:first-child {
+  padding-left: 5px;
 }
 
 .forum-item {
   background-color: white;
   background-position: 50%; 
   background-size: cover;
-  min-height: 34%;
+  height: 25em;
   padding-right: 15px;
   padding-left: 15px;
 }
-.forum-item-title-1 {
-  width: 10em; 
+.col-sm-3 .forum-item-title {
+  width: 12em; 
   padding-top: 10px;
 }
-.forum-item-title-3 {
+.col-sm-9 .forum-item-title, .col-sm-6 .forum-item-title {
   width: 20em; 
   padding-top: 10px;
 }
-.forum-item-title-line-1 {
+.forum-item-title > h3:first-child {
   margin-top: 7px !important;
 }
 .forum-item-title-line-light {
@@ -325,4 +327,8 @@ h1, h2 {
 .forum-abstract {
   text-align: left;
   display: block;
+  color: #333;
+}
+.forum-bio {
+  clear: both;
 }
