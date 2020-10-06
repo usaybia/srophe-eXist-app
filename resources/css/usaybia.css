@@ -332,3 +332,11 @@ h1, h2 {
 .forum-bio {
   clear: both;
 }
+.forum-image-credit, .forum-image-credit-light {
+  width: 25em;
+  transform: translate(12.5em,11em) rotate(270deg);
+}
+
+.forum-image-credit-light {
+  color: white;
+}
