@@ -321,8 +321,9 @@ h1, h2 {
 .forum-headshot {
   margin-left: 1em;
   margin-right: 1em;
-  height: 4em;
+  height: 8em;
   padding-top: 1em;
+  padding-bottom: 1em;
 }
 .forum-abstract {
   text-align: left;
