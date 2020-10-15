@@ -247,3 +247,96 @@ h1, h2 {
   background-color: #6c757d;
   border-color: #6c757d;
 }
+
+/* Styles for forum program */
+.forum-program {
+  padding: 0px;
+}
+.forum-program h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 5px;
+}
+.forum-column {
+ padding: 0px;
+}
+
+.forum-column > div:first-child {
+  padding-left: 5px;
+}
+
+.forum-item {
+  background-color: white;
+  background-position: 50%; 
+  background-size: cover;
+  height: 25em;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.col-sm-3 .forum-item-title {
+  width: 12em; 
+  padding-top: 10px;
+}
+.col-sm-9 .forum-item-title, .col-sm-6 .forum-item-title {
+  width: 20em; 
+  padding-top: 10px;
+}
+.forum-item-title > h3:first-child {
+  margin-top: 7px !important;
+}
+.forum-item-title-line-light {
+  color: white; 
+  margin: 7px 0;
+  width: 100%;
+  text-align: justify;
+  text-transform:uppercase;
+}
+.forum-item-title-line-light-hl {  
+  color: white;
+  background-color: dimgray; 
+  margin: 3px 0;
+  width: 100%;
+  text-align: justify;
+  text-transform:uppercase;
+}
+.forum-item-title-line-dark {  
+  color: rgb(51, 51, 51);
+  margin: 7px 0;
+  width: 100%;
+  text-align: justify;
+  text-transform:uppercase;
+}
+.forum-item-title-line-dark-hl {  
+  color: rgb(51, 51, 51);
+  background-color: lightgray; 
+  margin: 3px 0;
+  width: 100%;
+  text-align: justify;
+  text-transform:uppercase;
+}
+.forum-name {
+  padding-top: 2.5em;
+  margin-right: 1em;
+  text-align: right;
+}
+.forum-headshot {
+  margin-right: .5em;
+  height: 8em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.forum-abstract {
+  text-align: left;
+  display: block;
+  color: #333;
+}
+.forum-bio {
+  clear: both;
+}
+.forum-image-credit, .forum-image-credit-light, .forum-image-credit a {
+  width: 25em;
+  color: #666;
+}
+.forum-image-credit a {
+  text-decoration: underline;
+}
