@@ -33,6 +33,15 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 ### One day before
 - [ ] reminder email (@nathangibson)
 
+### During event
+- [ ] allow participants to enter
+- [ ] mute participants causing noise/echo
+- [ ] respond to chat requests
+- [ ] "highlight" video of person talking if they are not highlighted
+
+### After event
+- [ ] move on website
+
 ### Links
 - Images (for facebook or embedding in posts/emails): https://drive.google.com/drive/folders/1jWQGOT3qlz0YpuPP_e0Wl_navMUfEoV3
 - PDFs (for email attachments): https://drive.google.com/drive/folders/16JE0zmh-u4AYk2_se--W3kQI-oCrfliv 
