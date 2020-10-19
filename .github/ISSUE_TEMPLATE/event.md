@@ -1,7 +1,7 @@
 ---
 name: Event Checklist
 about: Create a checklist for handling an upcoming event
-title: 'Virtual Forum - Session [number 1-9]'
+title: 'Virtual Forum - Session [number 1-9] ([session date in format DD.MM.YY])'
 labels: event
 projects: '3. Dissemination'
 assignees: 'nathangibson, vanessa612, MalindaT'
@@ -14,6 +14,7 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 #### Event Management
 - [ ] post draft paper (@nathangibson)
 - [ ] email attendees (@nathangibson)
+- [ ] comment on paper via Hypothes.is (@nathangibson)
 #### Publicity
 ##### Mailing Lists
 - [ ] [NASCAS](https://groups.google.com/g/nascas)
