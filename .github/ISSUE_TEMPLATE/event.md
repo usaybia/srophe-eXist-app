@@ -17,17 +17,17 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 - [ ] comment on paper via Hypothes.is (@nathangibson)
 #### Publicity
 ##### Mailing Lists
-- [ ] [NASCAS](https://groups.google.com/g/nascas)
-- [ ] [Hugoye](https://groups.io/g/hugoye-list)
-- [ ] Agade (email to Jack Sasson with request to post to Agade)
-- [ ] [Qalam](https://www.dmg-web.de/iswi/qalam.html)
+- [ ] [NASCAS](https://groups.google.com/g/nascas) (@MalindaT)
+- [ ] [Hugoye](https://groups.io/g/hugoye-list) (@MalindaT)
+- [ ] Agade (email to Jack Sasson with request to post to Agade) (@MalindaT)
+- [ ] [Qalam](https://www.dmg-web.de/iswi/qalam.html) (@MalindaT)
 
 ##### Posts
-- [ ] [H-Net Announce](https://networks.h-net.org/h-announce)
-- [ ] NG/Usaybia facebook event
+- [ ] [H-Net Announce](https://networks.h-net.org/h-announce) (vanessa612)
+- [ ] NG/Usaybia facebook event (vanessa612)
 - [ ] Institute website
 - [ ] Institute facebook
-- [ ] Studiengang
+- [ ] Studiengang (vanessa612)
 - [ ] German Jewish Studies
 
 ### One day before
@@ -37,10 +37,10 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 - [ ] allow participants to enter
 - [ ] mute participants causing noise/echo
 - [ ] respond to chat requests
-- [ ] "highlight" video of person talking if they are not highlighted
+- [ ] "spotlight" video of person talking if they are not highlighted
 
 ### After event
-- [ ] move on website
+- [ ] move on website (@nathangibson)
 
 ### Links
 - Images (for facebook or embedding in posts/emails): https://drive.google.com/drive/folders/1jWQGOT3qlz0YpuPP_e0Wl_navMUfEoV3
