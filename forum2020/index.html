@@ -1,3 +1,92 @@
+<!-- Remove head after testing -->
+
+<head>
+    <title data-template="app:record-title">Usaybia.net</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../resources/images/fav-icons/syriaca-favicon.ico">
+    <!-- Bootstrap 3 -->
+    <link rel="stylesheet" type="text/css" href="../resources/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/sm-core-css.css">
+    <!-- Srophe styles -->
+    <link rel="stylesheet" type="text/css" href="../resources/css/syr-icon-fonts.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/usaybia.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/slider.css">
+    <!-- Used for homepage -->
+    <link rel="stylesheet" type="text/css" media="print" href="../resources/css/print.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="../resources/leaflet/leaflet.css">
+    <link rel="stylesheet" href="../resources/leaflet/leaflet.awesome-markers.css">
+    <!-- JQuery -->
+    <link href="../resources/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+    <script type="text/javascript" async=""
+        src="https://www.gstatic.com/recaptcha/releases/yXSLJBpiFoTYkexaPhFknpU7/recaptcha__en.js"
+        crossorigin="anonymous"
+        integrity="sha384-fEtnLkXMpwhEXyV802C09EtQCfEekHEGh4Dzy/7Sn0xtxDbO9+NbG9N1yHY3nOiY"></script>
+    <script type="text/javascript" src="../resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../resources/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../resources/js/jquery.smartmenus.min.js"></script>
+    <script type="text/javascript" src="../resources/js/clipboard.min.js"></script>
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="../resources/bootstrap/js/bootstrap.min.js"></script>
+    <!-- ReCaptcha -->
+    <script src="https://www.google.com/recaptcha/api.js" type="text/javascript" async="" defer=""></script>
+    <!-- keyboard widget css & script -->
+    <link href="../resources/keyboard/css/keyboard.min.css" rel="stylesheet">
+    <link href="../resources/keyboard/css/keyboard-previewkeyset.min.css" rel="stylesheet">
+    <link href="../resources/keyboard/syr/syr.css" rel="stylesheet">
+    <script type="text/javascript" src="../resources/keyboard/syr/jquery.keyboard.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/js/jquery.keyboard.extension-mobile.min.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/js/jquery.keyboard.extension-navigation.min.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/syr/jquery.keyboard.extension-autocomplete.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/syr/keyboardSupport.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/syr/syr.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/layouts/ms-Greek.min.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/layouts/ms-Russian.min.js"></script>
+    <script type="text/javascript" src="../resources/keyboard/layouts/ms-Arabic.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip({ container: 'body' })
+
+            $('.keyboard').keyboard({
+                openOn: null,
+                stayOpen: false,
+                alwaysOpen: false,
+                autoAccept: true,
+                usePreview: false,
+                initialFocus: true,
+                rtl: true,
+                layout: 'syriac-phonetic',
+                hidden: function (event, keyboard, el) {
+                    //  keyboard.destroy();
+                }
+            });
+
+            $('.keyboard-select').click(function () {
+                var keyboardID = '#' + $(this).data("keyboard-id")
+                var kb = $(keyboardID).getkeyboard();
+                //var kb = $('#searchField').getkeyboard();
+                // change layout based on link ID
+                kb.options.layout = this.id
+                // open keyboard if layout is different, or time from it last closing is > 200 ms
+                if (kb.last.layout !== kb.options.layout || (new Date().getTime() - kb.last.eventTime) > 200) {
+                    kb.reveal();
+                }
+            });
+            //Change fonts
+            /*
+            $('.swap-font').on('click', function(){
+                var selectedFont = $(this).data("font-id")
+                $('.selectableFont').not('.syr').css('font-family', selectedFont);
+                $("*:lang(syr)").css('font-family', selectedFont)
+            });
+            */
+        })
+    </script>
+</head>
+<!-- Remove head after testing -->
+
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" data-template="templates:surround"
     data-template-with="templates/page.html" data-template-at="content">
     <div class="home">
@@ -95,219 +184,6 @@
             </div>
             <!-- Insert templates here -->
             <div class="row bg-light" id="upcoming">
-                <h2 class="bg-dark">Tuesday, October 20, 2020
-                    <a href="https://lmu-munich.zoom.us/meeting/register/tJIvdemopj0oHN0ucZmJhnM9HB6zMpjzFl2v"
-                        class="btn btn-info btn-sm">Register for live Zoom session</a>
-                </h2>
-                <div id="1-gibson-loehr-schmahl" class="forum-column col-xs-12 col-sm-6">
-                    <div class="bg-dark">16:00 CET Project Demo</div>
-                    <div class="forum-item" style="background-image: url('../resources/images/forum-1.svg');">
-                        <div class="forum-image-credit small"></div>
-                        <div class="forum-item-title">
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 1.5em;">Communities of Knowledge
-                            </h3>
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 3.7em;">Usaybia.net</h3>
-                            <h3 class="forum-item-title-line-dark" style="font-size: 1.05em;">Tagging, Prosopography,
-                                and Networks</h3>
-                        </div>
-                    </div>
-                    <div class="row bg-dark">
-                        <div class="pull-right">
-                            <img src="../resources/images/forum-gibson.jpg" class="img-circle forum-headshot" />
-                            <img src="../resources/images/forum-loehr.jpg" class="img-circle forum-headshot" />
-                            <img src="../resources/images/forum-schmahl.jpg" class="img-circle forum-headshot" />
-                        </div>
-                        <div class="pull-right forum-name">
-                            <p>Nathan P. Gibson, Nadine Löhr, Robin Schmahl<br />
-                                University of Munich (LMU)
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="forum-abstract col-xs-12">
-                            <div>
-                                <p>The project “Communities of Knowledge: Interreligious Networks of Scholars in Ibn Abī
-                                    Uṣaybiʿa’s <i>History of the Physicians</i>” aims to examine the social encounters
-                                    of Christian, Muslim, and Jewish scholars in the Abbasid Near East, broadly defined
-                                    as 750–1258. While the <em>fact</em> of exchange between scholars of many different
-                                    communities during this period is well established, and their accomplishments are
-                                    well known, the <em>ways</em> in which this exchange occurred are not as well
-                                    researched. Ibn Abī Uṣaybiʿa’s (1203–1270 AD) biographical dictionary provides rich
-                                    information about such interactions, which sometimes occurred directly between
-                                    scholars, but other times involved much larger networks of people, including
-                                    patrons, patients, family members, rulers, and slaves.</p>
-                                <div id='collapse-1' class='collapse'>
-                                    <p>The project asks, in general, how Ibn Abī Uṣaybiʿa depicts these networks, as
-                                        well as, more specifically, which people, places, and types of communication
-                                        were involved in them. This project demo will explain the different stages of
-                                        this analysis. First, we identify and “tag” people and places in the source
-                                        text. Next, we use these tags to create prosopographical nuggets called
-                                        “factoids,” which encapsulate many different assertions throughout the text
-                                        about the people involved and form the basis for mapping their relationships as
-                                        a network. Finally, we analyze these networks, using quantitative metrics to
-                                        focus our attention on the persons, places, or features in the network that call
-                                        for in-depth qualitative study. We anticipate—and our preliminary results
-                                        suggest—that this process will bring to light specific but underappreciated
-                                        aspects of interreligious exchange.</p>
-                                    <p><i>The “Communities of Knowledge” project is funded by the “Kleine Fächer – Große
-                                            Potentiale” program of the German Federal Ministry of Research and
-                                            Education, 2018–2021.</i></p>
-                                </div>
-                            </div>
-                            <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="false"
-                                aria-controls="collapse-1" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                            <div class='forum-bio'>
-                                <b>Nathan P. Gibson</b>, Ph.D., is a postdoctoral researcher at the University of Munich
-                                (LMU) and the principal investigator of the Communities of Knowledge project studying
-                                interreligious networks of scholarship in Ibn Abī Uṣaybiʿa's <i>History of the
-                                    Physicians</i> (<i>ʿUyūn al-anbāʾ</i>). <span id='collapse-1a-bio'
-                                    class='collapse'>His
-                                    research explores both the social and theological dimensions of
-                                    Jewish-Christian-Muslim interaction. He is particularly active in digital humanities
-                                    projects, including <a href="https://biblia-arabica.com">Biblia Arabica</a> and <a
-                                        href="http://syriaca.org">Syriaca.org</a>. In his doctoral dissertation (The
-                                    Catholic University of America, 2015), he analyzed the social argumentation of
-                                    al-Jāḥiẓ, a popular 9th-century Muslim essayist who in the <i>Refutation of
-                                        Christians</i> turned his attention to the role of Christians and Jews in an
-                                    Islamically governed society.</span></div>
-                            <a role="button" data-toggle="collapse" href="#collapse-1a-bio" aria-expanded="false"
-                                aria-controls="collapse-1a-bio" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                            <div class='forum-bio'>
-                                <b>Nadine Löhr</b> is a doctoral researcher at the <a
-                                    href="https://www.saw-leipzig.de/de/projekte/bibliotheca-arabica/intro">Bibliotheca
-                                    Arabica</a> project (Saxon Academy of Sciences, Leipzig) and a research
-                                associate at Communities of Knowledge. <span id='collapse-1b-bio'
-                                    class='collapse'>Previously she worked as a coordinator for the DAAD
-                                    multilateral Higher Education Dialogue <a
-                                        href="https://www.naher-osten.uni-muenchen.de/forschung/einzel/trauma/das-projekt/index.html">​Violence,
-                                        Forced Migration and Exile: Trauma in the Arab World and Germany​</a>. Since
-                                    2017 she has been working as a research assistant at <a
-                                        href="https://ptolemaeus.badw.de">​Ptolemaeus Arabus et Latinus</a>
-                                    (Bavarian Academy for Sciences and Humanities), where one of her tasks is
-                                    preparing descriptions of Arabic manuscripts for the project’s catalogue. Her
-                                    research focuses on the dissemination and reception of astronomical and
-                                    astrological manuscripts in the MENA-Region.</span>
-                            </div>
-                            <a role="button" data-toggle="collapse" href="#collapse-1b-bio" aria-expanded="false"
-                                aria-controls="collapse-1b-bio" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                            <div class='forum-bio'>
-                                <b>Robin Schmahl</b> is a doctoral researcher at ZMO Berlin and an alumnus of the
-                                Communities of Knowledge project. <span id='collapse-1c-bio' class='collapse'>His
-                                    research interests focus mainly on Arab and Islamic studies, with a special
-                                    attention to politics and economics of the Middle East as well as Islamic law, its
-                                    historical development and modern ramifications in international politics.</span>
-                            </div>
-                            <a role="button" data-toggle="collapse" href="#collapse-1c-bio" aria-expanded="false"
-                                aria-controls="collapse-1c-bio" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                        </div>
-
-                    </div>
-                </div>
-                <div id="2-sanchez" class="forum-column col-xs-12 col-sm-6">
-                    <div class="bg-dark">16:30 CET Keynote</div>
-                    <div class="forum-item" style="background-image: url('../resources/images/forum-2.jpg');">
-
-                        <div class="forum-item-title">
-                            <h3 class="forum-item-title-line-light" style="font-size: 2.1em;">A Ladder of Heresy?</h3>
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 4.7em;">Religion,</h3>
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 3.3em;">Dhimmīs and</h3>
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 2.7em;">Medicine in the</h3>
-                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 2.0em;">Light and Shadow of</h3>
-                            <h3 class="forum-item-title-line-light" style="font-size: 2.7em;">Ibn Abī Uṣaybiʿa</h3>
-                        </div>
-                    </div>
-                    <div class="row bg-dark">
-                        <div class="pull-right"><img src="../resources/images/forum-sanchez.jpg"
-                                class="img-circle forum-headshot" /></div>
-                        <div class="pull-right forum-name">
-                            <p>Ignacio Sánchez<br />
-                                University of Warwick</p>
-                        </div>
-                        <div class="forum-image-credit small">Photo by <a
-                                href="https://pixabay.com/users/hans-2/">Hans</a> (<a
-                                href="https://pixabay.com/photos/artwork-head-jacob-s-ladder-arrow-796/">Pixabay</a>)
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="forum-abstract col-xs-12">
-                            <div>
-                                <p>The Buyid Muʿtazilite vizier Ibn ʿAbbād (d. 385/995) famously referred to medicine as
-                                    ‘a
-                                    ladder of heresy’ (<i>sullam al-ilḥād</i>). This statement reflects the opinions of
-                                    a
-                                    number of Muʿtazilite theologians who, already since the 9th century, polemicised
-                                    against medicine. These critiques were focused on the epistemological status of a
-                                    discipline mainly concerned with particulars (<i>juzʾiyyāt</i>), and on the
-                                    challenge
-                                    that the Hippocratic-Galenic theories posed for the debates on creation, causation
-                                    and
-                                    God’s omnipotence. These theologians did not target a particular religious group but
-                                    rather those scholars who departed from the consensus about God’s design, Muslims
-                                    and
-                                    non-Muslims alike, most especially the group referred to as <i>Dahriyya</i>
-                                    (Eternalists).</p>
-                                <div id='collapse-2' class='collapse'>
-                                    <p>The suspicion of unbelief –and the shadow of the <i>Dahriyya</i>– never abandoned
-                                        physicians, but the critique against medicine eventually become a critique of
-                                        <i>dhimmī</i>s. Medicine had been almost monopolised by Sabians and Christians
-                                        under
-                                        the early Abbasids and the Ayyubids, and was largely practiced by Jews in the
-                                        Fatimid and Mamluk periods. From the 12th/13th century onwards, however, we
-                                        witness
-                                        an increasing concern about the confession of physicians that led to the
-                                        islamisation of this field with the promotion of Muslim medical practitioners
-                                        and
-                                        the emergence of the so-called prophetic medicine (<i>ṭibb nabawī</i>).</p>
-                                    <p>Regretfully, Ibn Abī Uṣaybʿia is almost completely silent about all these
-                                        questions.
-                                        This ‘Islamisation of medicine’ is perceivable in the increase of Muslim
-                                        physicians
-                                        and the references to conversions that appear in the 13th c. biographies of the
-                                        <i>ʿUyūn al-anbāʾ</i>, but the physician portrayed by this author is a rather
-                                        idealised image, untainted by these petty polemics. </p>
-                                    <p>In this paper I will survey a number of sources that offer a rather different
-                                        glimpse
-                                        of the role of medicine and <i>dhimmī</i> physicians in pre-Modern Islam. I
-                                        shall be
-                                        looking at the way theologians attacked medicine and how it was defended by both
-                                        Muslim and non-Muslim physicians, sometimes with very similar arguments. I will
-                                        argue that these polemics cannot be simply subsumed into the dichotomy
-                                        Islamic/non-Islamic sciences, nor reduced to a clash between Muslim and
-                                        non-Muslims.
-                                    </p>
-                                </div>
-                            </div>
-                            <a role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false"
-                                aria-controls="collapse-2" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                            <div class='forum-bio'>
-                                <p><b>Ignacio Sánchez</b> (PhD Cambridge 2011) is Senior Research Fellow at the
-                                    Department
-                                    of Classics and Ancient History of the University of Warwick. <span
-                                        id='collapse-2-bio' class='collapse'>His main research interests are Medieval
-                                        Islamic intellectual
-                                        history, literature, and history of medicine and science. He has published on a
-                                        variety of topics including history, <i>adab</i>, geography, Islamic endowments
-                                        and
-                                        medicine, including the edition and translation of the Ikhwān
-                                        al-Ṣafāʾ’s <i>Epistle
-                                            4: On Geography</i> (with J. Montgomery) and Ibn Abī Uṣaybiʿa’s <i>The Best
-                                            Accounts of the Classes of Physicians</i> (with E. Savage-Smith et al.). He
-                                        is section editor of Brill’s <i>Encyclopaedia of Islam Three</i> (History of
-                                        Science) and founder editor of the journal <i>Endowment Studies</i>.</span></p>
-                            </div>
-                            <a role="button" data-toggle="collapse" href="#collapse-2-bio" aria-expanded="false"
-                                aria-controls="collapse-2-bio" class="btn btn-light btn-sm pull-right">read more <span
-                                    class="caret"></span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row bg-light">
                 <h2 class="bg-dark">Tuesday, October 27, 2020
                     <a href="https://lmu-munich.zoom.us/meeting/register/tJIvdemopj0oHN0ucZmJhnM9HB6zMpjzFl2v"
                         class="btn btn-info btn-sm">Register for live Zoom session</a>
@@ -2054,6 +1930,228 @@
                             </div>
                             <a role="button" data-toggle="collapse" href="#collapse-18-bio" aria-expanded="false"
                                 aria-controls="collapse-18-bio" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row bg-light">
+                <h2 class="bg-dark text-center">Past Sessions (Archive)
+                </h2>
+                <div class="bg-dark" style="padding: 1em;">
+                    There are no recordings of past sessions, but revised papers from the forum will be submitted to a special
+                            issue of <a href="http://www.medievalworlds.net"><i>medieval worlds: comparative &amp;
+                                    interdisciplinary studies</i></a>, a peer-reviewed, open-access journal
+                            published by the Austrian Academy of Sciences (ISSN 2412-3196).
+                </div>
+                <h2 class="bg-dark">Tuesday, October 20, 2020
+                    <a href="https://lmu-munich.zoom.us/meeting/register/tJIvdemopj0oHN0ucZmJhnM9HB6zMpjzFl2v"
+                        class="btn btn-info btn-sm disabled">Register for live Zoom session</a>
+                </h2>
+                <div id="1-gibson-loehr-schmahl" class="forum-column col-xs-12 col-sm-6">
+                    <div class="bg-dark">16:00 CET Project Demo</div>
+                    <div class="forum-item" style="background-image: url('../resources/images/forum-1.svg');">
+                        <div class="forum-image-credit small"></div>
+                        <div class="forum-item-title">
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 1.5em;">Communities of Knowledge
+                            </h3>
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 3.7em;">Usaybia.net</h3>
+                            <h3 class="forum-item-title-line-dark" style="font-size: 1.05em;">Tagging, Prosopography,
+                                and Networks</h3>
+                        </div>
+                    </div>
+                    <div class="row bg-dark">
+                        <div class="pull-right">
+                            <img src="../resources/images/forum-gibson.jpg" class="img-circle forum-headshot" />
+                            <img src="../resources/images/forum-loehr.jpg" class="img-circle forum-headshot" />
+                            <img src="../resources/images/forum-schmahl.jpg" class="img-circle forum-headshot" />
+                        </div>
+                        <div class="pull-right forum-name">
+                            <p>Nathan P. Gibson, Nadine Löhr, Robin Schmahl<br />
+                                University of Munich (LMU)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="forum-abstract col-xs-12">
+                            <div>
+                                <p>The project “Communities of Knowledge: Interreligious Networks of Scholars in Ibn Abī
+                                    Uṣaybiʿa’s <i>History of the Physicians</i>” aims to examine the social encounters
+                                    of Christian, Muslim, and Jewish scholars in the Abbasid Near East, broadly defined
+                                    as 750–1258. While the <em>fact</em> of exchange between scholars of many different
+                                    communities during this period is well established, and their accomplishments are
+                                    well known, the <em>ways</em> in which this exchange occurred are not as well
+                                    researched. Ibn Abī Uṣaybiʿa’s (1203–1270 AD) biographical dictionary provides rich
+                                    information about such interactions, which sometimes occurred directly between
+                                    scholars, but other times involved much larger networks of people, including
+                                    patrons, patients, family members, rulers, and slaves.</p>
+                                <div id='collapse-1' class='collapse'>
+                                    <p>The project asks, in general, how Ibn Abī Uṣaybiʿa depicts these networks, as
+                                        well as, more specifically, which people, places, and types of communication
+                                        were involved in them. This project demo will explain the different stages of
+                                        this analysis. First, we identify and “tag” people and places in the source
+                                        text. Next, we use these tags to create prosopographical nuggets called
+                                        “factoids,” which encapsulate many different assertions throughout the text
+                                        about the people involved and form the basis for mapping their relationships as
+                                        a network. Finally, we analyze these networks, using quantitative metrics to
+                                        focus our attention on the persons, places, or features in the network that call
+                                        for in-depth qualitative study. We anticipate—and our preliminary results
+                                        suggest—that this process will bring to light specific but underappreciated
+                                        aspects of interreligious exchange.</p>
+                                    <p><i>The “Communities of Knowledge” project is funded by the “Kleine Fächer – Große
+                                            Potentiale” program of the German Federal Ministry of Research and
+                                            Education, 2018–2021.</i></p>
+                                </div>
+                            </div>
+                            <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="false"
+                                aria-controls="collapse-1" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                            <div class='forum-bio'>
+                                <b>Nathan P. Gibson</b>, Ph.D., is a postdoctoral researcher at the University of Munich
+                                (LMU) and the principal investigator of the Communities of Knowledge project studying
+                                interreligious networks of scholarship in Ibn Abī Uṣaybiʿa's <i>History of the
+                                    Physicians</i> (<i>ʿUyūn al-anbāʾ</i>). <span id='collapse-1a-bio'
+                                    class='collapse'>His
+                                    research explores both the social and theological dimensions of
+                                    Jewish-Christian-Muslim interaction. He is particularly active in digital humanities
+                                    projects, including <a href="https://biblia-arabica.com">Biblia Arabica</a> and <a
+                                        href="http://syriaca.org">Syriaca.org</a>. In his doctoral dissertation (The
+                                    Catholic University of America, 2015), he analyzed the social argumentation of
+                                    al-Jāḥiẓ, a popular 9th-century Muslim essayist who in the <i>Refutation of
+                                        Christians</i> turned his attention to the role of Christians and Jews in an
+                                    Islamically governed society.</span></div>
+                            <a role="button" data-toggle="collapse" href="#collapse-1a-bio" aria-expanded="false"
+                                aria-controls="collapse-1a-bio" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                            <div class='forum-bio'>
+                                <b>Nadine Löhr</b> is a doctoral researcher at the <a
+                                    href="https://www.saw-leipzig.de/de/projekte/bibliotheca-arabica/intro">Bibliotheca
+                                    Arabica</a> project (Saxon Academy of Sciences, Leipzig) and a research
+                                associate at Communities of Knowledge. <span id='collapse-1b-bio'
+                                    class='collapse'>Previously she worked as a coordinator for the DAAD
+                                    multilateral Higher Education Dialogue <a
+                                        href="https://www.naher-osten.uni-muenchen.de/forschung/einzel/trauma/das-projekt/index.html">​Violence,
+                                        Forced Migration and Exile: Trauma in the Arab World and Germany​</a>. Since
+                                    2017 she has been working as a research assistant at <a
+                                        href="https://ptolemaeus.badw.de">​Ptolemaeus Arabus et Latinus</a>
+                                    (Bavarian Academy for Sciences and Humanities), where one of her tasks is
+                                    preparing descriptions of Arabic manuscripts for the project’s catalogue. Her
+                                    research focuses on the dissemination and reception of astronomical and
+                                    astrological manuscripts in the MENA-Region.</span>
+                            </div>
+                            <a role="button" data-toggle="collapse" href="#collapse-1b-bio" aria-expanded="false"
+                                aria-controls="collapse-1b-bio" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                            <div class='forum-bio'>
+                                <b>Robin Schmahl</b> is a doctoral researcher at ZMO Berlin and an alumnus of the
+                                Communities of Knowledge project. <span id='collapse-1c-bio' class='collapse'>His
+                                    research interests focus mainly on Arab and Islamic studies, with a special
+                                    attention to politics and economics of the Middle East as well as Islamic law, its
+                                    historical development and modern ramifications in international politics.</span>
+                            </div>
+                            <a role="button" data-toggle="collapse" href="#collapse-1c-bio" aria-expanded="false"
+                                aria-controls="collapse-1c-bio" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="2-sanchez" class="forum-column col-xs-12 col-sm-6">
+                    <div class="bg-dark">16:30 CET Keynote</div>
+                    <div class="forum-item" style="background-image: url('../resources/images/forum-2.jpg');">
+
+                        <div class="forum-item-title">
+                            <h3 class="forum-item-title-line-light" style="font-size: 2.1em;">A Ladder of Heresy?</h3>
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 4.7em;">Religion,</h3>
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 3.3em;">Dhimmīs and</h3>
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 2.7em;">Medicine in the</h3>
+                            <h3 class="forum-item-title-line-dark-hl" style="font-size: 2.0em;">Light and Shadow of</h3>
+                            <h3 class="forum-item-title-line-light" style="font-size: 2.7em;">Ibn Abī Uṣaybiʿa</h3>
+                        </div>
+                    </div>
+                    <div class="row bg-dark">
+                        <div class="pull-right"><img src="../resources/images/forum-sanchez.jpg"
+                                class="img-circle forum-headshot" /></div>
+                        <div class="pull-right forum-name">
+                            <p>Ignacio Sánchez<br />
+                                University of Warwick</p>
+                        </div>
+                        <div class="forum-image-credit small">Photo by <a
+                                href="https://pixabay.com/users/hans-2/">Hans</a> (<a
+                                href="https://pixabay.com/photos/artwork-head-jacob-s-ladder-arrow-796/">Pixabay</a>)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="forum-abstract col-xs-12">
+                            <div>
+                                <p>The Buyid Muʿtazilite vizier Ibn ʿAbbād (d. 385/995) famously referred to medicine as
+                                    ‘a
+                                    ladder of heresy’ (<i>sullam al-ilḥād</i>). This statement reflects the opinions of
+                                    a
+                                    number of Muʿtazilite theologians who, already since the 9th century, polemicised
+                                    against medicine. These critiques were focused on the epistemological status of a
+                                    discipline mainly concerned with particulars (<i>juzʾiyyāt</i>), and on the
+                                    challenge
+                                    that the Hippocratic-Galenic theories posed for the debates on creation, causation
+                                    and
+                                    God’s omnipotence. These theologians did not target a particular religious group but
+                                    rather those scholars who departed from the consensus about God’s design, Muslims
+                                    and
+                                    non-Muslims alike, most especially the group referred to as <i>Dahriyya</i>
+                                    (Eternalists).</p>
+                                <div id='collapse-2' class='collapse'>
+                                    <p>The suspicion of unbelief –and the shadow of the <i>Dahriyya</i>– never abandoned
+                                        physicians, but the critique against medicine eventually become a critique of
+                                        <i>dhimmī</i>s. Medicine had been almost monopolised by Sabians and Christians
+                                        under
+                                        the early Abbasids and the Ayyubids, and was largely practiced by Jews in the
+                                        Fatimid and Mamluk periods. From the 12th/13th century onwards, however, we
+                                        witness
+                                        an increasing concern about the confession of physicians that led to the
+                                        islamisation of this field with the promotion of Muslim medical practitioners
+                                        and
+                                        the emergence of the so-called prophetic medicine (<i>ṭibb nabawī</i>).</p>
+                                    <p>Regretfully, Ibn Abī Uṣaybʿia is almost completely silent about all these
+                                        questions.
+                                        This ‘Islamisation of medicine’ is perceivable in the increase of Muslim
+                                        physicians
+                                        and the references to conversions that appear in the 13th c. biographies of the
+                                        <i>ʿUyūn al-anbāʾ</i>, but the physician portrayed by this author is a rather
+                                        idealised image, untainted by these petty polemics. </p>
+                                    <p>In this paper I will survey a number of sources that offer a rather different
+                                        glimpse
+                                        of the role of medicine and <i>dhimmī</i> physicians in pre-Modern Islam. I
+                                        shall be
+                                        looking at the way theologians attacked medicine and how it was defended by both
+                                        Muslim and non-Muslim physicians, sometimes with very similar arguments. I will
+                                        argue that these polemics cannot be simply subsumed into the dichotomy
+                                        Islamic/non-Islamic sciences, nor reduced to a clash between Muslim and
+                                        non-Muslims.
+                                    </p>
+                                </div>
+                            </div>
+                            <a role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false"
+                                aria-controls="collapse-2" class="btn btn-light btn-sm pull-right">read more <span
+                                    class="caret"></span></a>
+                            <div class='forum-bio'>
+                                <p><b>Ignacio Sánchez</b> (PhD Cambridge 2011) is Senior Research Fellow at the
+                                    Department
+                                    of Classics and Ancient History of the University of Warwick. <span
+                                        id='collapse-2-bio' class='collapse'>His main research interests are Medieval
+                                        Islamic intellectual
+                                        history, literature, and history of medicine and science. He has published on a
+                                        variety of topics including history, <i>adab</i>, geography, Islamic endowments
+                                        and
+                                        medicine, including the edition and translation of the Ikhwān
+                                        al-Ṣafāʾ’s <i>Epistle
+                                            4: On Geography</i> (with J. Montgomery) and Ibn Abī Uṣaybiʿa’s <i>The Best
+                                            Accounts of the Classes of Physicians</i> (with E. Savage-Smith et al.). He
+                                        is section editor of Brill’s <i>Encyclopaedia of Islam Three</i> (History of
+                                        Science) and founder editor of the journal <i>Endowment Studies</i>.</span></p>
+                            </div>
+                            <a role="button" data-toggle="collapse" href="#collapse-2-bio" aria-expanded="false"
+                                aria-controls="collapse-2-bio" class="btn btn-light btn-sm pull-right">read more <span
                                     class="caret"></span></a>
                         </div>
                     </div>
