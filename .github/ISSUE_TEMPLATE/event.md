@@ -68,6 +68,7 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 - Images (for facebook or embedding in posts/emails): https://drive.google.com/drive/folders/1jWQGOT3qlz0YpuPP_e0Wl_navMUfEoV3
 - PDFs (for email attachments): https://drive.google.com/drive/folders/16JE0zmh-u4AYk2_se--W3kQI-oCrfliv 
 
+___
 ### Text for email
 
 _GREETING_
@@ -127,6 +128,7 @@ Institut für den Nahen und Mittleren Osten
 
 Associated Projects: [Syriaca.org](http://syriaca.org), [Biblia Arabica](https://biblia-arabica.com)
 
+___
 ### Text for [H-Net Announce](https://networks.h-net.org/h-announce)
 **Title:** _SHORTENEDCOMBINEDTITLE_ (Live Discussions, Virtual Forum)
 **Type**: Event
