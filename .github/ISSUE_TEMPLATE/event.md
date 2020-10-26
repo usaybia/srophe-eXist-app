@@ -14,6 +14,7 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 #### Event Management
 - [ ] post draft paper (@nathangibson)
 - [ ] email attendees (@nathangibson)
+- [ ] change Zoom registration email (in all languages) (@nathangibson)
 - [ ] comment on paper via Hypothes.is (@nathangibson)
 #### Publicity
 ##### Mailing Lists
@@ -41,7 +42,7 @@ assignees: 'nathangibson, vanessa612, MalindaT'
 - "spotlight" video of person talking if they are not highlighted
 #### Timeline
 15:50 meet & greet
-16:00 guidelines, introduce presenter
+16:00 forum introduction, Zoom tips (send chat message), introduce presenter
 16:05 presentation 1
 16:20 response 1
 16:25 follow-up
