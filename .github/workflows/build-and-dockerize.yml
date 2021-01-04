@@ -38,6 +38,6 @@ jobs:
         username: ${{github.actor}}
         password: ${{secrets.GITHUB_TOKEN}}
         registry: docker.pkg.github.com
-        repository: usaybia/srophe-docker/docker-test
+        repository: usaybia/srophe-eXist-app/usaybia-srophe
         tag_with_sha: true
         tags: v0.5
