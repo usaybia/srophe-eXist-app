@@ -1,4 +1,4 @@
-name: Build with Ant
+name: Build eXist package with Ant and dockerize
 
 on: [workflow_dispatch]
 
@@ -14,3 +14,7 @@ jobs:
           java-version: 1.8
       - name: Build with Ant
         run: ant -noinput -buildfile build.xml
+      - uses: actions/upload-artifact@master
+        with:
+          name: webpack artifacts
+          path: public/
