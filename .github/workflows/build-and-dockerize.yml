@@ -3,7 +3,7 @@ name: Build eXist package with Ant and dockerize
 on: [workflow_dispatch]
 
 jobs:
-  build:
+  Build-Ant-Package:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,3 +18,25 @@ jobs:
         with:
           name: webpack artifacts
           path: build/
+          
+  Build-and-Push-Docker-Image:
+    runs-on: ubuntu-latest
+    name: Docker Build, Tag, Push
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Download
+      uses: actions/download-artifact@master
+      with: 
+        name: webpack artifacts
+        path: build
+    - name: Build container image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{github.actor}}
+        password: ${{secrets.GITHUB_TOKEN}}
+        registry: docker.pkg.github.com
+        repository: usaybia/srophe-docker/docker-test
+        tag_with_sha: true
+        tags: v0.5
