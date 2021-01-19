@@ -108,5 +108,5 @@ jobs:
         pull: true
         push: true
         tags: |
-          ghcr.io/usaybia/usaybia-srophe-eXist-app:latest
-          ghcr.io/usaybia/usaybia-srophe-eXist-app:${{needs.update_release_draft.outputs.release_tag}}
+          ghcr.io/usaybia/usaybia-srophe-exist-app:latest
+          ghcr.io/usaybia/usaybia-srophe-exist-app:${{needs.update_release_draft.outputs.release_tag}}
