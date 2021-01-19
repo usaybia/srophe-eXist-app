@@ -7,7 +7,7 @@ on:
     # The target of the draft release is the default branch and must be changed manually before publishing the release.
     branches:
       - development
-      - release-workflow
+      # - release-workflow
 
 jobs:
   build_ant_package:
