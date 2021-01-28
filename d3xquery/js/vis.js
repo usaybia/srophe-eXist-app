@@ -72,7 +72,7 @@ function makeGraph(data, w, h, rootURL, type) {
       //end getData
     };
     
-    //responsivefy resize svg
+    //responsivefy resize svg to fit containing div, and resize as window
     function responsivefy(svg) {
         // get container + svg aspect ratio
         var container = d3.select(svg.node().parentNode),
@@ -163,7 +163,9 @@ function makeGraph(data, w, h, rootURL, type) {
         }}) 
         //.attr("class", "forceNode")
         .attr("class", function (d) {
-            return d.occupation;
+            var occupation = d.occupation; 
+            return occupation.join(' ');
+            //return d.occupation;
         })
         .style("fill", function (d) {
             //return d3.rgb(occ(d.occupation));
@@ -207,7 +209,6 @@ function makeGraph(data, w, h, rootURL, type) {
         var occupations = graph.nodes.flatMap((d) => d.occupation);
         // get distinct values
         var occFilter = [... new Set(occupations)];
-        //console.log(occFilter)
         
         d3.select('#legend').selectAll('ul').remove();
     	occupation =  svg.append("g").selectAll(".occupation"),
@@ -239,7 +240,6 @@ function makeGraph(data, w, h, rootURL, type) {
             //.style("fill", function(d){ return rel(d.key) })
             //.style("font-size", 15)
             .on('click', function (d, i) { 
-                    console.log('FilterLinks: ', d.key );
                     filterLinks(d.key, .1)
                 });
         
@@ -302,28 +302,45 @@ function makeGraph(data, w, h, rootURL, type) {
             d.fy = null;
         }
         
-    //Filter functions, Occupations    
-    function filter(filter,opacity){
-        node.style("stroke-opacity", function (o) {
-            var occupation = o.occupation
-            thisOpacity = occupation.includes(filter) ? 1: opacity;
-            this.setAttribute('fill-opacity', thisOpacity);
-            return thisOpacity;
-        });
-        link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
-            return opacity;
-        });
-    }
-    //Filter functions, Relationships
-    function filterLinks(filter,opacity){
-        link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
-            thisOpacity = o.relationship === filter ? 1: opacity;
-            this.setAttribute('fill-opacity', thisOpacity);
-            return thisOpacity;
-        });
-    }
-    
-
+        //Filter functions, Occupations    
+        function filter(filter,opacity){
+            node.style("stroke-opacity", function (o) {
+                var occupation = o.occupation
+                thisOpacity = occupation.includes(filter) ? 1: opacity;
+                this.setAttribute('fill-opacity', thisOpacity);
+                return thisOpacity;
+            });
+            link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
+                return opacity;
+            });
+        }
+        
+        //Filter functions, Relationships
+        function filterLinks(filter,opacity){
+            var relNodes = [];
+            
+            link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
+                  if(o.relationship === filter) {
+                    source = o.source.id;
+                    target = o.target.id;
+                    relNodes.push(source,target);
+                    return 1;   
+                  } else {
+                      return .1;
+                  }
+             }); 
+             
+             node.style("stroke-opacity", function (o) {
+                 if(relNodes.includes(o.id)){
+                     //this.setAttribute('r', 35);
+                     this.setAttribute('fill-opacity', 1);
+                     return 1;
+                 } else {
+                     this.setAttribute('fill-opacity', .1);
+                     return .1;
+                 }
+             });
+        }
     };
     
     //Force Graph functions
