@@ -72,7 +72,7 @@ function makeGraph(data, w, h, rootURL, type) {
       //end getData
     };
     
-    //responsivefy resize svg
+    //responsivefy resize svg to fit containing div, and resize as window
     function responsivefy(svg) {
         // get container + svg aspect ratio
         var container = d3.select(svg.node().parentNode),
@@ -143,9 +143,28 @@ function makeGraph(data, w, h, rootURL, type) {
             .attr("stroke", function (d) {
                 return d3.rgb(rel(d.relationship));
             })
-            .attr('id', function (d, i) {return 'link' + i})
+            .attr("id",function (d, i) {return 'edgepath' + i})
             .style("pointer-events", "none");
         
+        
+        edgelabels = svg.selectAll(".edgelabel")
+            .data(graph.links).enter()
+            .append('text')
+            .style("pointer-events", "none")
+            .attr("class","edgelabel")
+            .attr("id",function (d, i) {return 'edgelabel' + i})
+            .attr("font-size",11)
+            .attr('fill-opacity', 0)
+            .attr('stroke-opacity', 0)
+            .attr("fill","#333");
+        
+        edgelabels.append('textPath')
+            .attr('xlink:href', function (d, i) {return '#edgepath' + i})
+            .style("text-anchor", "middle")
+            .style("pointer-events", "none")
+            .attr("startOffset", "50%")
+            .text(function (d) {return d.relationship});        
+                    
         var node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
@@ -163,7 +182,9 @@ function makeGraph(data, w, h, rootURL, type) {
         }}) 
         //.attr("class", "forceNode")
         .attr("class", function (d) {
-            return d.occupation;
+            var occupation = d.occupation; 
+            return occupation.join(' ');
+            //return d.occupation;
         })
         .style("fill", function (d) {
             //return d3.rgb(occ(d.occupation));
@@ -207,7 +228,6 @@ function makeGraph(data, w, h, rootURL, type) {
         var occupations = graph.nodes.flatMap((d) => d.occupation);
         // get distinct values
         var occFilter = [... new Set(occupations)];
-        //console.log(occFilter)
         
         d3.select('#legend').selectAll('ul').remove();
     	occupation =  svg.append("g").selectAll(".occupation"),
@@ -239,7 +259,6 @@ function makeGraph(data, w, h, rootURL, type) {
             //.style("fill", function(d){ return rel(d.key) })
             //.style("font-size", 15)
             .on('click', function (d, i) { 
-                    console.log('FilterLinks: ', d.key );
                     filterLinks(d.key, .1)
                 });
         
@@ -259,6 +278,20 @@ function makeGraph(data, w, h, rootURL, type) {
                       dr = Math.sqrt(dx * dx + dy * dy);
                       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
                   });
+             
+             edgelabels.attr('transform', function (d) {
+                if (d.target.x < d.source.x) {
+                    var bbox = this.getBBox();
+    
+                    rx = bbox.x + bbox.width / 2;
+                    ry = bbox.y + bbox.height / 2;
+                    return 'rotate(180 ' + rx + ' ' + ry + ')';
+                }
+                else {
+                    return 'rotate(0)';
+                }
+            });
+            
         }
         
         //Link Connected
@@ -281,6 +314,9 @@ function makeGraph(data, w, h, rootURL, type) {
                 link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
                     return o.source === d || o.target === d ? 1: opacity;
                 });
+                edgelabels.style("fill-opacity", function (o) {
+                    return o.source === d || o.target === d ? 1: 0;
+                });
         //end fade function
         }; 
         
@@ -302,28 +338,56 @@ function makeGraph(data, w, h, rootURL, type) {
             d.fy = null;
         }
         
-    //Filter functions, Occupations    
-    function filter(filter,opacity){
-        node.style("stroke-opacity", function (o) {
-            var occupation = o.occupation
-            thisOpacity = occupation.includes(filter) ? 1: opacity;
-            this.setAttribute('fill-opacity', thisOpacity);
-            return thisOpacity;
-        });
-        link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
-            return opacity;
-        });
-    }
-    //Filter functions, Relationships
-    function filterLinks(filter,opacity){
-        link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
-            thisOpacity = o.relationship === filter ? 1: opacity;
-            this.setAttribute('fill-opacity', thisOpacity);
-            return thisOpacity;
-        });
-    }
-    
-
+        //Filter functions, Occupations    
+        function filter(filter,opacity){
+            node.style("stroke-opacity", function (o) {
+                var occupation = o.occupation
+                thisOpacity = occupation.includes(filter) ? 1: opacity;
+                this.setAttribute('fill-opacity', thisOpacity);
+                return thisOpacity;
+            });
+            link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
+                return opacity;
+            });
+            edgelabels.style("fill-opacity", function (o) {
+                    return opacity;
+            });
+        }
+        
+        //Filter functions, Relationships
+        function filterLinks(filter,opacity){
+            var relNodes = [];
+            
+            link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
+                  if(o.relationship === filter) {
+                    source = o.source.id;
+                    target = o.target.id;
+                    relNodes.push(source,target);
+                    return 1;   
+                  } else {
+                      return .1;
+                  }
+             }); 
+             
+             edgelabels.style("fill-opacity", function (o) {
+                  if(o.relationship === filter) {
+                    return 1;   
+                  } else {
+                      return 0;
+                  }
+             });
+                
+             node.style("stroke-opacity", function (o) {
+                 if(relNodes.includes(o.id)){
+                     //this.setAttribute('r', 35);
+                     this.setAttribute('fill-opacity', 1);
+                     return 1;
+                 } else {
+                     this.setAttribute('fill-opacity', .1);
+                     return .1;
+                 }
+             });
+        }
     };
     
     //Force Graph functions

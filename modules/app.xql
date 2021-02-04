@@ -1091,7 +1091,7 @@ declare function app:data-visualization($node as node(), $model as map(*), $mode
         <div id="LODResults" xmlns="http://www.w3.org/1999/xhtml" class="resizeable">
                 <script src="{$config:nav-base}/d3xquery/js/d3.v4.min.js" type="text/javascript"/>
                 <h3>Relationship Graph</h3>
-                <div id="graphVis" style="height:500px;"/>
+                <div id="graphVis" style="height:500px; position: relative;"/>
                 <script><![CDATA[
                         $(document).ready(function () {
                             var dataURL = ']]>{concat($config:nav-base,'/modules/data.xql?getVis=true&amp;id=',$id,'&amp;mode=',$mode)}<![CDATA[';
@@ -1100,7 +1100,7 @@ declare function app:data-visualization($node as node(), $model as map(*), $mode
                             var id = ']]>{$id}<![CDATA[';
                             var type = ']]>{$mode}<![CDATA[';
                             $.get(dataURL, function(data) {
-                                     makeGraph(data,"500","400",rootURL,type);                
+                                     makeGraph(data,"850","400",rootURL,type);                
                                 }, "json"); 
                             /*
                             if($('#graphVis svg').length == 0){}
