@@ -17,6 +17,8 @@ declare variable $dir external;
 declare variable $target external;
 
 (
+(: Register REST API :)
+    xrest:register-module(xs:anyURI($target || '/modules/rest.xqm')),
 (: Build indexes for data based on search and facet configuration files :)
    (: sf:update-index(),:)
 (: Set UID for inexing function. Used only if building facets. :)   
