@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
     
     <!-- =================================================================== -->
@@ -13,6 +12,9 @@
     <!-- Add a lang attribute to HTML elements -->
     <xsl:function name="local:attributes">
         <xsl:param name="node"/>
+        <xsl:if test="$node/@style">
+            <xsl:copy-of select="$node/@style"/>
+        </xsl:if>
         <!-- Add lang attribute and direction attributes -->
         <xsl:if test="$node/@xml:lang">
             <xsl:copy-of select="$node/@xml:lang"/>
@@ -25,7 +27,7 @@
                         <xsl:value-of select="'ltr'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="$node/@xml:lang = ('syr','ar','syc','syr-Syrj')">
+                <xsl:when test="$node/@xml:lang = ('syr','ar','syc','syr-Syrj','ar-Arab')">
                     <xsl:attribute name="dir">
                         <xsl:value-of select="'rtl'"/>
                     </xsl:attribute>
@@ -474,29 +476,19 @@
             <xsl:when test="@rend">
                 <xsl:choose>
                     <xsl:when test="@rend = 'bold'">
-                        <b>
-                            <xsl:call-template name="ref"/>
-                        </b>
+                        <b><xsl:call-template name="ref"/></b>
                     </xsl:when>
                     <xsl:when test="@rend = 'italic'">
-                        <i>
-                            <xsl:call-template name="ref"/>
-                        </i>
+                        <i><xsl:call-template name="ref"/></i>
                     </xsl:when>
                     <xsl:when test="@rend = ('superscript','sup')">
-                        <sup>
-                            <xsl:call-template name="ref"/>
-                        </sup>
+                        <sup><xsl:call-template name="ref"/></sup>
                     </xsl:when>
                     <xsl:when test="@rend = ('subscript','sub')">
-                        <sub>
-                            <xsl:call-template name="ref"/>
-                        </sub>
+                        <sub><xsl:call-template name="ref"/></sub>
                     </xsl:when>
                     <xsl:otherwise>
-                        <span class="tei-rend-{string(@rend)}">
-                            <xsl:call-template name="ref"/>
-                        </span>
+                        <span class="tei-rend-{string(@rend)}"><xsl:call-template name="ref"/></span>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
@@ -506,17 +498,13 @@
         </xsl:choose>
     </xsl:template>
     <xsl:template name="ref">
+        <xsl:param name="node"/>
         <xsl:choose>
-            <xsl:when test="parent::t:ref or parent::t:ptr">
-                <xsl:apply-templates/>
-            </xsl:when>
             <xsl:when test="@ref">
-                <a href="{@ref}">
-                    <xsl:apply-templates/>
-                </a>
+                <a href="{@ref}"><xsl:apply-templates/></a>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:apply-templates/>
+               <xsl:apply-templates/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

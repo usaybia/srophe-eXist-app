@@ -6,6 +6,7 @@
  
 @import url("syr-font-families.css");
 
+body {font-size:14px;}
 /* A */
 .alpha-pages {margin:-1.5em 0 1em 0;}
 #advancedSearch {padding:2em 1em; background-color:#F7F7F9;}
@@ -140,30 +141,39 @@ img{ margin:0px }
 :lang(syr),:lang(syc) {
  font-family: "EstrangeloEdessa", "Estrangelo Edessa", Verdana, Arial, Helvetica, sans-serif;
   /*font-size:large;*/
-  font-size:1.25em; 
+  font-size:1.15em; 
   line-height:1em;
   
 }
 
 :lang(syr-Syrj), :lang(syc-Syrj) {
  font-family: "SertoBatnan", "Serto Batnan", Verdana, Arial, Helvetica, sans-serif;
-  font-size:1.25em; 
+  font-size:1.15em; 
   line-height:1em;
  
 }
 
 :lang(syr-Syre), :lang(syc-Syre) {
  font-family: "EastSyriacAdiabene", "East Syriac Adiabene", Verdana, Arial, Helvetica, sans-serif;
- font-size:1.25em; 
+ font-size:1.15em; 
  line-height:1em;
 
 }
 
-:lang(ar) {
- font-family: arial, sans-serif;
- font-size:1.25em; 
- line-height:1em;
+:lang(ar), :lang(ar-Arab) {
+    font-family: Scheherazade;
+    font-size: calc(1.5*14px);
+    text-align: right;
+    direction: rtl;
+    line-height: 125%;
+    unicode-bidi: embed;
+/* 
+font-family: arial, sans-serif;
+ font-size:1.15em; 
+ line-height:1.15em;
+  */
 }
+
 
 /* M */
 .mainContentArea {padding-top:75px;}
@@ -308,6 +318,7 @@ pre {
     text-align:center;
     }
 /* TEI styles */
+.citation .tei-biblStruct {display:block;}
 .tei-event {display:block;}
 .tei-event p{ display:inline !important;}
 
@@ -365,6 +376,8 @@ pre {
     }
 .tei-footnote {display:none; font-size:x-small;}    
 .tei-footnote.display {display:inline;}   
+.tei-quote .tei-p {display:inline;}
+.tei-p {display:block; margin: 1em 0;}
 /*.text-number.display {display:inline;}*/
 
 

@@ -313,9 +313,53 @@
                 </div>
             </xsl:when>
             <xsl:otherwise>
-                <span class="section indent">
+                <span class="section indent tei-biblStruct">
                     <xsl:apply-templates mode="footnote"/>
                 </span>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="t:body">
+        <xsl:choose>
+            <xsl:when test="descendant::t:div[@type='textpart']">
+                <xsl:apply-templates mode="parallel"/>       
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="t:div" mode="parallel">
+        <xsl:choose>
+            <xsl:when test="@subtype='biography'">
+                <div id="pageText">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <bdi>
+                                <!--<span class="header info">Arabic</span>-->
+                                <xsl:apply-templates select="*[@xml:lang='ar-Arab']"/>    
+                            </bdi>
+                        </div>
+                        <div class="col-md-6">
+                            <!--<span class="header info">English</span>-->                                
+                            <xsl:apply-templates select="*[@xml:lang='en-Latn']"/>
+                        </div>    
+                    </div>
+                </div>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates mode="parallel"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="t:head">
+        <xsl:choose>
+            <!-- div type="textpart" subtype="biography" n="1"> -->
+            <xsl:when test="parent::t:div[@subtype='biography']">
+                <h2 class="biography header info"><xsl:sequence select="local:attributes(.)"/><xsl:apply-templates/></h2>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class="tei-head"><xsl:sequence select="local:attributes(.)"/><xsl:apply-templates/></span>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -423,6 +467,24 @@
     <xsl:template match="t:note">
         <xsl:variable name="xmlid" select="@xml:id"/>
         <xsl:choose>
+            <xsl:when test="@type='footnote'">
+                <xsl:variable name="id">
+                    <xsl:choose>
+                        <xsl:when test="@n"><xsl:value-of select="@n"/></xsl:when>
+                        <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
+                    </xsl:choose>
+                </xsl:variable>
+                <xsl:variable name="footnoteID">
+                    <xsl:value-of select="concat('footnote-',$id)"/>
+                </xsl:variable>
+                <span class="footnoteRef text">
+                    <sup><a href="#{$footnoteID}" class="showFootnote"><xsl:value-of select="$id"/></a></sup>
+                </span>
+                <span class="tei-note footnote footnoteText">
+                    <span class="tei-footnote-id" id="{$footnoteID}"><xsl:value-of select="$id"/></span>
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:when>
             <xsl:when test="ancestor::t:choice">
                 <xsl:text> (</xsl:text>
                 <span>

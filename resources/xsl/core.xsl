@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:t="http://www.tei-c.org/ns/1.0" xmlns:x="http://www.w3.org/1999/xhtml" xmlns:saxon="http://saxon.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://syriaca.org/ns" exclude-result-prefixes="xs t x saxon local" version="2.0">
     
     <!-- =================================================================== -->
@@ -69,6 +68,33 @@
     <xsl:template match="t:lb">
         <br/>
     </xsl:template>
+    <xsl:template match="t:list">
+        <xsl:if test="t:head">
+            <span class="tei-head"><xsl:apply-templates select="t:head"/></span>
+        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="t:label">
+                <dl class="dl-inline">
+                    <xsl:sequence select="local:attributes(.)"/>
+                    <xsl:apply-templates mode="dlList"/>
+                </dl>
+            </xsl:when>
+            <xsl:otherwise>
+                <li>
+                    <xsl:for-each select="child::*">
+                        <li><xsl:apply-templates/></li>
+                    </xsl:for-each>
+                </li>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="t:label" mode="dlList">
+        <dt><xsl:apply-templates/></dt>
+    </xsl:template>
+    <xsl:template match="t:item" mode="dlList">
+        <dd><xsl:apply-templates/></dd><br/>
+    </xsl:template>
+    
     <xsl:template match="t:lg">
         <div class="tei-{local-name(.)}">
             <xsl:sequence select="local:attributes(.)"/>
@@ -90,14 +116,6 @@
             <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:apply-templates select="." mode="plain"/>
-    </xsl:template>
-    
-    <!-- P -->
-    <xsl:template match="t:p">
-        <p>
-            <xsl:sequence select="local:attributes(.)"/>
-            <xsl:call-template name="rend"/>
-        </p>
     </xsl:template>
     
     <!-- Q -->
