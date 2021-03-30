@@ -134,22 +134,25 @@ declare function app:display-nodes($node as node(), $model as map(*), $paths as 
  : Used by templating module, not needed if full record is being displayed 
 :)
 declare function app:h1($node as node(), $model as map(*)){
-    if($model("hits")/descendant::tei:div[@type='textpart']) then
-        <div class="title">
-            <h1>
-                {tei2html:tei2html($model("hits")/descendant::tei:titleStmt/tei:title[@level = 'm'][@xml:lang='en'])}
-            </h1>
-        </div>
-    else 
-        global:tei2html(
-        <srophe-title xmlns="http://www.tei-c.org/ns/1.0">{(
-           if($model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']) then
-               $model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']
-           else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1], 
-           $model("hits")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
-           )}
-        </srophe-title>)
+ global:tei2html(
+ <srophe-title xmlns="http://www.tei-c.org/ns/1.0">{(
+    if($model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']) then
+        $model("hits")/descendant::*[@syriaca-tags='#syriaca-headword']
+    else $model("hits")/descendant::tei:titleStmt[1]/tei:title[1], 
+    $model("hits")/descendant::tei:publicationStmt/tei:idno[@type="URI"][1]
+    )}
+ </srophe-title>)
 }; 
+(:
+declare function app:h1($node as node(), $model as map(*)){
+    let $title := tei2html:tei2html($model("hits")/descendant::tei:titleStmt/tei:title[1])
+    let $author := tei2html:tei2html($model("hits")/descendant::tei:titleStmt/tei:author[not(@role='anonymous')])
+    return 
+        <div class="title">
+            <h1>{(if($author != '') then ($author, ': ') else (), $title)}</h1>
+        </div>
+};
+:)
 
 (:~ 
  : Data formats and sharing
@@ -1065,24 +1068,86 @@ return <span> {$prev} | {$next}</span>
  : d3js visualization with $model($hits)
  : Use d3xquery/d3xquery.xqm to generate appropriately formatted JSON data. 
 :)
-declare function app:data-visualization($node as node(), $model as map(*), $json-file as xs:string?, $mode as xs:string?, $locus as xs:string?, $relationship as xs:string?, $height as xs:string?, $width as xs:string?) {
- d3xquery:data-visualization($model("hits"), $json-file, $mode, $locus, $relationship, $height, $width)
-};
-
-(: Usaybia function for paging through texts, texts are broken up in the db, need a way to list all the parts, and see an overview? :)
-declare function app:textTOC($node as node(), $model as map(*)){    
-    <div>    
-        <ul class="pagination">
-            {if($model("hits")/descendant::tei:div[@type='textpart'][@subtype='chapter'][@prev != '']) then
-                <li><a href="{replace(string($model("hits")/descendant::tei:div[@type='textpart'][@subtype='chapter']/@prev),$config:base-uri,$config:nav-base)}">&lt;</a></li>
-             else ()}
-            <li><a href="#" class="selected">{
-            concat(string($model("hits")/descendant::tei:div[@type='textpart'][@subtype='chapter']/@n),'.',
-                    string($model("hits")/descendant::tei:div[@type='textpart'][@subtype='biography']/@n))}</a></li>
-            {if($model("hits")/descendant::tei:div[@type='textpart'][@subtype='chapter'][@next != '']) then
-                <li><a href="{replace(string($model("hits")/descendant::tei:div[@type='textpart'][@subtype='chapter']/@next),$config:base-uri,$config:nav-base)}">&gt;</a></li>
-            else ()}
-        </ul>
-        <h4>Place holder</h4>
-    </div>
+declare function app:data-visualization($node as node(), $model as map(*), $mode as xs:string?, $locus as xs:string?, $relationship as xs:string?) {
+    let $data := $model("hits")
+    let $id := if($locus = 'single') then 
+                    if(request:get-parameter('recordID', '')) then request:get-parameter('recordID', '')
+                    else if(request:get-parameter('id', '')) then request:get-parameter('id', '')
+                    else replace($data/descendant::tei:idno[@type='URI'][1],'/tei','')
+               else ()
+    let $relationship := 
+               if($relationship) then $relationship 
+               else if(request:get-parameter('relationship', '') != '') then request:get-parameter('relationship', '') 
+               else ()         
+   let $mode := if($mode) then $mode else if(request:get-parameter('mode', '') != '') then request:get-parameter('mode', '') else 'Force'
+   let $visData := 
+                if($locus = 'single') then '[]'
+                else 
+                    (serialize(d3xquery:build-graph-type($data, $id, $relationship, $mode, $locus), 
+                     <output:serialization-parameters>
+                         <output:method>json</output:method>
+                     </output:serialization-parameters>))
+   return
+        <div id="LODResults" xmlns="http://www.w3.org/1999/xhtml" class="resizeable">
+                <script src="{$config:nav-base}/d3xquery/js/d3.v4.min.js" type="text/javascript"/>
+                <h3>Relationship Graph</h3>
+                <div id="graphVis" style="height:500px; position: relative;"/>
+                <script><![CDATA[
+                        $(document).ready(function () {
+                            var dataURL = ']]>{concat($config:nav-base,'/modules/data.xql?getVis=true&amp;id=',$id,'&amp;mode=',$mode)}<![CDATA[';
+                            var rootURL = ']]>{$config:nav-base}<![CDATA[';
+                            var postData =]]>{$visData}<![CDATA[;
+                            var id = ']]>{$id}<![CDATA[';
+                            var type = ']]>{$mode}<![CDATA[';
+                            $.get(dataURL, function(data) {
+                                     makeGraph(data,"850","400",rootURL,type);                
+                                }, "json"); 
+                            /*
+                            if($('#graphVis svg').length == 0){}
+                            jQuery(window).trigger('resize');
+                            */
+                        });
+                ]]></script>
+                <style><![CDATA[
+                    .d3jstooltip {
+                      background-color:white;
+                      border: 1px solid #ccc;
+                      border-radius: 6px;
+                      padding:.5em;
+                      font-size:10px; 
+                      }
+                    .nodelabel {font-size:12px; font-color: #666;}
+                    
+                    #legendContainer {
+               	    font-size: 12px; 
+               	    color: #666;
+                       position: absolute;
+                       top: 20px;
+                       right: 10px;
+                       background-color: white;
+                       width: 25%;
+                       min-height:200px;
+                       max-height:400px;
+                       padding: 4px;
+                       border-style: solid;
+                       border-radius: 4px;
+                       border-width: 1px;
+                       box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
+                       font-size:10px; 
+                       font-color: #666;
+                       overflow: auto;
+                    } 
+                    #legendContainer.legend h3 {font-size: 18px; text-align:center; margin: 8px;}
+                    #legendContainer.legend h4 {font-size: 14px; margin: 8px;}
+                    .filterList {margin-left: 16px;}
+                    #legendContainer button.filter {
+                      background: none!important;
+                      border: none;
+                      padding: 0!important;
+                      cursor: pointer;
+                    }
+                    ]]>
+                </style>
+                <script src="{$config:nav-base}/d3xquery/js/vis.js" type="text/javascript"/>
+        </div>      
 };

@@ -1,71 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
-    <!--
-    <div class="section interior-content white" style="min-height:800px;">
-        <div data-template="app:data-visualization" data-template-mode="force" data-template-json-file="/resources/json/personsGraph.json" data-template-height="500"/>    
-    </div>
-    -->
-    
-    <div id="LODResults" class="resizeable" style="min-height:700px;">
-        <script src="../d3xquery/js/d3.v4.min.js" type="text/javascript"/>
-        <h3>Relationship Graph</h3>
-        <div id="graphVis" style="height:500px; position: relative;"/>
-        <script><![CDATA[
-            $(document).ready(function () {
-            var dataURL = '../resources/json/personsGraph.json';
-            var rootURL = '/exist/apps/usaybia';
-            var type = 'Force';
-            var h = 700;
-            var w = 1020;
-            $.get(dataURL, function(data) {
-            makeGraph(data,w,h,rootURL,type);                
-            }, "json"); 
-            /*
-            if($('#graphVis svg').length == 0){}
-            jQuery(window).trigger('resize');
-            */
-            });
-            ]]></script>
-        <style><![CDATA[
-            .d3jstooltip {
-            background-color:white;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding:.5em;
-            font-size:10px; 
-            }
-            .nodelabel {font-size:12px; font-color: #666;}
-            
-            #legendContainer {
-            font-size: 12px; 
-            color: #666;
-            position: absolute;
-            top: 20px;
-            right: 10px;
-            background-color: white;
-            width: 25%;
-            min-height:200px;
-            max-height:400px;
-            padding: 4px;
-            border-style: solid;
-            border-radius: 4px;
-            border-width: 1px;
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
-            font-size:10px; 
-            font-color: #666;
-            overflow: auto;
-            } 
-            #legendContainer.legend h3 {font-size: 18px; text-align:center; margin: 8px;}
-            #legendContainer.legend h4 {font-size: 14px; margin: 8px;}
-            .filterList {margin-left: 16px;}
-            #legendContainer button.filter {
-            background: none!important;
-            border: none;
-            padding: 0!important;
-            cursor: pointer;
-            }
-            ]]>
-        </style>
-        <script src="../d3xquery/js/visLarge.js" type="text/javascript"/>
-        <link rel="stylesheet" type="text/css" href="../d3xquery/css/vis.css"/>
+    <div class="section interior-content white">
+        <div class="col-md-8 white">
+            <div class="section indent" style="min-height:450px; padding-top:1.5em;">
+                <div class="row" style="width:80%;">
+                    <div class="col-md-6">
+                        <h2>General Editor</h2>
+                        <ul>
+                            <li>David A. Michelson, Vanderbilt University</li>
+                        </ul>
+                        <h2>Associate Editors</h2>
+                        <ul>
+                            <li>Jeanne-Nicole Mellon Saint-Laurent, Marquette University</li>
+                            <li>Nathan P. Gibson, Vanderbilt University</li>
+                            <li>Daniel L. Schwartz, Texas A&amp;M University</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Editorial Committee</h2>
+                        See the introductions to the respective volumes in the <i>Syriac Biographical Dictionary</i>:<br/>
+                        <ol>
+                            <li>
+                                <a href="/authors/index.html">A Guide to Syriac Authors</a>
+                            </li>
+                            <li>
+                                <a href="/q/index.html">Qadishe: Guide to the Syriac Saints</a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <p>The Syriac Biographical Dictionary (SBD) is a multi-volume name and biographic authority record documenting persons relevant to the field of Syriac studies.</p>
+                <ul>
+                    <li>
+                        <a href="about.html">About page</a>: an overview of the Syriac Biographical Dictionary.</li>
+                    <li>
+                        <a href="http://syriaca.org/documentation">Help page</a>: documentation, editorial guidelines, and technical definitions.</li>
+                    <li>
+                        <span class="srp-label">Browse persons</span>
+                        <ul>
+                            <li>
+                                By Name
+                                <ul>
+                                    <li>
+                                        <a href="browse.html?lang=en&amp;sort=A">English</a>
+                                    </li>
+                                    <li>
+                                        <a href="browse.html?lang=syr&amp;sort=ܐ">
+                                            <span dir="rtl">ܠܫܢܐ ܣܘܪܝܝܐ</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="browse.html?lang=ar&amp;sort=ا">
+                                            <span dir="rtl">اللغة العربية</span>
+                                        </a>
+                                    </li>
+                                    <!--Do not have this browse option <li><a href="">Other Languages</a></li> -->
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="browse.html?view=type">By Person Type</a>
+                            </li>
+                            <li>
+                                <a href="browse.html?view=date">By Date</a>
+                            </li>
+                            <li>
+                                Browse Subsidiary Volumes:
+                                <ul>
+                                    <li>
+                                        <a href="../q/browse.html">Volume 1: Qadishe: A Digital Catalogue of Saints in the Syriac Tradition</a>
+                                    </li>
+                                    <li>
+                                        <a href="../authors/browse.html">Volume 2: A Guide to Syriac Authors</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="browse.html?view=facets">Advanced Browse</a>
+                            </li>
+                            <li>
+                                <a href="search.html">Advanced Search</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="http://syriaca.org/person/779">Theodora</a>: featured person.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <br/>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Related places</h3>
+                </div>
+                <div class="panel-body">
+                    <div data-template="person:display-persons-map" data-template-collection="persons" style="margin:0 -1em 1em -1em;"/>
+                    <a href="browse.html?view=map">See bigger map  <i class="glyphicon glyphicon-circle-arrow-right"/>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

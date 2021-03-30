@@ -48,7 +48,7 @@ declare function d3xquery:relationship-graph($data, $recID, $relationship){
             else ()
     let $degree := 
             if(request:get-parameter('degree', '')) then request:get-parameter('degree', '') 
-            else 'first'
+            else 'second'
     let $id := concat($pid,'(\W.*)?$')
     let $dataset := 
         if($pid) then 
@@ -59,48 +59,29 @@ declare function d3xquery:relationship-graph($data, $recID, $relationship){
                         @mutual[matches(.,$id)]]                                   
                 let $firstIDs := string-join(($firstDegree/@active, $firstDegree/@passive,$firstDegree/@mutual),'(\W.*)?$|')
                 let $secondDegree := 
-                    collection($config:data-root)//tei:relation[
-                            @passive[matches(.,($firstIDs))] or 
-                            @active[matches(.,($firstIDs))] or
-                            @mutual[matches(.,($firstIDs))]]
-                (:
                     if(count($firstDegree) lt 50) then 
                         collection($config:data-root)//tei:relation[
                             @passive[matches(.,($firstIDs))] or 
                             @active[matches(.,($firstIDs))] or
                             @mutual[matches(.,($firstIDs))]]
-                     else $firstDegree 
-                 :)    
+                     else $firstDegree       
                  return functx:distinct-nodes(($secondDegree))
-            else if($degree = 'third') then
-                let $firstDegree := collection($config:data-root)//tei:relation[
-                        @passive[matches(.,$id)] or 
-                        @active[matches(.,$id)] or
-                        @mutual[matches(.,$id)]]                                   
-                let $firstIDs := string-join(($firstDegree/@active, $firstDegree/@passive,$firstDegree/@mutual),'(\W.*)?$|')
-                let $secondDegree := 
-                    collection($config:data-root)//tei:relation[
-                            @passive[matches(.,($firstIDs))] or 
-                            @active[matches(.,($firstIDs))] or
-                            @mutual[matches(.,($firstIDs))]]
-                 let $secondIDs := string-join(($secondDegree/@active, $secondDegree/@passive,$secondDegree/@mutual),'(\W.*)?$|')
-                 let $thirdDegree := 
-                    collection($config:data-root)//tei:relation[
-                            @passive[matches(.,($secondIDs))] or 
-                            @active[matches(.,($secondIDs))] or
-                            @mutual[matches(.,($secondIDs))]]
-                 return functx:distinct-nodes(($thirdDegree))
             else 
                 let $firstDegree := collection($config:data-root)//tei:relation[
                         @passive[matches(.,$id)] or 
                         @active[matches(.,$id)] or
                         @mutual[matches(.,$id)]]
                 return functx:distinct-nodes($firstDegree)
-        (:else functx:distinct-nodes($data//tei:relation):)
-        else collection($config:data-root)//tei:relation
+        else functx:distinct-nodes($data//tei:relation)
     let $filters := if($relationship) then 
                         $dataset[@ref=$relationship]
-                    else $dataset  
+                    else $dataset
+    let $uris := distinct-values((
+                    for $r in $filters return tokenize($r/@active,' '), 
+                    for $r in $filters return tokenize($r/@passive,' '), 
+                    for $r in $filters return tokenize($r/@mutual,' ')
+                    ))
+    let $tei := collection($config:data-root)//tei:idno[. = $uris]/ancestor::tei:TEI
     let $json := <root>{(d3xquery:nodes($filters, $pid), d3xquery:links($filters, $pid))}</root>
     return $json       
 };
@@ -276,7 +257,6 @@ declare function d3xquery:format-relationship-graph($relationships){
                     <json:value>
                         <id>{$uri}</id>
                         <label>{$uri}</label>
-                        <occupation json:array="true"></occupation>
                    </json:value>
                 }
             </nodes>
@@ -358,9 +338,7 @@ declare function d3xquery:format-relationship-graph($relationships){
 declare function d3xquery:build-graph-type($data, $id as xs:string?, $relationship as xs:string?, $mode as xs:string?, $locus as xs:string?){
 let $visData := 
     if($mode = ('force','Force','sankey','Sankey')) then
-        if($id != '') then 
-            d3xquery:relationship-graph($data, $id, $relationship)
-        else d3xquery:format-relationship-graph(collection($config:data-root)//tei:relation) (:d3xquery:relationship-graph($data, $id, $relationship):)
+        d3xquery:relationship-graph($data, $id, $relationship)
     else if($mode = ('tree','Tree','bubble','Bubble')) then
         d3xquery:format-tree-types(d3xquery:get-relationship($data, $relationship, $id))
     else d3xquery:format-table(d3xquery:get-relationship($data, $id, $relationship))
@@ -372,54 +350,4 @@ return
                         </output:serialization-parameters>),
                         response:set-header("Content-Type", "application/json"))        
         else $visData
-};
-
-(:~ 
- : d3js visualization with $model($hits)
- : Use d3xquery/d3xquery.xqm to generate appropriately formatted JSON data. 
-:)
-declare function d3xquery:data-visualization($data, $json-file as xs:string?, $mode as xs:string?,$locus as xs:string?, $relationship as xs:string?, $height as xs:string?, $width as xs:string?){
-    let $id := if($locus = 'single') then 
-                    if(request:get-parameter('recordID', '')) then request:get-parameter('recordID', '')
-                    else if(request:get-parameter('id', '')) then request:get-parameter('id', '')
-                    else replace($data/descendant::tei:idno[@type='URI'][1],'/tei','')
-               else ()
-    let $relationship := 
-               if($relationship) then $relationship 
-               else if(request:get-parameter('relationship', '') != '') then request:get-parameter('relationship', '') 
-               else ()  
-    let $mode := if($mode) then $mode else if(request:get-parameter('mode', '') != '') then request:get-parameter('mode', '') else 'Force'
-    let $h := if($height != '' and $height castable as xs:integer) then xs:integer($height) else 500
-    let $w := if($width != '' and $width castable as xs:integer) then xs:integer($width) else 1050
-    let $dataURL := if($json-file != '') then
-                        concat($config:nav-base,'/',$json-file)
-                    else concat($config:nav-base,'/modules/data.xql?getVis=true&amp;id=',$id,'&amp;mode=',$mode)
-    return 
-        <div id="LODResults" xmlns="http://www.w3.org/1999/xhtml" class="resizeable">
-            <script src="{$config:nav-base}/d3xquery/js/d3.v4.min.js" type="text/javascript"/>
-            <div id="graphVis"/>
-            <script><![CDATA[
-                        $(document).ready(function () {
-                            var dataURL = ']]>{$dataURL}<![CDATA[';
-                            var rootURL = ']]>{$config:nav-base}<![CDATA[';
-                            var id = ']]>{$id}<![CDATA[';
-                            var type = ']]>{$mode}<![CDATA[';
-                            var h = ]]>{$h}<![CDATA[;
-                            var w = ]]>{$w}<![CDATA[;
-                            $.get(dataURL, function(data) {
-                                     makeGraph(data,w,h,rootURL,type);                
-                                }, "json"); 
-                        });
-                ]]></script>
-                <link rel="stylesheet" type="text/css" href="{$config:nav-base}/d3xquery/css/vis.css"/>
-                <script src="{$config:nav-base}/d3xquery/js/vis.js" type="text/javascript"/>
-        </div>
-    (: let $visData := 
-                if($locus = 'single') then '[]'
-                else 
-                    (serialize(d3xquery:build-graph-type($data, $id, $relationship, $mode, $locus), 
-                     <output:serialization-parameters>
-                         <output:method>json</output:method>
-                     </output:serialization-parameters>)):)                     
-
-};
+};        
