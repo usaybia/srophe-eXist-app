@@ -5,6 +5,9 @@ function makeGraph(data, w, h, rootURL, type) {
    //set up global vars
    //data stores
     var graph, store;
+    var relNodes = [];
+    var filterValues = [];
+    var filterRelationships = [];
     var linkedByIndex = {};
     var rootURL = rootURL;
     var type = type;
@@ -21,29 +24,6 @@ function makeGraph(data, w, h, rootURL, type) {
         nodeColor = '#8db99f',
         firstDegree = '#C5DCCE';
     
-    //Create SVG on #vis element
-    var svg = d3.select('#graphVis')
-                .append('svg')
-                .attr("width", width)
-                .attr("height", height + margin.top + margin.bottom)
-                .call(responsivefy);
-
-    //Create a tooltip div 
-    var legend = d3.select("#graphVis")
-            .append("div")
-            .attr("class", "legend")
-            .attr("id","legendContainer")
-            .style("opacity", 1)
-            .html("<h3>Filters</h3><h4>Relationships</h4><div id='relationFilter' class='filterList'></div><h4>Occupations</h4><div id='occupationFilter' class='filterList'></div>"); 
-            
-    //Tooltip   
-    var tooltip = d3.select("body").append("div")
-            .attr("class", "d3jstooltip")
-        	.style("position","absolute")
-        	.style("opacity", 0);
-    //Set up containers for links and nodes
-    var link = svg.append("g").selectAll(".link"),
-        node = svg.append("g").selectAll(".node");
     
     //Select graph type
     //selectGraphType(type);
@@ -82,10 +62,22 @@ function makeGraph(data, w, h, rootURL, type) {
         
         // add viewBox and preserveAspectRatio properties,
         // and call resize so that svg resizes on inital page load
-        svg.attr("viewBox", "0 0 " + width + " " + height)
+        svg.attr("preserveAspectRatio", "xMinYMin meet")
+          .attr("viewBox", function() { return "0 0 "+this.getBoundingClientRect().width+' '+this.getBoundingClientRect().height; })
+          .classed("svg-content-responsive", true).call(resize);
+        /* 
+        .attr("viewBox", "0 0 " + width + " " + height)
             .attr("perserveAspectRatio", "xMinYMid")
             .call(resize);
-    
+             */ 
+    /* 
+     * 
+     *      .attr("preserveAspectRatio", "xMinYMin meet")
+          .attr("viewBox", function() { return "0 0 "+this.getBoundingClientRect().width+' '+this.getBoundingClientRect().height; })
+          .classed("svg-content-responsive", true)
+           * 
+     */
+     
         // to register multiple listeners for same event type, 
         // you need to add namespace, i.e., 'click.foo'
         // necessary if you call invoke this function for multiple svgs
@@ -124,12 +116,47 @@ function makeGraph(data, w, h, rootURL, type) {
 
     /* Force Graph */
     function forcegraph() {
+    
+        //Create SVG on #vis element
+        var svg = d3.select('#graphVis')
+                     .append('svg')
+                     .attr("width", width)
+                     .attr("height", height + margin.top + margin.bottom);
+                     //.call(responsivefy);
+        //Create title
+        var legend = d3.select("#graphVis")
+                 .append("h3")
+                 .attr("id","graphTitle")
+                 .style("opacity", 1)
+                 .html("Relationship Graph"); 
+         
+         
+         //Create a tooltip div 
+         var legend = d3.select("#graphVis")
+                 .append("div")
+                 .attr("class", "legend")
+                 .attr("id","legendContainer")
+                 .style("opacity", 1)
+                 .html("<h3>Filters</h3><h4><a href='#relationFilter' data-toggle='collapse'>-</a> Relationships</h4><div id='relationFilter' class='filterList collapse in'></div><h4><a href='#occupationFilter' data-toggle='collapse'>-</a> Occupations</h4><div id='occupationFilter' class='filterList collapse in'></div>"); 
+                 
+         //Tooltip   
+         var tooltip = d3.select("body").append("div")
+                 .attr("class", "d3jstooltip")
+             	.style("position","absolute")
+             	.style("opacity", 0);
+             	
+         //Set up containers for links and nodes
+         var link = svg.append("g").selectAll(".link"),
+             node = svg.append("g").selectAll(".node");
+             
          //Force simulation initialization
          var simulation = d3.forceSimulation()
-             .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(80).strength(0.75))
-             .force("charge", d3.forceManyBody().strength(-100))
-             .force("center", d3.forceCenter(width / 2, height / 3));
-        
+                 .force("center", d3.forceCenter(width / 2, height / 2)) // Keep graph from floating off-screen
+                 .force("charge", d3.forceManyBody().strength(-200).distanceMax(350)) // Charge force works as gravity
+                 .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(100).strength(0.5).iterations(2)) //Link force accounts for link distance
+                 .force("collide", d3.forceCollide().iterations(0)) // in the tick function will be evaluated the moment in which turn on the anticollision (iterations > 1)
+                 .alpha(1).alphaDecay(0.05);
+
         var link = svg.append("g")
             .attr("class", "links")
             .selectAll("g")
@@ -140,14 +167,11 @@ function makeGraph(data, w, h, rootURL, type) {
             .attr('stroke-opacity', 1)
             .attr("stroke-width", "1")
             .style('fill', 'none')
-            .attr("stroke", function (d) {
-                return d3.rgb(rel(d.relationship));
-            })
+            .attr("stroke", function (d) {return d3.rgb(rel(d.relationship));})
             .attr("id",function (d, i) {return 'edgepath' + i})
             .style("pointer-events", "none");
-        
-        
-        edgelabels = svg.selectAll(".edgelabel")
+            
+    edgelabels = svg.selectAll(".edgelabel")
             .data(graph.links).enter()
             .append('text')
             .style("pointer-events", "none")
@@ -163,66 +187,81 @@ function makeGraph(data, w, h, rootURL, type) {
             .style("text-anchor", "middle")
             .style("pointer-events", "none")
             .attr("startOffset", "50%")
-            .text(function (d) {return d.relationship});        
+            .text(function (d) {return d.relationship});             
                     
         var node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
             .data(graph.nodes).enter()
-            .append("g");
-        
-        var circles = node.append("circle")
-            .attr("r",function(d) {
-	       if(d.degree === 'primary'){
-	           return radius * 3.5;    
-            } else if(d.degree === 'first') {
-                return radius * 2;
-            } else {
-                return radius;
-        }}) 
-        //.attr("class", "forceNode")
-        .attr("class", function (d) {
-            var occupation = d.occupation; 
-            return occupation.join(' ');
-            //return d.occupation;
-        })
-        .style("fill", function (d) {
-            //return d3.rgb(occ(d.occupation));
-            /* Color by relationship degree */  
-            if(d.degree === 'primary'){
-                return nodeColor;
-            } else if(d.degree === 'first') {
-                return firstDegree;
-            } else {
-                return 'white';
-            }}) 
-            .style("stroke", function (d) {
-                //return d3.rgb(color(d.occupation)).darker();
-                return nodeColor;
-            })
-            .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
-            .on("mouseover", function (d) {
-                fade(d,.1);
-                tooltip.style("visibility", "visible").html('<span class="nodelabel">' + d.label + '</span><br/>' + d.occupation).style("padding", "4px").style("opacity", .99).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
-                    /* 
-                    .text(d.label)
-                    .style("opacity", 1)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY + 5) + "px");
-                     */ 
-            }).on("mouseout", function (d) { 
-                fade(d,1);
-                tooltip.style("visibility", "hidden");
-            }).on("mousemove", function () {
-                return tooltip.style("top", (event.pageY -10) + "px").style("left",(event.pageX + 10) + "px");                     
-            }).on('dblclick', function (d, i) { 
-                window.location = d.id;
+            .append("g")
+            .attr("class", function (d) {
+                if(d.degree === 'primary'){
+	               return "primary";    
+                }
             });
         
-        node.append("title").text(function (d) {
-            return d.id;
-        });
+        circles = node.append("circle")
+            .attr("r",function(d) {
+    	       if(d.degree === 'primary'){
+    	           return radius * 7;    
+                } else if(d.degree === 'first') {
+                    return radius * 2.5;
+                } else {
+                    return radius;
+            }}) 
+            .attr("class", function (d) {
+                var occupation = d.occupation; 
+                return occupation.join(' ');
+                //return d.occupation;
+            })
+            .style("fill", function (d) {
+                if(d.degree === 'primary'){
+                    return nodeColor;
+                } else if(d.degree === 'first') {
+                    return firstDegree;
+                } else {
+                    return 'white';
+                }}) 
+            .style("stroke", function (d) {
+                    return nodeColor;
+                })
+            .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
+            .on("mouseover", function (d) {
+                    fadeIn(d,.1);
+                })
+            .on("mouseout", function (d) { 
+                    fadeOut(d,1);
+                    tooltip.style("visibility", "hidden");
+                })
+            .on("mousemove", function () {
+                    return tooltip.style("top", (event.pageY -10) + "px").style("left",(event.pageX + 10) + "px");                     
+                })
+            .on('dblclick', function (d, i) { 
+                    window.location = d.id;
+                });
         
+       var nodeLabel = node.filter(function(d) { return (d.degree === 'primary'); }).append("g");
+              
+       nodeLabel.append("text") 
+            .attr("class", "text")
+            .attr("text-anchor", "middle")
+            .attr("dx", 0)
+            .attr("dy", ".35em")
+            .text(function(d) {
+               return d.label;
+            }).call(getBB);   
+            
+        nodeLabel.insert("rect","text")
+            .attr("x", function(d){return d.bbox.x})
+            .attr("y", function(d){return d.bbox.y})
+            .attr("width", function(d){return d.bbox.width})
+            .attr("height", function(d){return d.bbox.height})
+            .style("fill", "white");
+        
+        function getBB(selection) {
+            selection.each(function(d){d.bbox = this.getBBox();})
+        }
+             
         //Add legend
         // flat map will flatten the inner arrays
         var occupations = graph.nodes.flatMap((d) => d.occupation);
@@ -232,7 +271,7 @@ function makeGraph(data, w, h, rootURL, type) {
         d3.select('#legend').selectAll('ul').remove();
     	occupation =  svg.append("g").selectAll(".occupation"),
     	relation =  svg.append("g").selectAll(".relation");
-    
+        
         d3.select("#occupationFilter").selectAll("div")
             .data(occFilter.sort())
             .enter()
@@ -240,10 +279,18 @@ function makeGraph(data, w, h, rootURL, type) {
             .attr("class","option")
             .html(function(d){ return '<button class="filter">' + d + '</button>';})
             .on('click', function (d, i) { 
-                    console.log('FilterNodes: ', d );
-                    filter(d, .1)
+                if(filterValues === d) {
+                    filterValues = [];
+                    fadeOut(d,1);
+                } else {
+                  filter(d, .1);
+                }
+                d3.selectAll(".option").classed("selected", function(d) {
+                    if (d === filterValues) { 
+                        return true;
+                    } else {return false;}
                 });
-            //.text(function(d){ return d;});
+            });
          
         var nest2 = d3.nest()
             .key(function(d) { return d;})
@@ -255,31 +302,37 @@ function makeGraph(data, w, h, rootURL, type) {
             .append("div")
             .attr("class","option")
             .html(function(d){ return '<button class="filter">' + d.key + '</button>';})
-            //.text(function(d) { return d.key; })
-            //.style("fill", function(d){ return rel(d.key) })
-            //.style("font-size", 15)
             .on('click', function (d, i) { 
-                    filterLinks(d.key, .1)
+                if(filterRelationships === d.key) {
+                    filterRelationships = [];
+                    fadeOut(d,1);
+                } else {
+                    filterLinks(d.key, .1);
+                }
+                d3.selectAll(".option").classed("selected", function(d) {
+                    if (d.key === filterRelationships) { 
+                        return true;
+                    } else {return false;}
                 });
+                    //filterLinks(d.key, .1)
+             });
         
         simulation.nodes(graph.nodes).on("tick", ticked);
         
         simulation.force("link").links(graph.links);
         
         function ticked() {
-            circles
-      		.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-      		.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
-      
-      	/* curved lines */                   
-              link.attr("d", function(d) {
+            node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      	  
+      	  /* curved lines */                   
+            link.attr("d", function(d) {
                   var dx = d.target.x - d.source.x,
                       dy = d.target.y - d.source.y,
                       dr = Math.sqrt(dx * dx + dy * dy);
                       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
                   });
-             
-             edgelabels.attr('transform', function (d) {
+                  
+            edgelabels.attr('transform', function (d) {
                 if (d.target.x < d.source.x) {
                     var bbox = this.getBBox();
     
@@ -290,8 +343,7 @@ function makeGraph(data, w, h, rootURL, type) {
                 else {
                     return 'rotate(0)';
                 }
-            });
-            
+            });                  
         }
         
         //Link Connected
@@ -304,21 +356,79 @@ function makeGraph(data, w, h, rootURL, type) {
             return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index === b.index;
         }
         
-        function fade(d,opacity) {
+        function fadeIn(d,opacity) {
                 node.style("stroke-opacity", function (o) {
                     thisOpacity = isConnected(d, o) ? 1: opacity;
                     this.setAttribute('fill-opacity', thisOpacity);
                     return thisOpacity;
                     return isConnected(d, o);
                 });
+                
                 link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
-                    return o.source === d || o.target === d ? 1: opacity;
+                    return o.source === d || o.target === d ? 1: opacity;                    
                 });
+                
                 edgelabels.style("fill-opacity", function (o) {
                     return o.source === d || o.target === d ? 1: 0;
                 });
-        //end fade function
-        }; 
+                
+                var related = graph.links.filter(function(d1){ 
+                    if(opacity === .1){
+                      if(d1.target.id === d.id) {
+                        return d1;
+                        } 
+                        else if(d1.source.id === d.id) {
+                            return d1;
+                        }   
+                    }; 
+                 });
+                 
+                tooltip.style("visibility", function(d){
+                   thisOpacity = opacity ? "hidden": "visible"; 
+                })
+                .html('<span class="nodelabel">' + d.label + '</span><br/>' + d.occupation)
+                .style("padding", "4px").style("opacity", .99)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px")
+                
+                tooltip.html();
+        };
+        
+        function fadeOut(d,opacity) {
+            if(filterValues.length === 0) {
+                node.style("stroke-opacity", function (o) {
+                    thisOpacity = isConnected(d, o) ? 1: opacity;
+                    this.setAttribute('fill-opacity', thisOpacity);
+                    return thisOpacity;
+                    return isConnected(d, o);
+                });
+                
+                link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
+                    return o.source === d || o.target === d ? 1: opacity;                    
+                });
+                
+                edgelabels.style("fill-opacity", function (o) {
+                    return o.source === d || o.target === d ? 1: 0;
+                });
+                
+                var related = graph.links.filter(function(d1){ 
+                    if(opacity === .1){
+                      if(d1.target.id === d.id) {
+                        return d1;
+                        } 
+                        else if(d1.source.id === d.id) {
+                            return d1;
+                        }   
+                    }; 
+                 });
+                 
+                tooltip.style("visibility", function(d){
+                   thisOpacity = opacity ? "hidden": "visible"; 
+                });   
+            } else {
+                filter(filterValues,.1)
+            }
+        };
         
         //Drag functions
         function dragstarted(d) {
@@ -340,6 +450,7 @@ function makeGraph(data, w, h, rootURL, type) {
         
         //Filter functions, Occupations    
         function filter(filter,opacity){
+            filterValues = filter;
             node.style("stroke-opacity", function (o) {
                 var occupation = o.occupation
                 thisOpacity = occupation.includes(filter) ? 1: opacity;
@@ -356,8 +467,7 @@ function makeGraph(data, w, h, rootURL, type) {
         
         //Filter functions, Relationships
         function filterLinks(filter,opacity){
-            var relNodes = [];
-            
+            filterRelationships = filter;
             link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
                   if(o.relationship === filter) {
                     source = o.source.id;
@@ -376,7 +486,7 @@ function makeGraph(data, w, h, rootURL, type) {
                       return 0;
                   }
              });
-                
+             
              node.style("stroke-opacity", function (o) {
                  if(relNodes.includes(o.id)){
                      //this.setAttribute('r', 35);
@@ -500,7 +610,9 @@ function makeGraph(data, w, h, rootURL, type) {
         }
     };  
   
-    
+    function isEmpty(str) {
+        return (!str || 0 === str.length);
+    }
     
   //end make graph  
 }
