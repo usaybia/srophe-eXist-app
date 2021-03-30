@@ -170,24 +170,6 @@ function makeGraph(data, w, h, rootURL, type) {
             .attr("stroke", function (d) {return d3.rgb(rel(d.relationship));})
             .attr("id",function (d, i) {return 'edgepath' + i})
             .style("pointer-events", "none");
-            
-    edgelabels = svg.selectAll(".edgelabel")
-            .data(graph.links).enter()
-            .append('text')
-            .style("pointer-events", "none")
-            .attr("class","edgelabel")
-            .attr("id",function (d, i) {return 'edgelabel' + i})
-            .attr("font-size",11)
-            .attr('fill-opacity', 0)
-            .attr('stroke-opacity', 0)
-            .attr("fill","#333");
-        
-        edgelabels.append('textPath')
-            .attr('xlink:href', function (d, i) {return '#edgepath' + i})
-            .style("text-anchor", "middle")
-            .style("pointer-events", "none")
-            .attr("startOffset", "50%")
-            .text(function (d) {return d.relationship});             
                     
         var node = svg.append("g")
             .attr("class", "nodes")
@@ -332,18 +314,7 @@ function makeGraph(data, w, h, rootURL, type) {
                       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
                   });
                   
-            edgelabels.attr('transform', function (d) {
-                if (d.target.x < d.source.x) {
-                    var bbox = this.getBBox();
-    
-                    rx = bbox.x + bbox.width / 2;
-                    ry = bbox.y + bbox.height / 2;
-                    return 'rotate(180 ' + rx + ' ' + ry + ')';
-                }
-                else {
-                    return 'rotate(0)';
-                }
-            });                  
+                          
         }
         
         //Link Connected
@@ -366,10 +337,6 @@ function makeGraph(data, w, h, rootURL, type) {
                 
                 link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
                     return o.source === d || o.target === d ? 1: opacity;                    
-                });
-                
-                edgelabels.style("fill-opacity", function (o) {
-                    return o.source === d || o.target === d ? 1: 0;
                 });
                 
                 var related = graph.links.filter(function(d1){ 
@@ -405,10 +372,6 @@ function makeGraph(data, w, h, rootURL, type) {
                 
                 link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
                     return o.source === d || o.target === d ? 1: opacity;                    
-                });
-                
-                edgelabels.style("fill-opacity", function (o) {
-                    return o.source === d || o.target === d ? 1: 0;
                 });
                 
                 var related = graph.links.filter(function(d1){ 
@@ -460,9 +423,6 @@ function makeGraph(data, w, h, rootURL, type) {
             link.style("stroke-opacity", opacity).style("stroke-opacity", function (o) {
                 return opacity;
             });
-            edgelabels.style("fill-opacity", function (o) {
-                    return opacity;
-            });
         }
         
         //Filter functions, Relationships
@@ -478,18 +438,9 @@ function makeGraph(data, w, h, rootURL, type) {
                       return .1;
                   }
              }); 
-             
-             edgelabels.style("fill-opacity", function (o) {
-                  if(o.relationship === filter) {
-                    return 1;   
-                  } else {
-                      return 0;
-                  }
-             });
-             
+            
              node.style("stroke-opacity", function (o) {
                  if(relNodes.includes(o.id)){
-                     //this.setAttribute('r', 35);
                      this.setAttribute('fill-opacity', 1);
                      return 1;
                  } else {
