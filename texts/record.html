@@ -1,31 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
     <div data-template="app:fix-links" class="record">
         <main class="main-content-block translation">
-            <div data-template="app:h1"/>
-            <div class="toolbar flex-row toolbar">
-                <div class="flex-col">
-                    View: 
-                    <a href="#menu" class="menu-link" data-toggle="tooltip" title="Table of Contents">
-                        <i class="glyphicon glyphicon-th-list" title="View Table of Contents"/>
-                    </a> |
-                    <i class="fas fa-columns" data-toggle="tooltip" title="Add additional views"/> | 
-                    <!--<i class="glyphicon glyphicon-info-sign" title="View Tei Header Information"></i>-->                    
-                    | factoids
+            <div class="row">
+                <div class="col-md-2">
+                    <h4>Table of Contents</h4>
+                    <div data-template="app:textTOC"/>
                 </div>
-                <div class="flex-col">
-                    <div data-template="app:next-page"/>
+                <div class="col-md-8 parallelText">
+                    <div data-template="app:h1"/>
+                    <hr/>
+                    <div data-template="app:display-nodes" data-template-paths="descendant::tei:body"/>
                 </div>
-                <div class="flex-col">
-                    <div data-template="app:other-data-formats" data-template-formats="print,tei,rdf,text"/>
+                <div class="col-md-2">
+                    <div class="citationInformation">
+                        <h4>Citation Information</h4>
+                        <div data-template="app:display-nodes" data-template-paths="descendant::tei:biblStruct"/>
+                    </div>
+                    <hr/>
+                    <h4>Factoids</h4>
+                    <h4>Other Features?</h4>
+                    
                 </div>
             </div>
-            <div class="flex-row">  
-                <div data-template="app:display-page-image"/>
-                <div data-template="app:display-page-text" data-template-milestone="page"/>
+            <!--
+            <div data-template="app:h1"/>
+            <div class="citation well">
+                <div data-template="app:display-nodes" data-template-paths="/descendant::tei:sourceDesc"/>
+            </div>
+            -->
+            <div id="footnoteDisplay" class="footnote">
+                <div class="content"></div>  
             </div>
         </main>
-        <div data-template="app:toc"/>
+        
         <script src="$nav-base/resources/js/bigSlide.min.js"/>
         <script>
             $(document).ready(function() {

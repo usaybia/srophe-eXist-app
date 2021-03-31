@@ -10,7 +10,10 @@
     font-weight: normal;
     font-style: normal;
 }
-
+h1 {font-size:1.95em; margin:.25em 0 .25em 0; color:#999; font-weight:normal;}
+h2 {font-size: 1.5em; margin:1em 0 .25em 0; padding-bottom:0; color:#666; font-weight:400;}
+h3 {font-size: 1.2em; margin:1em 0 .25em 0; padding-bottom:0; color:#999; font-weight:400;  padding-bottom:0; margin-bottom:1em;}
+.title{border:none; margin-bottom:2em;}
 body {font-family: Arsenal-Regular; background-color:white;}
 #content {margin-top: 54px; border-bottom:2px solid #87B59C;}
 .interior-content {padding-right:2em; padding-left:2em; padding-top: 50px;}
@@ -340,3 +343,38 @@ h1, h2 {
 .forum-image-credit a {
   text-decoration: underline;
 }
+.dl-inline {}
+.dl-inline dt {display:inline;}
+.dl-inline dd {display:inline;}
+.tei-attr-n {display:none;}
+.subtitle {font-size:smaller; color: grey;}
+.footnoteText {display:none;}
+.tei-footnote-id {display:none;}
+/*sup.footnoteRef{display:none;}*/
+sup.footnoteRef {
+    font-size: 10px !important;
+    line-height: 0.5em;
+    vertical-align: baseline;
+    position: relative;
+    }
+
+#footnoteDisplay {
+    display:none;
+    position: fixed;
+    padding: 1.25em;
+    min-height: 25px;
+    min-width: 25px;
+    max-width: 55%;
+    background-color:white;
+    border:1px solid #ccc;
+    top:125px;
+    box-shadow: 8px 8px 3px #999;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+.parallelText{border-left: 1px solid #ccc;border-right: 1px solid #ccc;}
+.citationInformation .indent {margin:0;}
+.citationInformation .tei-biblStruct{display:block; margin:1em 0;}
